@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_numerics/nrutil.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_numerics/nrutil.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbs_tool.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbs_tool.h
 mbsysc_utilities_export.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/useful_functions.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/useful_functions.h
 stdio.h
 -
 stdlib.h
@@ -24,65 +24,65 @@ string.h
 math.h
 -
 mbsysc_utilities_export.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/../mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.c
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.c
 mbs_aux.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 mbs_tool.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_tool.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_tool.h
 nrutil.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/nrutil.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/nrutil.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
 mbs_sensor.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.c
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.c
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 useful_functions.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/useful_functions.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/useful_functions.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 stdio.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/stdio.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/stdio.h
 stdlib.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/stdlib.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/stdlib.h
 mbs_user_interface.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
 mbs_project_fct_ptr.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
 dlfcn.h
 -
 windows.h
 -
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.c
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.c
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 mbs_sensor.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
 stdint.h
 -
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.c
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.c
 stdlib.h
 -
 mbs_sensor.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
 project_userfct_export.h
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
 
-/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
+/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
 

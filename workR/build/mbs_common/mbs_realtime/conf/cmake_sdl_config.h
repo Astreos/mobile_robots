@@ -7,4 +7,4 @@
  * A header file called 'cmake_sdl_config.h' is then automatically generated in the build directory
  */
 
-#define SDL_FILES_PATH "/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_realtime/sdl/SDL_files"
+#define SDL_FILES_PATH "/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_realtime/sdl/SDL_files"

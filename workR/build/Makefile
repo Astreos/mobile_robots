@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/nicolas/Téléchargements/m454_project/workR
+CMAKE_SOURCE_DIR = /home/nicolas/m454_project/workR
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/nicolas/Téléchargements/m454_project/workR/build
+CMAKE_BINARY_DIR = /home/nicolas/m454_project/workR/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,17 +100,6 @@ list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -124,9 +113,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/nicolas/Téléchargements/m454_project/workR/build/CMakeFiles /home/nicolas/Téléchargements/m454_project/workR/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nicolas/m454_project/workR/build/CMakeFiles /home/nicolas/m454_project/workR/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/nicolas/Téléchargements/m454_project/workR/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nicolas/m454_project/workR/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -477,7 +466,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... install/local"
 	@echo "... list_install_components"
-	@echo "... install/strip"
 	@echo "... exe_projectRobotran"
 	@echo "... userfct_clean"
 	@echo "... mbsysc_plot"

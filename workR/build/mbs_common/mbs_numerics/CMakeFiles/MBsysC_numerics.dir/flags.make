@@ -6,5 +6,5 @@ C_FLAGS = -fPIC -O3
 
 C_DEFINES = -DDIRDYNARED -DJAVA -DREAL_TIME -DSDL -DUNIX
 
-C_INCLUDES = -I/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_numerics/. -I/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_struct -I/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_utilities -I/home/nicolas/Téléchargements/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_module 
+C_INCLUDES = -I/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_numerics/. -I/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_struct -I/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_utilities -I/home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_numerics/../mbs_module 
 

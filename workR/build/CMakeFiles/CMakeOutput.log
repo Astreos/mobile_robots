@@ -601,3 +601,68 @@ gmake[1]: Leaving directory '/home/nicolas/Téléchargements/m454_project/workR/
 Source file was:
 __attribute__((__deprecated__)) int somefunc() { return 0; }
     int main() { return somefunc();}
+Performing C++ SOURCE FILE Test COMPILER_HAS_HIDDEN_VISIBILITY succeded with the following output:
+Change Dir: /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_9e615/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_9e615.dir/build.make CMakeFiles/cmTC_9e615.dir/build
+gmake[1]: Entering directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9e615.dir/src.cxx.o
+/usr/bin/c++     -DCOMPILER_HAS_HIDDEN_VISIBILITY   -fvisibility=hidden -o CMakeFiles/cmTC_9e615.dir/src.cxx.o -c /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_9e615
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9e615.dir/link.txt --verbose=1
+/usr/bin/c++    -DCOMPILER_HAS_HIDDEN_VISIBILITY    CMakeFiles/cmTC_9e615.dir/src.cxx.o  -o cmTC_9e615 -rdynamic 
+gmake[1]: Leaving directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_HAS_HIDDEN_INLINE_VISIBILITY succeded with the following output:
+Change Dir: /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_dc768/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_dc768.dir/build.make CMakeFiles/cmTC_dc768.dir/build
+gmake[1]: Entering directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_dc768.dir/src.cxx.o
+/usr/bin/c++     -DCOMPILER_HAS_HIDDEN_INLINE_VISIBILITY   -fvisibility-inlines-hidden -o CMakeFiles/cmTC_dc768.dir/src.cxx.o -c /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_dc768
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dc768.dir/link.txt --verbose=1
+/usr/bin/c++    -DCOMPILER_HAS_HIDDEN_INLINE_VISIBILITY    CMakeFiles/cmTC_dc768.dir/src.cxx.o  -o cmTC_dc768 -rdynamic 
+gmake[1]: Leaving directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_HAS_DEPRECATED_ATTR succeded with the following output:
+Change Dir: /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_7a74f/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_7a74f.dir/build.make CMakeFiles/cmTC_7a74f.dir/build
+gmake[1]: Entering directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_7a74f.dir/src.cxx.o
+/usr/bin/c++     -DCOMPILER_HAS_DEPRECATED_ATTR   -o CMakeFiles/cmTC_7a74f.dir/src.cxx.o -c /home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx: Dans la fonction ‘int main()’:
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:2:25: attention : ‘int somefunc()’ is deprecated [-Wdeprecated-declarations]
+     int main() { return somefunc();}
+                         ^
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:1:37: note : declared here
+ __attribute__((__deprecated__)) int somefunc() { return 0; }
+                                     ^
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:2:25: attention : ‘int somefunc()’ is deprecated [-Wdeprecated-declarations]
+     int main() { return somefunc();}
+                         ^
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:1:37: note : declared here
+ __attribute__((__deprecated__)) int somefunc() { return 0; }
+                                     ^
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:2:34: attention : ‘int somefunc()’ is deprecated [-Wdeprecated-declarations]
+     int main() { return somefunc();}
+                                  ^
+/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp/src.cxx:1:37: note : declared here
+ __attribute__((__deprecated__)) int somefunc() { return 0; }
+                                     ^
+Linking CXX executable cmTC_7a74f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a74f.dir/link.txt --verbose=1
+/usr/bin/c++    -DCOMPILER_HAS_DEPRECATED_ATTR    CMakeFiles/cmTC_7a74f.dir/src.cxx.o  -o cmTC_7a74f -rdynamic 
+gmake[1]: Leaving directory '/home/nicolas/m454_project/workR/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+__attribute__((__deprecated__)) int somefunc() { return 0; }
+    int main() { return somefunc();}

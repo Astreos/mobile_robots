@@ -6,269 +6,269 @@
 
 #IncludeRegexTransform: 
 
-/home/nicolas/Téléchargements/m454_project/userfctR/realtime/user_realtime_plot.c
+/home/nicolas/m454_project/userfctR/realtime/user_realtime_plot.c
 user_realtime.h
-/home/nicolas/Téléchargements/m454_project/userfctR/realtime/user_realtime.h
+/home/nicolas/m454_project/userfctR/realtime/user_realtime.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_Derivative.c
+/home/nicolas/m454_project/userfctR/user_Derivative.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 cpp_interface_gestion.h
-/home/nicolas/Téléchargements/m454_project/userfctR/cpp_interface_gestion.h
+/home/nicolas/m454_project/userfctR/cpp_interface_gestion.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_DrivenJoints.c
+/home/nicolas/m454_project/userfctR/user_DrivenJoints.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_ExtForces.c
+/home/nicolas/m454_project/userfctR/user_ExtForces.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 mbs_project_interface.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_project_interface.h
+/home/nicolas/m454_project/userfctR/mbs_project_interface.h
 cpp_interface_gestion.h
-/home/nicolas/Téléchargements/m454_project/userfctR/cpp_interface_gestion.h
+/home/nicolas/m454_project/userfctR/cpp_interface_gestion.h
 user_all_id.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_all_id.h
+/home/nicolas/m454_project/userfctR/user_all_id.h
 robot_id.h
-/home/nicolas/Téléchargements/m454_project/userfctR/robot_id.h
+/home/nicolas/m454_project/userfctR/robot_id.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.c
+/home/nicolas/m454_project/userfctR/user_IO.c
 stdlib.h
 -
 user_IO.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.h
+/home/nicolas/m454_project/userfctR/user_IO.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.h
+/home/nicolas/m454_project/userfctR/user_IO.h
 mbs_user_interface.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_user_interface.h
+/home/nicolas/m454_project/userfctR/mbs_user_interface.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_JointForces.c
+/home/nicolas/m454_project/userfctR/user_JointForces.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 user_model.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_model.h
+/home/nicolas/m454_project/userfctR/user_model.h
 set_output.h
-/home/nicolas/Téléchargements/m454_project/userfctR/set_output.h
+/home/nicolas/m454_project/userfctR/set_output.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_Link3DForces.c
+/home/nicolas/m454_project/userfctR/user_Link3DForces.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_LinkForces.c
+/home/nicolas/m454_project/userfctR/user_LinkForces.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 user_IO.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.h
+/home/nicolas/m454_project/userfctR/user_IO.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_all_id.h
+/home/nicolas/m454_project/userfctR/user_all_id.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_cons_hJ.c
+/home/nicolas/m454_project/userfctR/user_cons_hJ.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 cpp_interface_gestion.h
-/home/nicolas/Téléchargements/m454_project/userfctR/cpp_interface_gestion.h
+/home/nicolas/m454_project/userfctR/cpp_interface_gestion.h
 user_IO.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.h
+/home/nicolas/m454_project/userfctR/user_IO.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_cons_jdqd.c
+/home/nicolas/m454_project/userfctR/user_cons_jdqd.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 cpp_interface_gestion.h
-/home/nicolas/Téléchargements/m454_project/userfctR/cpp_interface_gestion.h
+/home/nicolas/m454_project/userfctR/cpp_interface_gestion.h
 user_IO.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_IO.h
+/home/nicolas/m454_project/userfctR/user_IO.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_dirdyn.c
+/home/nicolas/m454_project/userfctR/user_dirdyn.c
 math.h
-/home/nicolas/Téléchargements/m454_project/userfctR/math.h
+/home/nicolas/m454_project/userfctR/math.h
 MBSdef.h
-/home/nicolas/Téléchargements/m454_project/userfctR/MBSdef.h
+/home/nicolas/m454_project/userfctR/MBSdef.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_data.h
+/home/nicolas/m454_project/userfctR/mbs_data.h
 mbs_dirdyn.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_dirdyn.h
+/home/nicolas/m454_project/userfctR/mbs_dirdyn.h
 user_realtime.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_realtime.h
+/home/nicolas/m454_project/userfctR/user_realtime.h
 cpp_interface_gestion.h
-/home/nicolas/Téléchargements/m454_project/userfctR/cpp_interface_gestion.h
+/home/nicolas/m454_project/userfctR/cpp_interface_gestion.h
 robot_id.h
-/home/nicolas/Téléchargements/m454_project/userfctR/robot_id.h
+/home/nicolas/m454_project/userfctR/robot_id.h
 user_all_id.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_all_id.h
+/home/nicolas/m454_project/userfctR/user_all_id.h
 set_output.h
-/home/nicolas/Téléchargements/m454_project/userfctR/set_output.h
+/home/nicolas/m454_project/userfctR/set_output.h
 math.h
 -
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_model.c
+/home/nicolas/m454_project/userfctR/user_model.c
 user_model.h
-/home/nicolas/Téléchargements/m454_project/userfctR/user_model.h
+/home/nicolas/m454_project/userfctR/user_model.h
 mbs_xml_reader.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_xml_reader.h
+/home/nicolas/m454_project/userfctR/mbs_xml_reader.h
 mbs_load_xml.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_load_xml.h
+/home/nicolas/m454_project/userfctR/mbs_load_xml.h
 useful_functions.h
-/home/nicolas/Téléchargements/m454_project/userfctR/useful_functions.h
+/home/nicolas/m454_project/userfctR/useful_functions.h
 
-/home/nicolas/Téléchargements/m454_project/userfctR/user_model.h
+/home/nicolas/m454_project/userfctR/user_model.h
 mbs_user_interface.h
-/home/nicolas/Téléchargements/m454_project/userfctR/mbs_user_interface.h
+/home/nicolas/m454_project/userfctR/mbs_user_interface.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_load_xml.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_load_xml.h
 mbs_xml_reader.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_xml_reader.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_xml_reader.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_data.h
 mbsysc_loadxml_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbsysc_loadxml_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbsysc_loadxml_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_xml_reader.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbs_xml_reader.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbsysc_loadxml_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_load_xml/mbsysc_loadxml_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/MBSdef.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/MBSdef.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_dirdyn.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_dirdyn.h
 mbs_dirdyn_struct.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_dirdyn_struct.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_dirdyn_struct.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbs_data.h
 mbsysc_module_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbsysc_module_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbsysc_module_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbsysc_module_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_module/mbsysc_module_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime.h
 realtime_ext.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime_ext.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime_ext.h
 color_sdl.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/color_sdl.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/color_sdl.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_data.h
 mbsysc_realtime_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbsysc_realtime_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbsysc_realtime_export.h
 mbs_project_fct_ptr.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_project_fct_ptr.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_project_fct_ptr.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime_ext.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/realtime_ext.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/sdl/color_sdl.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/sdl/color_sdl.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime.h
 mbsysc_realtime_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbs_data.h
 realtime.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/realtime.h
 user_realtime_visu.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime_visu.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime_visu.h
 stdint.h
 -
 SDL.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/SDL.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/SDL.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime_visu.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/user_realtime_visu.h
 mbsysc_realtime_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_realtime/mbsysc_realtime_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
 mbs_sensor.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 stdio.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/stdio.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/stdio.h
 stdlib.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/stdlib.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/stdlib.h
 mbs_user_interface.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
 mbs_project_fct_ptr.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
 dlfcn.h
 -
 windows.h
 -
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_dirdyn_struct.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_dirdyn_struct.h
 mbs_aux.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
 mbs_buffer.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_buffer.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_buffer.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_fct_ptr.h
 stdint.h
 -
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_interface.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_project_interface.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_data.h
 mbs_aux.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_aux.h
 mbs_dirdyn_struct.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_dirdyn_struct.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_dirdyn_struct.h
 project_userfct_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
 project_symbolic_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_symbolic_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_symbolic_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_sensor.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/mbs_user_interface.h
 project_userfct_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_symbolic_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_symbolic_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_struct/project_userfct_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/auto_output/set_output.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/auto_output/set_output.h
 mbsysc_utilities_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/auto_output/mbsysc_utilities_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/auto_output/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbs_buffer.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbs_buffer.h
 mbsysc_utilities_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/useful_functions.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/useful_functions.h
 stdio.h
 -
 stdlib.h
@@ -278,13 +278,13 @@ string.h
 math.h
 -
 mbsysc_utilities_export.h
-/home/nicolas/Téléchargements/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
+/home/nicolas/m454_project/workR/../mbsysCopy/mbs_common/mbs_utilities/mbsysc_utilities_export.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../userFiles/simu/cpp_interface/cpp_interface_gestion.h
+/home/nicolas/m454_project/workR/../userFiles/simu/cpp_interface/cpp_interface_gestion.h
 mbs_data.h
-/home/nicolas/Téléchargements/m454_project/workR/../userFiles/simu/cpp_interface/mbs_data.h
+/home/nicolas/m454_project/workR/../userFiles/simu/cpp_interface/mbs_data.h
 
-/home/nicolas/Téléchargements/m454_project/workR/../userFiles/simu/cpp_interface/robot_id.h
+/home/nicolas/m454_project/workR/../userFiles/simu/cpp_interface/robot_id.h
 
 /usr/include/SDL2/SDL.h
 SDL_main.h

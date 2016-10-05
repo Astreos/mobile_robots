@@ -88,7 +88,7 @@ void controller_loop(CtrlStruct *cvs)
 	// tower control
 	outputs->tower_command = 15;
 
-/*
+        /*
         if (t>=-10 and t<-7)
         {
             speed_regulation(cvs, 20, 20);
@@ -103,10 +103,10 @@ void controller_loop(CtrlStruct *cvs)
         {
             speed_regulation(cvs, 20, 4);
         }
-*/
 
         set_plot(inputs->r_wheel_speed, "R_wheel_in_[rad/s]");
         set_plot(inputs->l_wheel_speed, "L_wheel_in_[rad/s]");
+        */
 
 	switch (cvs->main_state)
 	{

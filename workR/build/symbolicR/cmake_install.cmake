@@ -1,8 +1,8 @@
-# Install script for directory: /home/nicolas/Téléchargements/m454_project/symbolicR
+# Install script for directory: /home/nicolas/m454_project/symbolicR
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/nicolas/Téléchargements/m454_project/workR/build/Debug")
+  set(CMAKE_INSTALL_PREFIX "/home/nicolas/m454_project/workR/build/Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,13 +34,13 @@ endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/nicolas/Téléchargements/m454_project/workR/build/Debug/libProject_symbolic.a")
+   "/home/nicolas/m454_project/workR/build/Debug/libProject_symbolic.a")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/nicolas/Téléchargements/m454_project/workR/build/Debug" TYPE STATIC_LIBRARY FILES "/home/nicolas/Téléchargements/m454_project/workR/build/symbolicR/libProject_symbolic.a")
+file(INSTALL DESTINATION "/home/nicolas/m454_project/workR/build/Debug" TYPE STATIC_LIBRARY FILES "/home/nicolas/m454_project/workR/build/symbolicR/libProject_symbolic.a")
 endif()
 

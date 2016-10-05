@@ -1,8 +1,8 @@
-# Install script for directory: /home/nicolas/Téléchargements/m454_project/workR
+# Install script for directory: /home/nicolas/m454_project/workR
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/nicolas/Téléchargements/m454_project/workR/build/Debug")
+  set(CMAKE_INSTALL_PREFIX "/home/nicolas/m454_project/workR/build/Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,13 +34,13 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/cmake_aux/flags/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/cmake_aux/listing/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/cmake_aux/libraries/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/cmake_aux/make_opt/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/mbs_common/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/symbolicR/cmake_install.cmake")
-  include("/home/nicolas/Téléchargements/m454_project/workR/build/userfctR/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/cmake_aux/flags/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/cmake_aux/listing/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/cmake_aux/libraries/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/cmake_aux/make_opt/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/mbs_common/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/symbolicR/cmake_install.cmake")
+  include("/home/nicolas/m454_project/workR/build/userfctR/cmake_install.cmake")
 
 endif()
 
@@ -52,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/nicolas/Téléchargements/m454_project/workR/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/nicolas/m454_project/workR/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
