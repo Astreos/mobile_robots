@@ -103,9 +103,6 @@ void controller_loop(CtrlStruct *cvs)
         {
             speed_regulation(cvs, 20, 4);
         }
-
-        set_plot(inputs->r_wheel_speed, "R_wheel_in_[rad/s]");
-        set_plot(inputs->l_wheel_speed, "L_wheel_in_[rad/s]");
         */
 
 	switch (cvs->main_state)

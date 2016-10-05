@@ -41,49 +41,56 @@ void calibration(CtrlStruct *cvs)
 	switch (calib->flag)
 	{
 		case CALIB_START: // start calibration
-			speed_regulation(cvs, -10, -10);
+                    
+                    speed_regulation(cvs, -7, -7);
                         
-                        if (inputs->u_switch[0] == 1 && inputs->u_switch[1] == 1) {
-                            speed_regulation(cvs, 0, 0);
+                    if (inputs->u_switch[0] == 1 && inputs->u_switch[1] == 1) {
                             
-                            rob_pos->y = 0;
-                            
-                            calib->flag = CALIB_STATE_A; // directly go to state A
-                            calib->t_flag = t;
-                        }
+                        speed_regulation(cvs, 0, 0);
+                                
+                        rob_pos->y = 1.50;
+                        rob_pos->theta = -M_PI/2;
+                                
+                        calib->flag = CALIB_STATE_A;
+                        calib->t_flag = t;
+                    }
+                    
 			break;
 
 		case CALIB_STATE_A: // state A
-                    speed_regulation(cvs, 10, 10);
+                    
+                    speed_regulation(cvs, 7, 7);
+                    
+                    if (rob_pos->y <= 1.25) {
+                        speed_regulation(cvs, 0, 0);
+                        
+                        calib->flag = CALIB_STATE_B;
+                        calib->t_flag = t;
+                    }
+                    
+                    break;
 
-			// go to state B after 2 seconds
-			if (t - calib->t_flag > 2.0)
-			{
-                            speed_regulation(cvs, 0, 0);
-                            calib->flag = CALIB_STATE_B;
-                            calib->t_flag = t;
-			}
-			break;
 
 		case CALIB_STATE_B: // state B
-			speed_regulation(cvs, -10, 10);
-
-			// go to state C after 2 seconds
-			if (t - calib->t_flag > 2.0)
-			{
-                            speed_regulation(cvs, 0, 0);
-                            calib->flag = CALIB_STATE_C;
-                            calib->t_flag = t;
-			}
-			break;
+                    
+                    speed_regulation(cvs, -7, 7);
+                    
+                    if (rob_pos->theta <= -M_PI) {
+			speed_regulation(cvs, 0, 0);
+                        
+                        calib->flag = CALIB_STATE_C;
+                        calib->t_flag = t;
+                    }
+                    
+                    break;
 
 		case CALIB_STATE_C: // state C
-			speed_regulation(cvs, -10, -10);
+			speed_regulation(cvs, -7, -7);
 
                             if (inputs->u_switch[0] == 1 && inputs->u_switch[1] == 1) {
                             speed_regulation(cvs, 0, 0);
                             
-                            rob_pos->x = 0;
+                            rob_pos->x = 1.00;
                             
                             calib->flag = CALIB_FINISH;
                             calib->t_flag = t;
@@ -102,3 +109,14 @@ void calibration(CtrlStruct *cvs)
 }
 
 NAMESPACE_CLOSE();
+
+/*
+                        // go to state B after 2 seconds
+			if (t - calib->t_flag > 2.0)
+			{
+                            
+                            calib->flag = CALIB_STATE_B;
+                            calib->t_flag = t;
+			}
+			break;
+*/
