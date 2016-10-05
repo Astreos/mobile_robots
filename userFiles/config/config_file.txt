@@ -1,0 +1,313 @@
+# This file is used to configure the project environment.
+#
+# Students are free to modify this file, especially the noise values. However, at the end of the project,
+# their controllers will be tested with the initial file configuration (except for the controllers).
+#
+# Explanations are provided before each field. Lines starting with a '#' are only comments.
+#
+# Four robots can take part in the competition. The blue and red robots belong to team A, while
+# the yellow and white ones belong to team B.
+#
+
+# -- ROBOT CONTROLLERS -- #
+#
+# Each robot is assigned a controller. In case the robot does not take part on the map game
+# (i.e. it is physically outside the map, and is not detected), the controller to assign is
+# 'NoCtrl'. To the contrary, the controller 'RestingCtrl' sends basic (i.e. 0) commands as
+# robot outputs, but the robot is still on the map and can therefore be detected.
+#
+# All the controllers are detailed here:
+#
+#    NoCtrl: The robot is not on the map.
+#
+#    RestingCtrl: The robot sends basic outputs (barely moves).
+#
+#    KeyboardCtrl: Up to two robots can be assigned this controller. The first one is commanded
+#                  with the arrows and the 'space bar' (release targets), while the second one
+#                  can be commanded with the Z,Q,S,D or W,A,S,D arrows and the 'enter' key
+#                  to release targets.
+#
+#    ExampleCtrl: example of a simple controller, with the corresponding code structure.
+#
+#    JoystickCtrl: Up to four robots can be assigned this controller. Each is controlled by a different
+#                  joystick plugged, using the main axis to control the robot. The behaviour depends
+#                  on the joystick and could be modified in the function 'loop_controller' of
+#                  'userFiles/ctrl/player_ctrl/JoystickCtrl.cc'. Also depending on the joystick,
+#                  a given button will release the targets.
+#
+#    GrXCtrl: The controller developed by the group. The 'X' must be replaced by the group number.
+#
+blue_ctrl   : Gr18Ctrl
+red_ctrl    : NoCtrl
+yellow_ctrl : NoCtrl
+white_ctrl  : NoCtrl
+
+
+# -- ROBOT INITIAL POSITIONS -- #
+#
+# Each robot is named by its colours and has three fields:
+#    T1: x position [m]
+#    T2: y position [m]
+#    R3: orientation [deg]
+#
+blue_T1 : 0.67
+blue_T2 : 1.15
+blue_R3 : -90.0
+
+red_T1 : 0.82
+red_T2 : 1.4
+red_R3 : -90.0
+
+yellow_T1 : 0.67
+yellow_T2 : -1.15
+yellow_R3 : 90.0
+
+white_T1 : 0.82
+white_T2 : -1.4
+white_R3 : 90.0
+
+
+# -- ROBOTS INITIAL UNCERTAINTY -- #
+#
+# The initial position of the robots is slightly randomized.
+# Each robot starts with the position described in the previous section.
+# However, this position is slightly incremented by a random value whose
+# maximal amplitude can be configured here.
+#
+# In the following notation, the function rnd([a;b]) returns a number in the [a;b] range,
+# with a white flat distribution.
+#
+#    T1_uncert: x coordinate = T1 + rnd([-T1_uncert/2 ; T1_uncert/2]) [m]
+#    T2_uncert: y coordinate = T2 + rnd([-T2_uncert/2 ; T2_uncert/2]) [m]
+#    R3_uncert:  orientation = R3 + rnd([-R3_uncert/2 ; R3_uncert/2]) [deg]
+#
+T1_uncert : 0.02
+T2_uncert : 0.02
+R3_uncert : 10.0
+
+
+# -- MOTORS -- #
+#
+# The motor torque (tau_m) main equation is the following (DC motor with inductance neglected):
+#  
+# tau_m = (k_phi/R) * (u_m - k_phi*omega_m)
+#
+#     k_phi: torque constant [Nm/A]
+#     R: motor resistance [ohm]
+#     u_m: motor voltage [V]
+#     omega_m: motor velocity [rad/s]
+#
+# On top of that, there is a motor reduction factor (rho) applied, such that the relation between
+# the rotation between the motor speed (omega_m) and the load speed (omega_l), as well as the relation
+# between the motor torque (tau_m) and the load torque (tau_l) are the followings:
+#
+# omega_m = rho * omega_l
+# tau_l   = rho * tau_m
+#
+# Here are the parameters for each wheel motor and for the tower motor:
+#
+# wheel: k_phi = 26.1e-3 [Nm/A] ; R = 7.1 [ohm] ; u_m = [-24;+24] [V] ; rho = 14 [-]
+# tower: k_phi =  7.5e-3 [Nm/A] ; R = 2.0 [ohm] ; u_m = [-24;+24] [V] ; rho = 12 [-]
+#
+# A friction torque is also applied at the load level, whose magnitude can be
+# adapted with 'wheel_friction' (for the wheels) of 'tower_friction' (for the tower) [Nm]
+#
+# On top of that, a flat noise is added at the torque level, whose magnitude can be
+# adapted with 'actuator_noise' (for both the wheels and the tower). [-]
+#
+actuator_noise : 0.07
+
+wheel_friction : 0.2
+tower_friction : 0.02
+
+
+# -- SENSORS NOISE -- #
+#
+# Noise is added on two sensory information: the wheels speed and the tower beacon detection.
+# The corresponding noise level is set with 'wheel_noise' (for the wheels speed) and 'tower_noise'
+# (for the beacon rising/falling edges position). [-]
+#
+wheel_noise : 0.007
+tower_noise : 0.015
+
+
+# -- TARGET POSITIONS -- #
+#
+# Add each target using the following line:
+#
+# target : position( x ; y ) ; mbs_joints( T1 ; T2 ; T3 ) ; value( val )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    T1: T1 ID in the anim .mbs file (dataR/m454_project_anim.mbs)
+#    T2: T2 ID in the anim .mbs file
+#    T3: T3 ID in the anim .mbs file
+#    val: the value of the target, i.e. the number of points this target is worth
+#
+target : position(  0.7  ;  -0.6 ) ; mbs_joints( 25 ; 26 ; 27 ) ; value( 1 )
+target : position(  0.7  ;   0.6 ) ; mbs_joints( 28 ; 29 ; 30 ) ; value( 1 )
+target : position( -0.4  ;  -0.6 ) ; mbs_joints( 31 ; 32 ; 33 ) ; value( 1 )
+target : position( -0.4  ;   0.6 ) ; mbs_joints( 34 ; 35 ; 36 ) ; value( 1 )
+target : position(  0.25 ; -1.25 ) ; mbs_joints( 37 ; 38 ; 39 ) ; value( 2 )
+target : position(  0.25 ;  1.25 ) ; mbs_joints( 40 ; 41 ; 42 ) ; value( 2 )
+target : position(  0.1  ;   0.0 ) ; mbs_joints( 43 ; 44 ; 45 ) ; value( 2 )
+target : position( -0.8  ;   0.0 ) ; mbs_joints( 46 ; 47 ; 48 ) ; value( 3 )
+
+# -- INIT BASES -- #
+#
+# Add the initial basis (i.e. location where the robots should be at the end of the calibration) using
+# the following line for team A:
+#
+# init_basis_team_X : position( x ; y ) ; orientation( alpha ) ; width( w ) ; height( h )
+#
+# Replace 'X' by 'A' for team A or 'B' for team B.
+#
+# with the following parameters:
+#    x: x centre position of the rectangle [m]
+#    y: y centre position of the rectangle [m]
+#    alpha: rectangle orientation [deg]
+#    w: rectangle width [m], i.e. length along the x axis when 'alpha' is 0
+#    h: rectangle height [m], i.e. length along the y axis when 'alpha' is 0
+#
+init_basis_team_A : position( 0.75 ;  1.25 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.5 )
+init_basis_team_B : position( 0.75 ; -1.25 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.5 )
+
+# -- TARGET BASES -- #
+#
+# Add each target basis (i.e. location to release the targets, rectangular shape) using
+# the following line for team A:
+#
+# target_basis_team_X : position( x ; y ) ; orientation( alpha ) ; width( w ) ; height( h )
+#
+# Replace 'X' by 'A' for team A or 'B' for team B.
+#
+# with the following parameters:
+#    x: x centre position of the rectangle [m]
+#    y: y centre position of the rectangle [m]
+#    alpha: rectangle orientation [deg]
+#    w: rectangle width [m], i.e. length along the x axis when 'alpha' is 0
+#    h: rectangle height [m], i.e. length along the y axis when 'alpha' is 0
+#
+target_basis_team_A : position( -0.75 ; -1.175 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.65 )
+target_basis_team_B : position( -0.75 ;  1.175 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.65 )
+
+# -- WALLS -- #
+#
+# Add each wall using the following line:
+#
+# wall : position( x ; y ) ; orientation( alpha ) ; wrapping( r )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    alpha: repulsive orientation [deg]
+#    r: wrapping radius [m], i.e. any point of the wall is inside a circle centered in (x;y) with this radius
+#
+wall : position( -1.0 ;  0.0 ) ; orientation(   0.0 ) ; wrapping( 1.5 )
+wall : position(  1.0 ;  0.0 ) ; orientation( 180.0 ) ; wrapping( 1.5 )
+wall : position(  0.0 ; -1.5 ) ; orientation(  90.0 ) ; wrapping( 1.0 )
+wall : position(  0.0 ;  1.5 ) ; orientation( -90.0 ) ; wrapping( 1.0 )
+
+
+# -- FIXED CIRCLES -- #
+#
+# Add each fixed circle using the following line:
+#
+# fixed_circle : position( x ; y ) ; radius( r )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    r: circle radius [m]
+#
+
+
+# -- FIXED RECTANGLES -- #
+#
+# Add each fixed rectangle using the following line:
+#
+# fixed_rectangle : position( x ; y ) ; orientation( alpha ) ; width( w ) ; height( h )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    alpha: repulsive orientation [deg]
+#    w: width [m], i.e. length along the x axis when 'alpha' is 0
+#    h: height [m], i.e. length along the y axis when 'alpha' is 0
+#
+fixed_rectangle : position( 0.49 ; -1.25 ) ; orientation( 0.0 ) ; width( 0.02 ) ; height( 0.5 ) # initial basis - team B
+fixed_rectangle : position( 0.49 ;  1.25 ) ; orientation( 0.0 ) ; width( 0.02 ) ; height( 0.5 ) # initial basis - team A
+
+fixed_rectangle : position( -0.75 ; -0.84 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.02 ) # target basket - team A
+fixed_rectangle : position( -0.75 ;  0.84 ) ; orientation( 0.0 ) ; width( 0.5 ) ; height( 0.02 ) # target basket - team B
+
+# middle obstacle
+fixed_rectangle : position(  0.05 ;  0.35 ) ; orientation( 0.0 ) ; width( 0.3 ) ; height( 0.1 )
+fixed_rectangle : position(  0.05 ; -0.35 ) ; orientation( 0.0 ) ; width( 0.3 ) ; height( 0.1 )
+fixed_rectangle : position( -0.15 ;   0.0 ) ; orientation( 0.0 ) ; width( 0.1 ) ; height( 0.8 )
+fixed_rectangle : position( -0.35 ;   0.0 ) ; orientation( 0.0 ) ; width( 0.3 ) ; height( 0.2 )
+
+
+# -- MOVING CIRCLES -- #
+#
+# Add each moving circle using the following line:
+#
+# moving_circle : position( x ; y ) ; radius( r ) ; mbs_joints( T1 ; T2 ; R3 )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    r: circle radius [m]
+#    T1: T1 ID in the anim .mbs file (dataR/m454_project_anim.mbs)
+#    T2: T2 ID in the anim .mbs file
+#    R3: R3 ID in the anim .mbs file
+#
+
+
+# -- MOVING RECTANGLES -- #
+#
+# Add each moving rectangle using the following line:
+#
+# moving_rectangle : position( x ; y ) ; orientation( alpha ) ; width( w ) ; height( h ) ; mbs_joints( T1 ; T2 ; R3 )
+#
+# with the following parameters:
+#    x: x position [m]
+#    y: y position [m]
+#    alpha: repulsive orientation [deg]
+#    w: width [m], i.e. length along the x axis when 'alpha' is 0
+#    h: height [m], i.e. length along the y axis when 'alpha' is 0
+#    T1: T1 ID in the anim .mbs file (dataR/m454_project_anim.mbs)
+#    T2: T2 ID in the anim .mbs file
+#    R3: R3 ID in the anim .mbs file
+#
+
+
+# -- POSITION BEACONS -- #
+#
+# Add three beacon positions for each team (team A for robots blue and red,
+# team B for robots yellow and white).
+#
+team_A_beacon_1_x : 1.062
+team_A_beacon_1_y : 1.562
+
+team_A_beacon_2_x : -1.062
+team_A_beacon_2_y : 1.562
+
+team_A_beacon_3_x : 0.0
+team_A_beacon_3_y : -1.562
+
+team_B_beacon_1_x : 1.062
+team_B_beacon_1_y : -1.562
+
+team_B_beacon_2_x : -1.062
+team_B_beacon_2_y : -1.562
+
+team_B_beacon_3_x : 0.0
+team_B_beacon_3_y : 1.562
+
+# -- NUMBER OF JOINTS ANIM -- #
+#
+# Set the total number of joints in the 'dataR/m454_project_anim.mbs' file
+#
+nb_joints_anim : 48

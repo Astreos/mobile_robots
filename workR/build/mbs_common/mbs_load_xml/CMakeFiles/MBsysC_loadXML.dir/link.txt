@@ -1,0 +1,2 @@
+/usr/bin/ar qc libMBsysC_loadXML.a  CMakeFiles/MBsysC_loadXML.dir/mbs_load_xml.c.o CMakeFiles/MBsysC_loadXML.dir/mbs_xml_reader.c.o
+/usr/bin/ranlib libMBsysC_loadXML.a

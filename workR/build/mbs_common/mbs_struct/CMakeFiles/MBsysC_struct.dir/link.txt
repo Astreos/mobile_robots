@@ -1,0 +1,2 @@
+/usr/bin/ar qc libMBsysC_struct.a  CMakeFiles/MBsysC_struct.dir/mbs_data.c.o CMakeFiles/MBsysC_struct.dir/mbs_sensor.c.o CMakeFiles/MBsysC_struct.dir/mbs_aux.c.o CMakeFiles/MBsysC_struct.dir/mbs_project_fct_ptr.c.o
+/usr/bin/ranlib libMBsysC_struct.a

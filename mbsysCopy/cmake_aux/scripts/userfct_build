@@ -1,0 +1,49 @@
+#
+# Author: Nicolas Van der Noot
+#
+# Separate userfctR build: configuration and compilation
+#
+
+# userfctR folder
+USERFCT_FOLDER=$2/../userfctR
+
+# build folder
+BUILD_FOLDER=$USERFCT_FOLDER/build/
+
+if [ $# = 5 ]
+then
+    echo "\n userfctR: dynamic library creation \n"
+else
+    if [ -d $BUILD_FOLDER ]
+    then
+        echo "\n userfctR: dynamic library cleaning \n"
+        rm -r $BUILD_FOLDER
+    fi
+    exit
+fi
+
+# create empty directory
+if [ -d $BUILD_FOLDER ]
+then
+    rm -r $BUILD_FOLDER
+fi
+mkdir $BUILD_FOLDER
+
+# generate CMake project
+cd $BUILD_FOLDER
+cmake -DFLAG_SEPARATE_USER_FCT=ON -DROBOTRAN_SOURCE_DIR=$1 -DFLAG_REAL_TIME=$3 -DFLAG_PLOT=$4 -DFLAG_VISU=$5 ..
+
+echo "\n userfctR dynamic library configured in: "
+echo "     $BUILD_FOLDER"
+
+echo " with the following options:"
+echo "     FLAG_REAL_TIME      : $3"
+echo "     FLAG_PLOT           : $4"
+echo "     FLAG_VISU           : $5\n"
+
+# compilation
+make
+
+echo "\n userfctR dynamic library created in: "
+echo "     $BUILD_FOLDER \n"
+

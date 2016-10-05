@@ -1,0 +1,35 @@
+#
+# Author: Nicolas Van der Noot
+# September 2015
+#
+# Static symbolic library build: configuration and compilation
+#
+
+# create empty directory
+if [ -d $2/build/ ]
+then
+    rm -r $2/build/
+fi
+mkdir $2/build/
+
+cd $2/build
+
+if [ $# = 2 ]
+then
+    echo "\n Static symbolic library creation \n"
+
+    # CMake project configuration
+    cmake $2 -DSYMB_PATH=$1 -DCLEAN_OPT=OFF
+
+    # compilation
+    make -j4
+else
+    echo "\n Static symbolic library cleaning \n"
+
+    # CMake project configuration
+    cmake $2 -DSYMB_PATH=$1 -DCLEAN_OPT=ON
+fi
+
+# remove directory
+rm -r $2/build
+

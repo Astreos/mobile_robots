@@ -1,0 +1,12 @@
+/*
+ * author: Nicolas Van der Noot
+ * date: March 15 2015
+ * 
+ * Get absolute paths to the source project root (first CMakeLists.txt),
+ * to the binaries and to Robotran installation folder.
+ *
+ * A header file called 'cmake_config.h' is then automatically generated in the build directory
+ */
+#define PROJECT_SOURCE_DIR "@PROJECT_SOURCE_DIR@"
+#define PROJECT_BINARY_DIR "@PROJECT_BINARY_DIR@"
+#define BUILD_PATH  "@BUILD_PATH@"

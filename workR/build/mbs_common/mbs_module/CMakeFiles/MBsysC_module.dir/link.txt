@@ -1,0 +1,2 @@
+/usr/bin/ar qc libMBsysC_module.a  CMakeFiles/MBsysC_module.dir/mbs_equil.c.o CMakeFiles/MBsysC_module.dir/mbs_part.c.o CMakeFiles/MBsysC_module.dir/mbs_modal.c.o CMakeFiles/MBsysC_module.dir/mbs_dirdyn.c.o CMakeFiles/MBsysC_module.dir/mbs_linearipk.c.o CMakeFiles/MBsysC_module.dir/mbs_close_loops.c.o CMakeFiles/MBsysC_module.dir/mbs_calc_force.c.o CMakeFiles/MBsysC_module.dir/mbs_dirdynared.c.o CMakeFiles/MBsysC_module.dir/mbs_calc_Fruc.c.o
+/usr/bin/ranlib libMBsysC_module.a

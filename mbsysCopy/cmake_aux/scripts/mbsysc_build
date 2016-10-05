@@ -1,0 +1,45 @@
+#
+# Author: Nicolas Van der Noot
+#
+# Separate mbs_common build: configuration and compilation
+#
+
+if [ $# = 7 ]
+then
+    echo "\n mbs_common: dynamic libraries creation \n"
+else
+    if [ -d $1/build/ ]
+    then
+        echo "\n mbs_common: dynamic libraries cleaning \n"
+        rm -r $1/build/
+    fi
+    exit
+fi
+
+# create empty directory
+if [ -d $1/build/ ]
+then
+    rm -r $1/build/
+fi
+mkdir $1/build/
+
+# generate CMake project
+cd $1/build/
+cmake $1/mbs_common -DFLAG_SHARED_LIB=$2 -DFLAG_SEPARATE_BUILD=$3 -DFLAG_RELEASE=$4 -DFLAG_REAL_TIME=$5 -DFLAG_PLOT=$6 -DFLAG_VISU=$7
+
+echo "\n mbs_common dynamic libraries configured in: "
+echo "     $1build"
+
+echo " with the following options:"
+echo "     FLAG_SHARED_LIB     : $2"
+echo "     FLAG_SEPARATE_BUILD : $3"
+echo "     FLAG_RELEASE        : $4"
+echo "     FLAG_REAL_TIME      : $5"
+echo "     FLAG_PLOT           : $6"
+echo "     FLAG_VISU           : $7\n"
+
+# compilation
+make
+
+echo "\n mbs_common: dynamic libraries created in: "
+echo "     $1/build \n"
