@@ -10,7 +10,7 @@ NAMESPACE_INIT(ctrlGr18);
 #define DEG_TO_RAD (M_PI/180.0) ///< convertion from degrees to radians
 
 // calibration states
-enum {CALIB_START, CALIB_STATE_A, CALIB_STATE_B, CALIB_STATE_C, CALIB_FINISH};
+enum {CALIB_START, CALIB_STATE_A, CALIB_STATE_B, CALIB_STATE_C, CALIB_STATE_D, CALIB_FINISH};
 
 /*! \brief calibration of the robot to calibrate its position
  * 
@@ -33,75 +33,91 @@ void calibration(CtrlStruct *cvs)
 	calib  = cvs->calib;
 
 	rob_pos = cvs->rob_pos;
-	
+
 	t = inputs->t;
 	team_id = cvs->team_id;
 
-	// finite state machine (FSM)
+	// finite state machine (FSM)        
 	switch (calib->flag)
 	{
 		case CALIB_START: // start calibration
-                    
-                    speed_regulation(cvs, -7, -7);
-                        
-                    if (inputs->u_switch[0] == 1 && inputs->u_switch[1] == 1) {
-                            
-                        speed_regulation(cvs, 0, 0);
-                                
-                        rob_pos->y = 1.50;
-                        rob_pos->theta = -M_PI/2;
-                                
-                        calib->flag = CALIB_STATE_A;
-                        calib->t_flag = t;
-                    }
-                    
-			break;
 
-		case CALIB_STATE_A: // state A
+                    speed_regulation(cvs, -7, -7);
+
+                    calib->flag = CALIB_STATE_A;
+                    calib->t_flag = t;
+
+                    break;
                     
-                    speed_regulation(cvs, 7, 7);
-                    
-                    if (rob_pos->y <= 1.25) {
+                case CALIB_STATE_A: // state A
+
+                    if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
                         speed_regulation(cvs, 0, 0);
+
+                        rob_pos->y = 1.44;
+                        rob_pos->theta = -M_PI/2;
                         
                         calib->flag = CALIB_STATE_B;
                         calib->t_flag = t;
                     }
-                    
+
                     break;
 
-
 		case CALIB_STATE_B: // state B
-                    
-                    speed_regulation(cvs, -7, 7);
-                    
-                    if (rob_pos->theta <= -M_PI) {
-			speed_regulation(cvs, 0, 0);
-                        
+
+                    speed_regulation(cvs, 7, 7);
+
+                    if (rob_pos->y <= 1.25) {
+                        speed_regulation(cvs, 0, 0);
+
                         calib->flag = CALIB_STATE_C;
                         calib->t_flag = t;
+                    }
+
+                    break;
+
+		case CALIB_STATE_C: // state C
+
+                    speed_regulation(cvs, -7, 7);
+
+                    if (rob_pos->theta <= -M_PI) {
+			speed_regulation(cvs, 0, 0);
+
+                        calib->flag = CALIB_STATE_D;
+                        calib->t_flag = t;
+                    }
+
+                    break;
+
+		case CALIB_STATE_D: // state D
+                    
+                    speed_regulation(cvs, -7, -7);
+
+                    if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
+                        speed_regulation(cvs, 0, 0);
+                        
+                        rob_pos->x = 0.94;
+                        
+                        calib->flag = CALIB_FINISH;
+                        calib->t_flag = t;
+                        }
+
+                    break;
+
+		case CALIB_FINISH: // wait before the match is starting
+                    
+                    speed_regulation(cvs, 7, 7);
+
+                    if (rob_pos->x <= 0.75) {
+			speed_regulation(cvs, 7, -7);
+                        
+                        if (rob_pos->theta >= -M_PI/2) {
+                            speed_regulation(cvs, 0, 0);
+                        }
                     }
                     
                     break;
 
-		case CALIB_STATE_C: // state C
-			speed_regulation(cvs, -7, -7);
-
-                            if (inputs->u_switch[0] == 1 && inputs->u_switch[1] == 1) {
-                            speed_regulation(cvs, 0, 0);
-                            
-                            rob_pos->x = 1.00;
-                            
-                            calib->flag = CALIB_FINISH;
-                            calib->t_flag = t;
-                            }
-				
-			break;
-
-		case CALIB_FINISH: // wait before the match is starting
-			speed_regulation(cvs, 0.0, 0.0);
-			break;
-	
 		default:
 			printf("Error: unknown state : %d !\n", calib->flag);
 			exit(EXIT_FAILURE);
@@ -114,7 +130,7 @@ NAMESPACE_CLOSE();
                         // go to state B after 2 seconds
 			if (t - calib->t_flag > 2.0)
 			{
-                            
+
                             calib->flag = CALIB_STATE_B;
                             calib->t_flag = t;
 			}
