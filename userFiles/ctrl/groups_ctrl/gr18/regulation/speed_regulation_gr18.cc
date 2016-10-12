@@ -32,10 +32,10 @@ void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 	dt = inputs->t - sp_reg->last_t; // time interval since last call
 
 	// ----- Wheels regulation computation start ----- //
-	
-        int Kp = 40;
-        int Ti = 1;
-        
+
+	int Kp = 30;
+        float Ti = 30;
+
         sp_reg->int_error_r = ((r_sp_ref - r_sp)*dt + sp_reg->int_error_r) / sp_reg->last_t;
         sp_reg->int_error_l = ((l_sp_ref - l_sp)*dt + sp_reg->int_error_l) / sp_reg->last_t;
 
