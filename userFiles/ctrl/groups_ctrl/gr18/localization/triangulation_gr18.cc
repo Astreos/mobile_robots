@@ -23,25 +23,25 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1,
 	switch (team_id)
 	{
 		case TEAM_A:
-			*x_beac_1 = 0.0;
-			*y_beac_1 = 0.0;
+			x_beac_1 = 1.062;
+			y_beac_1 = 1.562;
 
-			*x_beac_2 = 0.0;
-			*y_beac_2 = 0.0;
+			x_beac_2 = -1.062;
+			y_beac_2 = 1.562;
 
-			*x_beac_3 = 0.0;
-			*y_beac_3 = 0.0;
+			x_beac_3 = 0.0;
+			y_beac_3 = -1.562;
 			break;
 
 		case TEAM_B:
-			*x_beac_1 = 0.0;
-			*y_beac_1 = 0.0;
+			x_beac_1 = 0.0;
+			y_beac_1 = 1.562;
 
-			*x_beac_2 = 0.0;
-			*y_beac_2 = 0.0;
+			x_beac_2 = -1.062;
+			y_beac_2 = -1.562;
 
-			*x_beac_3 = 0.0;
-			*y_beac_3 = 0.0;
+			x_beac_3 = 1.062;
+			y_beac_3 = -1.562;
 			break;
 	
 		default:
@@ -114,14 +114,14 @@ void triangulation(CtrlStruct *cvs)
 	fall_index_3 = (fall_index_2 - 1 < 0) ? NB_STORE_EDGE-1 : fall_index_2 - 1;
 
 	// beacons angles measured with the laser (to compute)
-	alpha_a = 0.0;
-	alpha_b = 0.0;
-	alpha_c = 0.0;
+	alpha_a = rise_index_1 + (fall_index_1- rise_index_1)/2;
+	alpha_b = rise_index_2 + (fall_index_2 - rise_index_2) / 2;
+	alpha_c = rise_index_3 + (fall_index_3 - rise_index_3) / 2;
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
-	alpha_1_predicted = 0.0;
-	alpha_2_predicted = 0.0;
-	alpha_3_predicted = 0.0;
+	alpha_1_predicted = atan((1562 - rob_pos->y)/(1062 - rob_pos->x)) - rob_pos->theta;
+	alpha_2_predicted = M_PI/2 + atan(abs(-1062 - rob_pos->x) / (1562 - rob_pos->y)) rob_pos->theta;
+	alpha_3_predicted = M_PI + atan(abs(-1562 - rob_pos->y) / abs(0 - rob_pos->x)) rob_pos->theta; //marche que dans un cas, faire un if
 
 	// indexes of each beacon
 	alpha_1_index = index_predicted(alpha_1_predicted, alpha_a, alpha_b, alpha_c);
