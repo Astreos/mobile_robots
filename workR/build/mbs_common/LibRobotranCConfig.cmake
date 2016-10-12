@@ -15,30 +15,30 @@
 
 # MBSYSC_MODULES
 FIND_LIBRARY(LIB_MBSYSC_MODULES MBsysC_module
-    PATHS /home/nicolas/m454_project/workR/build/mbs_common/mbs_module
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_module//Debug
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_module//Release
+    PATHS /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_module
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_module//Debug
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_module//Release
 )
 
 # MBSYSC_LOAD
 FIND_LIBRARY(LIB_MBSYSC_LOAD MBsysC_loadXML
-    PATHS /home/nicolas/m454_project/workR/build/mbs_common/mbs_load_xml
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_load_xml//Debug
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_load_xml//Release
+    PATHS /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_load_xml
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_load_xml//Debug
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_load_xml//Release
 )
 
 # MBSYSC_UTILITIES
 FIND_LIBRARY(LIB_MBSYSC_UTILITIES MBsysC_utilities
-    PATHS /home/nicolas/m454_project/workR/build/mbs_common/mbs_utilities
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_utilities//Debug
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_utilities//Release
+    PATHS /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_utilities
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_utilities//Debug
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_utilities//Release
 )
 
 # MBSYSC_REALTIME
 FIND_LIBRARY(LIB_MBSYSC_REALTIME MBsysC_realtime
-    PATHS /home/nicolas/m454_project/workR/build/mbs_common/mbs_realtime
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_realtime//Debug
-          /home/nicolas/m454_project/workR/build/mbs_common/mbs_realtime//Release
+    PATHS /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_realtime
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_realtime//Debug
+          /home/nicolas/mobile_robots/workR/build/mbs_common/mbs_realtime//Release
 )
 
 
@@ -47,7 +47,7 @@ FIND_LIBRARY(LIB_MBSYSC_REALTIME MBsysC_realtime
 #############
 
 # Path to Robotran common files
-SET(ROBOTRAN_SOURCE_DIR /home/nicolas/m454_project/mbsysCopy/mbs_common/../)
+SET(ROBOTRAN_SOURCE_DIR /home/nicolas/mobile_robots/mbsysCopy/mbs_common/../)
 
 # Call project funstion (symbolic and user) via function pointers
 SET(FLAG_PRJ_FCT_PTR OFF)
@@ -64,7 +64,7 @@ SET(FLAG_SHARED_LIB OFF)
 # INCLUDE DIRECTORIES
 #############
 
-SET(LIB_MBSYSC_INCLUDE_DIRS /home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_struct;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_load_xml;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_module;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_utilities;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_utilities/auto_output;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/realtime;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/sdl;/home/nicolas/m454_project/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/sdl/auto_plot )
+SET(LIB_MBSYSC_INCLUDE_DIRS /home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_struct;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_load_xml;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_module;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_utilities;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_utilities/auto_output;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/realtime;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/sdl;/home/nicolas/mobile_robots/mbsysCopy/mbs_common/..//mbs_common/mbs_realtime/sdl/auto_plot )
 
 #############
 # DEFINITIONS

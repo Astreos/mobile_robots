@@ -1,8 +1,8 @@
-# Install script for directory: /home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_realtime
+# Install script for directory: /home/nicolas/mobile_robots/mbsysCopy/mbs_common/mbs_realtime
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/nicolas/m454_project/workR/build/Debug")
+  set(CMAKE_INSTALL_PREFIX "/home/nicolas/mobile_robots/workR/build/Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,13 +34,13 @@ endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/nicolas/m454_project/workR/build/Debug/libMBsysC_realtime.a")
+   "/home/nicolas/mobile_robots/workR/build/Debug/libMBsysC_realtime.a")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/nicolas/m454_project/workR/build/Debug" TYPE STATIC_LIBRARY FILES "/home/nicolas/m454_project/workR/build/mbs_common/mbs_realtime/libMBsysC_realtime.a")
+file(INSTALL DESTINATION "/home/nicolas/mobile_robots/workR/build/Debug" TYPE STATIC_LIBRARY FILES "/home/nicolas/mobile_robots/workR/build/mbs_common/mbs_realtime/libMBsysC_realtime.a")
 endif()
 

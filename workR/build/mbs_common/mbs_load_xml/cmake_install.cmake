@@ -1,8 +1,8 @@
-# Install script for directory: /home/nicolas/m454_project/mbsysCopy/mbs_common/mbs_load_xml
+# Install script for directory: /home/nicolas/mobile_robots/mbsysCopy/mbs_common/mbs_load_xml
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/nicolas/m454_project/workR/build/Debug")
+  set(CMAKE_INSTALL_PREFIX "/home/nicolas/mobile_robots/workR/build/Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

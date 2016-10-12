@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/nicolas/m454_project/workR
+CMAKE_SOURCE_DIR = /home/nicolas/mobile_robots/workR
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/nicolas/m454_project/workR/build
+CMAKE_BINARY_DIR = /home/nicolas/mobile_robots/workR/build
 
 # Utility rule file for symb_clean.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/nicolas/m454_project/workR/build
 include CMakeFiles/symb_clean.dir/progress.make
 
 CMakeFiles/symb_clean:
-	/usr/bin/cmake -E chdir /home/nicolas/m454_project/mbsysCopy/cmake_aux/scripts ./symb_build /home/nicolas/m454_project/mbsysCopy /home/nicolas/m454_project/workR clean
+	/usr/bin/cmake -E chdir /home/nicolas/mobile_robots/mbsysCopy/cmake_aux/scripts ./symb_build /home/nicolas/mobile_robots/mbsysCopy /home/nicolas/mobile_robots/workR clean
 
 symb_clean: CMakeFiles/symb_clean
 symb_clean: CMakeFiles/symb_clean.dir/build.make
@@ -71,6 +71,6 @@ CMakeFiles/symb_clean.dir/clean:
 .PHONY : CMakeFiles/symb_clean.dir/clean
 
 CMakeFiles/symb_clean.dir/depend:
-	cd /home/nicolas/m454_project/workR/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nicolas/m454_project/workR /home/nicolas/m454_project/workR /home/nicolas/m454_project/workR/build /home/nicolas/m454_project/workR/build /home/nicolas/m454_project/workR/build/CMakeFiles/symb_clean.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/nicolas/mobile_robots/workR/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nicolas/mobile_robots/workR /home/nicolas/mobile_robots/workR /home/nicolas/mobile_robots/workR/build /home/nicolas/mobile_robots/workR/build /home/nicolas/mobile_robots/workR/build/CMakeFiles/symb_clean.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/symb_clean.dir/depend
 
