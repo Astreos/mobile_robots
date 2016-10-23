@@ -89,6 +89,11 @@ void triangulation(CtrlStruct *cvs)
 	double alpha_1, alpha_2, alpha_3;
 	double alpha_1_predicted, alpha_2_predicted, alpha_3_predicted;
 	double x_beac_1, y_beac_1, x_beac_2, y_beac_2, x_beac_3, y_beac_3;
+	double x_mod_beac_1, x_mod_beac_2, y_mod_beac_1, y_mod_beac_2;
+	double cot_1_2, cot_2_3, cot_3_1;
+	double x_circ_1_2, y_circ_1_2, x_circ_2_3, y_circ_2_3, x_circ_3_1, y_circ_3_1;
+	double k_3_1, diam_tri;
+
 
 	// variables initialization
 	pos_tri = cvs->triang_pos;
@@ -176,11 +181,44 @@ void triangulation(CtrlStruct *cvs)
 
 	// ----- triangulation computation start ----- //
 
-	// robot position
-	pos_tri->x = 0.0;
-	pos_tri->y = 0.0;
+	//ToTal algorithm
+	// Compute de modified beacon coordinates:
+	x_mod_beac_1 = x_beac_1 - x_beac_2;
+	y_mod_beac_1 = y_beac_1 - y_beac_2;
 
-	// robot orientation
+	x_mod_beac_3 = x_beac_3 - x_beac_2;
+	y_mod_beac_3 = y_beac_3 - y_beac_2;
+	
+	// Compute the three cot(.) :
+	cot_1_2 = cot(alpha_2 - alpha_1);
+	cot_2_3 = cot(alpha_3 - alpha_2);
+	cot_3_1 = (1 - cot_1_2 * cot_2_3) / (cot_1_2 + cot_2_3);
+
+	// Compute de modified circle center coordinates:
+	x_circ_1_2 = x_mod_beac_1 + cot_1_2*y_mod_beac_1;
+	y_circ_1_2 = y_mod_beac_1 + cot_1_2*x_mod_beac_1;
+
+	x_circ_2_3 = x_mod_beac_3 + cot_2_3*y_mod_beac_3;
+	y_circ_2_3 = y_mod_beac_3 + cot_2_3*x_mod_beac_3;
+
+	x_circ_3_1 = (x_mod_beac_3 + x_mod_beac_1) + cot_3_1*(y_mod_beac_3 - y_mod_beac_1);
+	y_circ_3_1 = (y_mod_beac_3 + y_mod_beac_1) - cot_3_1*(x_mod_beac_3 - x_mod_beac_1);
+
+	//Compute k'31
+	k_3_1 = x_mod_beac_1*x_mod_beac_3 + y_mod_beac_1*y_mod_beac_3 + cot_3_1*(x_mod_beac_1*y_mod_beac_3 - x_mod_beac_3*y_mod_beac_1);
+
+	//Compute D
+	diam_tri = (x_circ_1_2 - x_circ_2_3)*(y_circ_2_3 - y_circ_3_1) - (y_circ_1_2 - y_circ_2_3)*(x_circ_2_3 - x_circ_3_1);
+	if(diam_tri ==0)
+	{
+		printf("Error!\n");
+		return;
+	}
+	// robot position
+	pos_tri->x = x_beac_2 + (k_3_1*(y_circ_1_2- y_circ_2_3))/diam_tri;
+	pos_tri->y = y_beac_2 + (k_3_1*(x_circ_2_3 - y_circ_3_1)) / diam_tri;
+
+	// robot orientation (a faire)
 	pos_tri->theta = 0.0;
 
 	// ----- triangulation computation end ----- //
