@@ -34,13 +34,13 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1,
 			break;
 
 		case TEAM_B:
-			*x_beac_1 = 0.0;
-			*y_beac_1 = 1.562;
+			*x_beac_1 = 1.062;
+			*y_beac_1 = -1.562;
 
-			*x_beac_2 = -1.062;
-			*y_beac_2 = -1.562;
+			*x_beac_2 = 0;
+			*y_beac_2 = 1.562;
 
-			*x_beac_3 = 1.062;
+			*x_beac_3 = -1.062;
 			*y_beac_3 = -1.562;
 			break;
 	
@@ -124,13 +124,13 @@ void triangulation(CtrlStruct *cvs)
 	alpha_c = rise_index_3 + (fall_index_3 - rise_index_3)/2;
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
-	alpha_1_predicted = atan((1562 - rob_pos->y)/(1062 - rob_pos->x)) - rob_pos->theta;
-	alpha_2_predicted = M_PI/2 + atan(fabs(-1062 - rob_pos->x)/(1562 - rob_pos->y)) - rob_pos->theta;
+	alpha_1_predicted = atan((1.562 - rob_pos->y)/(1.062 - rob_pos->x)) - rob_pos->theta;
+	alpha_2_predicted = M_PI/2.0 + atan(fabs(-1.062 - rob_pos->x)/(1.562 - rob_pos->y)) - rob_pos->theta;
 	if (rob_pos->x <= 0) {
-		alpha_3_predicted = 2*M_PI - atan(fabs(-1562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
+		alpha_3_predicted = 2.0*M_PI - atan(fabs(-1.562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
         }
 	else {
-		alpha_3_predicted = M_PI + atan(fabs(-1562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
+		alpha_3_predicted = M_PI + atan(fabs(-1.562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
         }
 	
 	// indexes of each beacon
@@ -210,7 +210,7 @@ void triangulation(CtrlStruct *cvs)
 
 	// Compute D
 	diam_tri = (x_circ_1_2 - x_circ_2_3)*(y_circ_2_3 - y_circ_3_1) - (y_circ_1_2 - y_circ_2_3)*(x_circ_2_3 - x_circ_3_1);
-	if(diam_tri ==0)
+	if(diam_tri == 0)
 	{
 		printf("Error!\n");
 		return;
@@ -221,13 +221,21 @@ void triangulation(CtrlStruct *cvs)
 	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - y_circ_3_1)/diam_tri;
 
 	// robot orientation (a faire)
-	pos_tri->theta = 0.0;
-
+        if ((alpha_1 >= -M_PI/3) || (alpha_1 <= M_PI/3)) {
+            pos_tri->theta = alpha_1 - atan((x_beac_1 - pos_tri->x)/(y_beac_1 - pos_tri->y));
+        }
+        else if ((alpha_1 >= -M_PI/3) || (alpha_1 <= M_PI/3)) {
+            pos_tri->theta = atan((x_beac_1 - pos_tri->x)/(y_beac_1 - pos_tri->y)) - alpha_3;
+        }
+        else {
+            pos_tri->theta = atan((x_beac_3 - pos_tri->x)/(y_beac_3 + pos_tri->y)) - alpha_3;
+        }
+	
 	// ----- triangulation computation end ----- //
         
         //set_plot(pos_tri->x, "x_tri_[m]");
-        //set_plot(pos_tri->y, "y_tri_[m]");
-        set_plot(pos_tri->theta, "theta_tri_[rad]");
+        set_plot(pos_tri->y, "y_tri_[m]");
+        //set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();
