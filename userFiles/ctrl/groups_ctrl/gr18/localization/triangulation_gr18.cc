@@ -23,25 +23,25 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1,
 	switch (team_id)
 	{
 		case TEAM_A:
-			x_beac_1 = 1.062;
-			y_beac_1 = 1.562;
+			*x_beac_1 = 1.062;
+			*y_beac_1 = 1.562;
 
-			x_beac_2 = -1.062;
-			y_beac_2 = 1.562;
+			*x_beac_2 = -1.062;
+			*y_beac_2 = 1.562;
 
-			x_beac_3 = 0.0;
-			y_beac_3 = -1.562;
+			*x_beac_3 = 0.0;
+			*y_beac_3 = -1.562;
 			break;
 
 		case TEAM_B:
-			x_beac_1 = 0.0;
-			y_beac_1 = 1.562;
+			*x_beac_1 = 0.0;
+			*y_beac_1 = 1.562;
 
-			x_beac_2 = -1.062;
-			y_beac_2 = -1.562;
+			*x_beac_2 = -1.062;
+			*y_beac_2 = -1.562;
 
-			x_beac_3 = 1.062;
-			y_beac_3 = -1.562;
+			*x_beac_3 = 1.062;
+			*y_beac_3 = -1.562;
 			break;
 	
 		default:
@@ -89,7 +89,7 @@ void triangulation(CtrlStruct *cvs)
 	double alpha_1, alpha_2, alpha_3;
 	double alpha_1_predicted, alpha_2_predicted, alpha_3_predicted;
 	double x_beac_1, y_beac_1, x_beac_2, y_beac_2, x_beac_3, y_beac_3;
-	double x_mod_beac_1, x_mod_beac_2, y_mod_beac_1, y_mod_beac_2;
+	double x_mod_beac_1, x_mod_beac_2, x_mod_beac_3, y_mod_beac_1, y_mod_beac_2, y_mod_beac_3;
 	double cot_1_2, cot_2_3, cot_3_1;
 	double x_circ_1_2, y_circ_1_2, x_circ_2_3, y_circ_2_3, x_circ_3_1, y_circ_3_1;
 	double k_3_1, diam_tri;
@@ -119,17 +119,19 @@ void triangulation(CtrlStruct *cvs)
 	fall_index_3 = (fall_index_2 - 1 < 0) ? NB_STORE_EDGE-1 : fall_index_2 - 1;
 
 	// beacons angles measured with the laser (to compute)
-	alpha_a = rise_index_1 + (fall_index_1- rise_index_1)/2;
-	alpha_b = rise_index_2 + (fall_index_2 - rise_index_2) / 2;
-	alpha_c = rise_index_3 + (fall_index_3 - rise_index_3) / 2;
+	alpha_a = rise_index_1 + (fall_index_1 - rise_index_1)/2;
+	alpha_b = rise_index_2 + (fall_index_2 - rise_index_2)/2;
+	alpha_c = rise_index_3 + (fall_index_3 - rise_index_3)/2;
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
 	alpha_1_predicted = atan((1562 - rob_pos->y)/(1062 - rob_pos->x)) - rob_pos->theta;
-	alpha_2_predicted = M_PI/2 + atan(abs(-1062 - rob_pos->x) / (1562 - rob_pos->y))-rob_pos->theta;
-	if (rob_pos->x <= 0)
-		alpha_3_predicted = 2 * M_PI - atan((abs(-1562 - rob_pos->y)) / (abs(rob_pos->x))) - rob_pos->theta;
-	else
-		alpha_3_predicted = M_PI + atan((abs(-1562 - rob_pos->y)) / (abs(rob_pos->x))) - rob_pos->theta;
+	alpha_2_predicted = M_PI/2 + atan(fabs(-1062 - rob_pos->x)/(1562 - rob_pos->y)) - rob_pos->theta;
+	if (rob_pos->x <= 0) {
+		alpha_3_predicted = 2*M_PI - atan(fabs(-1562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
+        }
+	else {
+		alpha_3_predicted = M_PI + atan(fabs(-1562 - rob_pos->y)/fabs(rob_pos->x)) - rob_pos->theta;
+        }
 	
 	// indexes of each beacon
 	alpha_1_index = index_predicted(alpha_1_predicted, alpha_a, alpha_b, alpha_c);
@@ -181,8 +183,7 @@ void triangulation(CtrlStruct *cvs)
 
 	// ----- triangulation computation start ----- //
 
-	//ToTal algorithm
-	// Compute de modified beacon coordinates:
+	// Compute the modified beacon coordinates :
 	x_mod_beac_1 = x_beac_1 - x_beac_2;
 	y_mod_beac_1 = y_beac_1 - y_beac_2;
 
@@ -190,11 +191,11 @@ void triangulation(CtrlStruct *cvs)
 	y_mod_beac_3 = y_beac_3 - y_beac_2;
 	
 	// Compute the three cot(.) :
-	cot_1_2 = cot(alpha_2 - alpha_1);
-	cot_2_3 = cot(alpha_3 - alpha_2);
-	cot_3_1 = (1 - cot_1_2 * cot_2_3) / (cot_1_2 + cot_2_3);
+	cot_1_2 = cos(alpha_2 - alpha_1)/sin(alpha_2 - alpha_1);
+	cot_2_3 = cos(alpha_3 - alpha_2)/sin(alpha_2 - alpha_1);
+	cot_3_1 = (1 - cot_1_2*cot_2_3)/(cot_1_2 + cot_2_3);
 
-	// Compute de modified circle center coordinates:
+	// Compute de modified circle center coordinates :
 	x_circ_1_2 = x_mod_beac_1 + cot_1_2*y_mod_beac_1;
 	y_circ_1_2 = y_mod_beac_1 + cot_1_2*x_mod_beac_1;
 
@@ -204,24 +205,29 @@ void triangulation(CtrlStruct *cvs)
 	x_circ_3_1 = (x_mod_beac_3 + x_mod_beac_1) + cot_3_1*(y_mod_beac_3 - y_mod_beac_1);
 	y_circ_3_1 = (y_mod_beac_3 + y_mod_beac_1) - cot_3_1*(x_mod_beac_3 - x_mod_beac_1);
 
-	//Compute k'31
+	// Compute k'31
 	k_3_1 = x_mod_beac_1*x_mod_beac_3 + y_mod_beac_1*y_mod_beac_3 + cot_3_1*(x_mod_beac_1*y_mod_beac_3 - x_mod_beac_3*y_mod_beac_1);
 
-	//Compute D
+	// Compute D
 	diam_tri = (x_circ_1_2 - x_circ_2_3)*(y_circ_2_3 - y_circ_3_1) - (y_circ_1_2 - y_circ_2_3)*(x_circ_2_3 - x_circ_3_1);
 	if(diam_tri ==0)
 	{
 		printf("Error!\n");
 		return;
 	}
+	
 	// robot position
-	pos_tri->x = x_beac_2 + (k_3_1*(y_circ_1_2- y_circ_2_3))/diam_tri;
-	pos_tri->y = y_beac_2 + (k_3_1*(x_circ_2_3 - y_circ_3_1)) / diam_tri;
+	pos_tri->x = x_beac_2 + k_3_1*(y_circ_1_2 - y_circ_2_3)/diam_tri;
+	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - y_circ_3_1)/diam_tri;
 
 	// robot orientation (a faire)
 	pos_tri->theta = 0.0;
 
 	// ----- triangulation computation end ----- //
+        
+        //set_plot(pos_tri->x, "x_tri_[m]");
+        //set_plot(pos_tri->y, "y_tri_[m]");
+        set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();
