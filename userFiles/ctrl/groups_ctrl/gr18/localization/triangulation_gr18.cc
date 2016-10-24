@@ -228,14 +228,19 @@ void triangulation(CtrlStruct *cvs)
             pos_tri->theta = atan((x_beac_1 - pos_tri->x)/(y_beac_1 - pos_tri->y)) - alpha_3;
         }
         else {
-            pos_tri->theta = atan((x_beac_3 - pos_tri->x)/(y_beac_3 + pos_tri->y)) - alpha_3;
+            if (pos_tri->x >= 0) {
+                pos_tri->theta = M_PI/2.0 + alpha_3 - atan((pos_tri->x - x_beac_3)/(pos_tri->y - y_beac_3));
+            }
+            else {
+                pos_tri->theta = alpha_3 - atan((pos_tri->x - x_beac_3)/(pos_tri->y - y_beac_3));
+            }
         }
 	
 	// ----- triangulation computation end ----- //
         
         //set_plot(pos_tri->x, "x_tri_[m]");
-        set_plot(pos_tri->y, "y_tri_[m]");
-        //set_plot(pos_tri->theta, "theta_tri_[rad]");
+        //set_plot(pos_tri->y, "y_tri_[m]");
+        set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();
