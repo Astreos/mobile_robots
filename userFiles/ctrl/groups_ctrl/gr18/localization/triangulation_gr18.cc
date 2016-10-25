@@ -124,24 +124,27 @@ void triangulation(CtrlStruct *cvs)
 	alpha_c = (inputs->last_rising_fixed[rise_index_3] + inputs->last_falling_fixed[fall_index_3])/2;
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
+        alpha_1_predicted = limit_angle(atan((1562 - rob_pos->y)/(1062 - rob_pos->x)) - rob_pos->theta);
+	alpha_2_predicted = limit_angle(M_PI/2 + atan(fabs(-1062 - rob_pos->x) / fabs(1562 - rob_pos->y))-rob_pos->theta);
+	if (rob_pos->x <= 0)
+		alpha_3_predicted = limit_angle(2 * M_PI - atan((fabs(-1562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta);
+	else
+		alpha_3_predicted = limit_angle(M_PI + atan((fabs(-1562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta);
+        
         /*
-	alpha_1_predicted = rob_pos->theta - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - M_PI/2.0;
-	alpha_2_predicted = rob_pos->theta - atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - M_PI/2.0;
+	alpha_1_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - M_PI/2.0);
+	alpha_2_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - M_PI/2.0);
 	if (rob_pos->x <= 0) {
-		alpha_3_predicted = rob_pos->theta - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0;
+		alpha_3_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0);
         }
 	else {
-		alpha_3_predicted = rob_pos->theta + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0;
+		alpha_3_predicted = limit_angle(rob_pos->theta + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0);
         }
         */
-        alpha_1_predicted = atan((1.562 - rob_pos->y)/(1.062 - rob_pos->x)) - rob_pos->theta;
-	alpha_2_predicted = M_PI/2.0 + atan(fabs(-1.062 - rob_pos->x) / (1.562 - rob_pos->y))-rob_pos->theta;
-	if (rob_pos->x <= 0) {
-		alpha_3_predicted = 2.0 * M_PI - atan((fabs(-1.562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta;
-        }
-	else {
-		alpha_3_predicted = M_PI + atan((fabs(-1.562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta;
-        }
+        
+        //set_plot(alpha_1_predicted, "alpha_1");
+        //set_plot(alpha_2_predicted, "alpha_2");
+        //set_plot(alpha_3_predicted, "alpha_3");
 	
 	// indexes of each beacon
 	alpha_1_index = index_predicted(alpha_1_predicted, alpha_a, alpha_b, alpha_c);
