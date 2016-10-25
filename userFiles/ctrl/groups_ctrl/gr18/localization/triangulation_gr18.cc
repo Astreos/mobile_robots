@@ -230,26 +230,18 @@ void triangulation(CtrlStruct *cvs)
 	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - x_circ_1_2)/diam_tri - 0.083*sin(rob_pos->theta);
 
 	// robot orientation (a faire)
-        if ((alpha_1 >= -M_PI/3) || (alpha_1 <= M_PI/3)) {
-            pos_tri->theta = alpha_1 - atan((x_beac_1 - pos_tri->x)/(y_beac_1 - pos_tri->y));
+        if (pos_tri->x >= 0) {
+		pos_tri->theta = limit_angle(3.0*M_PI/2.0 - atan(fabs(pos_tri->x - x_beac_3)/fabs(pos_tri->y - y_beac_3)) - alpha_3);
         }
-        else if ((alpha_1 >= -M_PI/3) || (alpha_1 <= M_PI/3)) {
-            pos_tri->theta = atan((x_beac_1 - pos_tri->x)/(y_beac_1 - pos_tri->y)) - alpha_3;
-        }
-        else {
-            if (pos_tri->x >= 0) {
-                pos_tri->theta = M_PI/2.0 + alpha_3 - atan((pos_tri->x - x_beac_3)/(pos_tri->y - y_beac_3));
-            }
-            else {
-                pos_tri->theta = alpha_3 - atan((pos_tri->x - x_beac_3)/(pos_tri->y - y_beac_3));
-            }
+	else {
+		pos_tri->theta = limit_angle(3.0*M_PI/2.0 + atan(fabs(pos_tri->x - x_beac_3)/fabs(pos_tri->y - y_beac_3)) - alpha_3);
         }
 	
 	// ----- triangulation computation end ----- //
         
-        set_plot(pos_tri->x, "x_tri_[m]");
-        set_plot(pos_tri->y, "y_tri_[m]");
-        //set_plot(pos_tri->theta, "theta_tri_[rad]");
+        //set_plot(pos_tri->x, "x_tri_[m]");
+        //set_plot(pos_tri->y, "y_tri_[m]");
+        set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();
