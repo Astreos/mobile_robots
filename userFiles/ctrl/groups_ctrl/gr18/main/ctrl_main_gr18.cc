@@ -88,14 +88,14 @@ void controller_loop(CtrlStruct *cvs)
 	// tower control
 	outputs->tower_command = 15;
 
-        
+        /*
         if (t>=-15 and t<0)
         {
             speed_regulation(cvs, 5, 5);
         }
         
         return;
-        
+        */
 
 	switch (cvs->main_state)
 	{

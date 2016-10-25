@@ -122,25 +122,20 @@ void triangulation(CtrlStruct *cvs)
 	alpha_a = (inputs->last_rising_fixed[rise_index_1] + inputs->last_falling_fixed[fall_index_1])/2;
 	alpha_b = (inputs->last_rising_fixed[rise_index_2] + inputs->last_falling_fixed[fall_index_2])/2;
 	alpha_c = (inputs->last_rising_fixed[rise_index_3] + inputs->last_falling_fixed[fall_index_3])/2;
+        
+        //set_plot(alpha_a, "alpha_a");
+        //set_plot(alpha_b, "alpha_b");
+        //set_plot(alpha_c, "alpha_c");
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
-        alpha_1_predicted = limit_angle(atan((1562 - rob_pos->y)/(1062 - rob_pos->x)) - rob_pos->theta);
-	alpha_2_predicted = limit_angle(M_PI/2 + atan(fabs(-1062 - rob_pos->x) / fabs(1562 - rob_pos->y))-rob_pos->theta);
-	if (rob_pos->x <= 0)
-		alpha_3_predicted = limit_angle(2 * M_PI - atan((fabs(-1562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta);
-	else
-		alpha_3_predicted = limit_angle(M_PI + atan((fabs(-1562 - rob_pos->y)) / (fabs(rob_pos->x))) - rob_pos->theta);
-        
-        /*
-	alpha_1_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - M_PI/2.0);
-	alpha_2_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - M_PI/2.0);
-	if (rob_pos->x <= 0) {
-		alpha_3_predicted = limit_angle(rob_pos->theta - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0);
+        alpha_1_predicted = limit_angle(M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - rob_pos->theta);
+        alpha_2_predicted = limit_angle(M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - rob_pos->theta);
+        if (rob_pos->x >= 0) {
+		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
         }
 	else {
-		alpha_3_predicted = limit_angle(rob_pos->theta + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - M_PI/2.0);
+		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
         }
-        */
         
         //set_plot(alpha_1_predicted, "alpha_1");
         //set_plot(alpha_2_predicted, "alpha_2");
@@ -231,8 +226,8 @@ void triangulation(CtrlStruct *cvs)
 	}
 	
 	// robot position
-	pos_tri->x = x_beac_2 + k_3_1*(y_circ_1_2 - y_circ_2_3)/diam_tri;
-	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - x_circ_1_2)/diam_tri;
+	pos_tri->x = x_beac_2 + k_3_1*(y_circ_1_2 - y_circ_2_3)/diam_tri - 0.083*cos(rob_pos->theta);
+	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - x_circ_1_2)/diam_tri - 0.083*sin(rob_pos->theta);
 
 	// robot orientation (a faire)
         if ((alpha_1 >= -M_PI/3) || (alpha_1 <= M_PI/3)) {
