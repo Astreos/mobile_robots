@@ -42,7 +42,7 @@ void calibration(CtrlStruct *cvs)
 	{
 		case CALIB_START: // start calibration
 
-                    speed_regulation(cvs, -7, -7);
+                    speed_regulation(cvs, 0, 0);
 
                     calib->flag = CALIB_STATE_A;
                     calib->t_flag = t;
@@ -50,6 +50,8 @@ void calibration(CtrlStruct *cvs)
                     break;
                     
                 case CALIB_STATE_A: // state A
+                    
+                    speed_regulation(cvs, -7, -7);
 
                     if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
                         speed_regulation(cvs, 0, 0);
