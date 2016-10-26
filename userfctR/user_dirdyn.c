@@ -50,8 +50,8 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 {
 	simu_loop(mbs_data);
 
-        set_plot(mbs_data->qd[Right_wheel_joint_B_id], "R_wheel_[rad/s]");
-        set_plot(mbs_data->qd[Left_wheel_joint_B_id], "L_wheel_[rad/s]");
+        //set_plot(mbs_data->qd[Right_wheel_joint_B_id], "R_wheel_[rad/s]");
+        //set_plot(mbs_data->qd[Left_wheel_joint_B_id], "L_wheel_[rad/s]");
 
         //set_plot(mbs_data->q[FJ_T1_robot_B_id], "Blue_x_[m]");
         //set_plot(mbs_data->q[FJ_T2_robot_B_id], "Blue_y_[m]");
