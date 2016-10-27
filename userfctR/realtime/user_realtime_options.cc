@@ -93,9 +93,16 @@ void user_realtime_options(MbsData* mbs_data, Realtime_option *options)
 	#else
 	options->nb_q[0] = config_int(config_file, "nb_joints_anim");
 	#endif
-	options->mbs_file[0] = (char*) PROJECT_SOURCE_DIR"/../dataR/m454_project_anim.mbs";
+	//options->mbs_file[0] = (char*) PROJECT_SOURCE_DIR"/../dataR/m454_project_anim.mbs";
+	options->mbs_file[0] = (char*) PROJECT_SOURCE_DIR"/../dataR/m454_project_anim_obj.mbs";
 
 	close_config(config_file);
+
+	// 1: real-time graphs activated - 0: deactivated
+	options->flag_plot = 1;
+
+	// 1: visualization activated - 0: deactivated
+	options->flag_visu = 1;
 }
 
 #endif

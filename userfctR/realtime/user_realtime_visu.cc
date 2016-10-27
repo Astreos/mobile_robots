@@ -11,7 +11,7 @@
  * In order to use C++ features, you just need to change the extension of this file (.c) to .cc (or .cpp).
  */
 
-#ifdef JAVA
+#ifdef VISU_3D
 
 #include "user_realtime.h"
 #include "user_model.h"

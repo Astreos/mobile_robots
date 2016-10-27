@@ -44,14 +44,23 @@ if ( FLAG_SEPARATE_USER_FCT )
 
         # plot-visu options
         option (FLAG_PLOT "Real time" OFF)
-        option (FLAG_VISU "Real time" OFF)
+        option (JAVA_VISU "Real time Java" OFF)
+        option (OPENGL_VISU "Real time OpenGL" OFF)
 
         if(FLAG_PLOT)
             add_definitions( -DSDL )
         endif( )
 
-        if(FLAG_VISU)
+        if(JAVA_VISU)
             add_definitions( -DJAVA )
+        endif( )
+
+        if(OPENGL_VISU)
+            add_definitions( -DOPENGL )
+        endif( )
+
+        if(JAVA_VISU OR OPENGL_VISU)
+            add_definitions( -DVISU_3D )
         endif( )
 
     endif ( )

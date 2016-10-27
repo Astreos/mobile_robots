@@ -1,3 +1,95 @@
+# INSTRUCTIONS FOR THE PROJECT CREATOR #
+
+## Generating VRML files ##
+
+The first thing to do is to clone the template project called [eurobot_robotics](https://git.immc.ucl.ac.be/LMECA2732/eurobot_robotics) (create a copy). Rename it with a name like *eurobot_XXXX* where *XXXX* is the year of the competition. Then, remove the *.git* folder.
+
+Next step is to create the new map, similar to the [Eurobot](http://www.eurobot.org/) one. To create the map, there are different possibilities. You need to get it as a VRML (.wrl) format.
+
+On the official website of Eurobot, it is possible to download CAD files. Pay just attention that sometimes, the conversion to VRML files can not work properly. If you prefer to do it yourself, you can for instance use [Blender](https://www.blender.org/).
+
+Here are some advices to use Blender to generate the map:
+* Download an image of the plane
+* With [Inkscape](https://inkscape.org/fr/), get it as a svg (draw on top of it or use Inkscape tools)
+* In Blender: File > Import > Scalable Vector Graphics (.svg)
+* Select each curve created and go to the 'Data' tab (next to Modifiers), 2D section, and set a non zero value for extrude
+* When the curve is selected, press `Alt + C` and `Mesh from Curve/Meta/Surf/Text`
+* Iterate this on every curve imported from the *.svg*
+
+This is explained in [this tutorial](https://www.youtube.com/watch?v=ows2QTiMRPg)
+
+When this is done, you have the main part of the map. Then, you just need to add the different objects on top of it. Finally, save the VRML in the [vrml](animationR/vrml) folder.
+
+In the [same folder](animationR/vrml), you have access to different CAD elements (like the VRML of a robot).
+
+
+## Generating .MBS files ##
+
+Next step is to generate the XML (.mbs) files. There are two files to generate:
+* [eurobot_robotics.mbs](dataR/eurobot_robotics.mbs): the *.mbs* file used by 
+Robotran to compute the direct dynamical model.
+* [eurobot_robotics_anim.mbs](dataR/eurobot_robotics_anim.mbs): an incremented version of *eurobot_robotics.mbs* with moving objects (others than the robots) which can be moved by the robots (Robotran does not know about these objects). This file is only used for visualization.
+
+This process can be automatized using the [mbs_gen.py](dataR/python/mbs_gen.py) python script. Functions defined at the beginning of this file should be generic (i.e. it is normally not needed to modify them). You just have to adapt the `MAIN MBS FILE` and the `VISUALIZATION FILE` parts.
+
+The outputs will be generated in the [output](dataR/python/output) folder. Just move them to the [dataR](dataR) folder. For instance, you can use the following commands:
+
+```
+cd dataR/python
+python mbs_gen.py
+mv output/*.mbs ../
+```
+
+Once this is done, you need to open the two generated *.mbs* files with *MBSysPad* and to save them. This will rewrite these XML files in a way the simulator can read them. Also, open the generated [eurobot_robotics.mbs](dataR/eurobot_robotics.mbs) file (still with *MBSysPad*) and click on `Tools > Generate C-specific user files`.
+
+
+## Configuring the project ##
+
+Next step is to configure the project with the [config_file.txt](userFiles/config/config_file.txt) file. In this file, you can configure the robot initial positions, the noise, the map fixed obstacles, the moving obstacles, the target positions... All information required for this step is provided in this file. This file is also available to students. Students can modify this file during their controller design process. However, at the end of the project, they will be tested with the initial settings (except for the `ROBOT CONTROLLERS` part). A hardcoded version (i.e. without *.txt* reading) is provided in [config_file.h](userFiles/config/config_file.h) and [config_file.cc](userFiles/config/config_file.cc)). These files should also be adapted. This hardcoded version can be used by uncommenting `#define HARDCODED_CONFIG` in [config_file.h](userFiles/config/config_file.h).
+
+
+## Adapting the solution controller ##
+
+A solution controller is provided in the [solution_ctrl](userFiles/ctrl/solution_ctrl) folder. It is just one possible example of a solution. It is maybe not the most efficient controller.
+
+You can adapt it using the following instructions, in order to test the map (or to test the student controllers at the end of the project). But, a very important thing is to...
+
+```
+REMOVE THE SOLUTION BEFORE PROVIDING THE PROJECT TO THE STUDENTS !!!
+```
+
+To do so, you must keep the [solution_ctrl](userFiles/ctrl/solution_ctrl) folder in the students project, but this project functions and extra files must be cleaned, so that it looks like the [example_ctrl](userFiles/ctrl/example_ctrl) folder.
+
+Here are the files which need to be adapted to adapt the solution to the new map:
+* [calibration_sol.cc](userFiles/ctrl/solution_ctrl/localization/calibration_sol.cc): the FSM provided there can be adapted, depending on the robot initial positions.
+* [init_pos_sol.cc](userFiles/ctrl/solution_ctrl/localization/init_pos_sol.cc): the initial guess of the robot positions is defined here.
+* [triangulation_sol.cc](userFiles/ctrl/solution_ctrl/localization/triangulation_sol.cc): the fixed beacon position is provided here (while the absolute position of the robot is computed here, it is currently not used in the controller). To adapt this file, you just have to modify the content of the `fixed_beacon_positions` function.
+* [a_star_config_sol.h](userFiles/ctrl/solution_ctrl/path/a_star_config_sol.h): the nodes of the A* algorithm (for path-planning) are provided here, along with the adjacency matrix (do not forget to update the `NB_TOT_NODES` macro). All the target locations must be nodes of this A*, as well as the nodes of the bases to release the targets, and nodes close to the robot starting points.
+* [strategy_sol.cc](userFiles/ctrl/solution_ctrl/strategy/strategy_sol.cc): in the function `init_strategy`, the target locations (with their corresponding scores) are configured, as well as the position of the bases. In the function `calib_release`, the release FSM operations are written, together with the appropriate robot calibration. You can adapt these two functions.
+
+
+## Adapting the student instructions ##
+
+Final step is to adapt the student instructions. Most of them are provided here below (do not forget to adapt the pictures and the video). You also need to adapt the [Latex](https://www.latex-project.org/) file provided [here](doc/latex/eurobot_robotics.tex).
+
+
+## Setting the project as a Git project ##
+
+Configure the project to be a *Git* project. It might be better to create two versions:
+* The full version, with the solution. At the end of the project, the solutions from the students will all be gathered in this project. Students do not have access to this version.
+* A version for the students without the solution. Importantly, the `git init` should be done after the solution has been deleted. Otherwise, students could have access to this solution. Then, create as many forks as student groups and give to each group only access to its branch.
+
+After, the `git add .` Terminal line command to add the main files, it might be necessary to also use these commands:
+
+```
+git add -f resultsR/analyze.py
+git add -f resultsR/motor_testing/
+git add -f codeC/src/specific/Readme.txt
+```
+
+
+# INSTRUCTIONS FOR THE USERS (THE STUDENTS) #
+
 Project specific features
 -------------------------
 
@@ -19,7 +111,7 @@ __Robots__
 
 The robots are differential-wheeled robots. They have DC motors to control their respective wheels. On top of their main structure, a tower is rotating with sensors attached on it to detect beacons on the field and the competing robot.
 
-For their main sensor inputs, they have access to odometers to get the wheel velocities, to one absolute encoder to get the tower absolute position, to one sensor detecting beacons, to one color sensor, and to two micro-switches in the back of the robot able to detect a contact on a very short range.
+For their main sensor inputs, they have access to odometers to get the wheel velocities, to one absolute encoder to get the tower absolute position, to one sensor detecting beacons, to one color sensor to detect the color of tiles on the floor, and to two micro-switches in the back of the robot able to detect a contact on a very short range.
 This is a presentation of a robot dimensions, along with its sensors position:
 
 ![](doc/pictures/robot_measures.png)
@@ -511,112 +603,17 @@ gcc main.c -o exe
 ./exe
 ```
 
+__Running simulation without real-time__
+
+If you face some difficulties with Java or SDL libraries, it might be worth running the project without the real-time features. In this case, the simulation runs as fast as possible, and you do not see the Java visualization, nor the graphs plotted in real-time. Finally, you cannot interact with the simulation.
+
+To do so, open [main.cc](workR/src/main.cc), and set `mbs_dirdyn->options->realtime` to `0` and `mbs_dirdyn->options->save2file` to `1`. You can also reduce the simulation time with the `mbs_dirdyn->options->tf` option. If you have difficulties finding the corresponding libraries (Java and SDL), you can even deactivate them in [CMakeLists.txt](workR/CMakeLists.txt) by setting the line `option (FLAG_REAL_TIME "Real time" ON)` to `option (FLAG_REAL_TIME "Real time" OFF)`.
+
+To still be able to exploit the results, you can first use the `set_output` function presented before. On top of that, the `save2file` option also generates the file *animationR/dirdyn_q.anim* with all the simulation joints evolution. To be able to visualize it, download *MBsysPad* from [this link](http://www.robotran.be/download). Install it, launch it and open [m454_project.mbs](dataR/m454_project.mbs). Then, click on *Animate 3D Model* and open the *dirdyn_q.anim* file. You should now be able to visualize the result as a 3D animation. This is explained in detail in the section *Animate your results* of [this link](http://www.robotran.be/tutorial/modelling/c-code/bodiesJoint.html).
+
+
+__Debugging project__
+
 During your developments, you might face segmentation faults problems. Debugging it without tools is not an easy task. On *Windows*, you can use the [Visual Studio Debugger](https://msdn.microsoft.com/en-us/library/sc65sadd.aspx), while on Unix (*Mac OS* or *Linux*), you can use [gdb](https://www.gnu.org/software/gdb/) or [cgdb](https://cgdb.github.io/). Other debuggers exist of course. On *Unix*, you can also use tools like [valgrind](http://valgrind.org/) to check memory leak.
 
 Importantly, to use all these aforementioned tools, you must deactivate the real-time features. This is done in the [main.cc](workR/src/main.cc) file, by changing the line `mbs_dirdyn->options->realtime = 1;` to `mbs_dirdyn->options->realtime = 0;`.
-
-
-__Porting the controller to a real robot__
-
-
-Before sending your controller to the real robot, it is important to check that the code is compatible with *C*. Normaly, if you did not use specific *C++* features during the project developments, this should be quite straightforward.
-
-To test your code compatibility, you can use the [codeC](codeC) folder. First thing to do is to open the [main file](codeC/src/generic/main.c) of this project and to replace the `X` by your group number in the two following lines:
-
-
-```
-#include "CtrlStruct_grX.h"
-#include "ctrl_main_grX.h"
-```
-
-Then, you must place all your controller files (i.e. the ones to provide at the end of the project, in the *grX* folder) in the folder called [specific](codeC/src/specific). All files with extension *.cc* (or *.cpp*) must be renamed with extension *.c* (transform *C++* files into *C* files). If you are on a *Unix* system (*Linux* or *Mac OS*), you can use (and adpat it if needed) the script [code_gen](codeC/code_gen).
-
-This can be done with the following lines:
-
-
-```
-cd codeC
-./code_gen grX
-```
-
-In the last line, you should replace `X` by the number of your group. `controller ready` should then appear!
-
-Then, use the following commands (if you are not on a *Unix* system, you can use *CMake* as you did for the simulation project):
-
-```
-mkdir build
-cd build
-cmake ..
-make
-./exec
-```
-
-`Code running fine in C !` should appear. This means that your code is *C* compatible. If it is not the case, the warnings and/or errors (mainly at compilation) soulhd help you solve this incompatibility.
-
-For the students taking part in the *Eurobot* competition, you should be able to reproduce the simulator interface on your MiniBot, in order to directly test your code on it. For the other students, you will have to contact the teaching staff when this test is successful. The functions `set_plot` in your code will have no effect on the real robot, but the `set_output` functions will produce the same kinds of results, this time on the real robot (for students not taking part in the *Eurobot* competition).
-
-In [ctrl_io.h](userFiles/ctrl/ctrl_interface/ctrl_io.h), you could see that some fields were written between `#ifdef SIMU_PROJECT` and `#endif`. This means that they are only available in simulation, not on the real robot.
-
-To solve this issue, the first thing to do is to add a new header file called `simu_game_grX.h` in your *grX* folder (in the header name, replace `X` by your group number). Then, add the following lines in this `simu_game_grX.h` file (as usual, replace `X` by your group number):
-
-```
-/*! 
- * \author group X
- * \file simu_game_grX.h
- * \brief choose between controller for simulation game or for the real robot
- */
-
-#ifndef _SIMU_GAME_GRX_H_
-#define _SIMU_GAME_GRX_H_
-
-#include "namespace_ctrl.h"
-
-NAMESPACE_INIT(ctrlGrX);
-
-#ifdef SIMU_PROJECT
-	#define SIMU_GAME // comment this line to see in simulation the controller which will be tested on the real robot
-#endif
-
-NAMESPACE_CLOSE();
-
-#endif
-```
-
-Then, at the places were you use them in your code, you should use the following lines (you also need to add `#include "simu_game_grX.h"`):
-
-
-```
-#ifdef SIMU_GAME
-
-// some code only compiled for simulation
-
-#endif
-```
-
-If you have to write a bit of code only for the real robot, you can use the following lines:
-
-```
-#ifndef SIMU_GAME
-
-// some code only compiled on the real robot
-
-#endif
-```
-
-Finally, if you must choose between two parts of codes to compile, depending on which platform you are working on (computer in simulation or real robot), you can use the following lines:
-
-```
-#ifdef SIMU_GAME
-
-// some code only compiled for simulation
-
-#else
-
-// some code only compiled on the real robot
-
-#endif
-```
-
-To see how your real robot will react using your controller, you can simply comment the line `#define SIMU_GAME` in `simu_game_grX.h` and test it in simulation. You should fulfil the two following conditions before testing the controller on the real robot:
-* In simulation, when `#define SIMU_GAME` is commented, you should see the behaviour you expect to see on the real robot
-* The line `Code running fine in C !` should be printed when running the project in [codeC](codeC).
