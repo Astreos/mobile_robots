@@ -66,7 +66,7 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// ----- opponents position computation start ----- //
         
-        if (inputs->t <= (-15 + delta_t)) {
+        if (inputs->t <= -9.0) {
             opp_pos->x[0] = 0.65;
             opp_pos->y[0] = -1.10;
         }
@@ -79,13 +79,10 @@ void opponents_tower(CtrlStruct *cvs)
         opp_pos->x[0] = first_order_filter(old_opp_pos_x, opp_pos->x[0], 0.7, delta_t);
         opp_pos->y[0] = first_order_filter(old_opp_pos_y, opp_pos->y[0], 0.7, delta_t);
         
-        //set_plot(opp_pos->x[0], "opp_x_[m]");
-        //set_plot(opp_pos->y[0], "opp_y_[m]");
+        set_plot(opp_pos->x[0], "opp_x_[m]");
+        set_plot(opp_pos->y[0], "opp_y_[m]");
         
-        //set_plot(rise_1, "rise");
-        //set_plot(fall_1, "fall");
-        
-        //set_plot(check_opp_front(cvs), "detection");
+        set_plot(check_opp_front(cvs), "detection");
 
 	// ----- opponents position computation end ----- //
 }
@@ -102,20 +99,9 @@ void opponents_tower(CtrlStruct *cvs)
  * \return 1 if computation successful, 0 otherwise
  */
 int single_opp_tower(double last_rise, double last_fall, double rob_x, double rob_y, double rob_theta, double *new_x_opp, double *new_y_opp)
-{           
-            if ((last_rise >= 0) && (last_fall <= 0)) {
-                last_fall = last_fall + 2.0*M_PI;
-            }
-            
-            *new_x_opp = rob_x + 0.083*cos(rob_theta) + (0.04/sin((last_fall-last_rise)/2.0))*sin((last_fall+last_rise)/2.0);
-            *new_y_opp = rob_y + 0.083*sin(rob_theta) - (0.04/sin((last_fall-last_rise)/2.0))*cos((last_fall+last_rise)/2.0);
-            
-            //set_plot((0.04/sin((last_fall-last_rise)/2.0))*sin((last_fall+last_rise)/2.0), "delta_x_[m]");
-            //set_plot((0.04/sin((last_fall-last_rise)/2.0))*cos((last_fall+last_rise)/2.0) + (0.04/sin((last_fall-last_rise)/2.0))*cos((last_fall+last_rise)/2.0)*cos(rob_theta), "delta_y_[m]");
-            //set_plot(rob_theta, "rob_theta_[rad]");
-            
-            set_plot(*new_x_opp, "opp_x_[m]");
-            set_plot(*new_y_opp, "opp_y_[m]");
+{                       
+            *new_x_opp = rob_x + 0.083*cos(rob_theta) + (0.040/sin((last_fall - last_rise)/2.0))*sin(M_PI/2.0 - (last_fall+last_rise)/2.0 - rob_theta);
+            *new_y_opp = rob_y + 0.083*sin(rob_theta) + (0.040/sin((last_fall - last_rise)/2.0))*cos(M_PI/2.0 - (last_fall+last_rise)/2.0 - rob_theta);
 
 	return 1;
 }
