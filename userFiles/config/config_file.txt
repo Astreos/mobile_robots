@@ -39,7 +39,7 @@
 #
 blue_ctrl   : Gr18Ctrl
 red_ctrl    : NoCtrl
-yellow_ctrl : NoCtrl
+yellow_ctrl : KeyboardCtrl
 white_ctrl  : NoCtrl
 
 

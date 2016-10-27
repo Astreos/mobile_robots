@@ -38,7 +38,7 @@ void update_odometry(CtrlStruct *cvs)
 
         rob_pos->x = rob_pos->x + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * cos(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
         rob_pos->y = rob_pos->y + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * sin(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
-        rob_pos->theta = rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / 0.225;
+        rob_pos->theta = limit_angle(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / 0.225);
 
         //set_plot(rob_pos->x, "x_in_[m]");
         //set_plot(rob_pos->y, "y_in_[m]");
