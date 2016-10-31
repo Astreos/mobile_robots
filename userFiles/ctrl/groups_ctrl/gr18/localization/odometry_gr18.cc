@@ -40,11 +40,11 @@ void update_odometry(CtrlStruct *cvs)
         rob_pos->y = rob_pos->y + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * sin(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
         rob_pos->theta = limit_angle(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / 0.225);
 
+	// ----- odometry computation end ----- //
+        
         //set_plot(rob_pos->x, "x_in_[m]");
         //set_plot(rob_pos->y, "y_in_[m]");
         //set_plot(rob_pos->theta, "theta_in_[rad]");
-
-	// ----- odometry computation end ----- //
 
 	// last update time
 	rob_pos->last_t = inputs->t;

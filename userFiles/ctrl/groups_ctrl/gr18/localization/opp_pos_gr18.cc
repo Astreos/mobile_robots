@@ -78,13 +78,13 @@ void opponents_tower(CtrlStruct *cvs)
         
         opp_pos->x[0] = first_order_filter(old_opp_pos_x, opp_pos->x[0], 0.7, delta_t);
         opp_pos->y[0] = first_order_filter(old_opp_pos_y, opp_pos->y[0], 0.7, delta_t);
+
+	// ----- opponents position computation end ----- //
         
         set_plot(opp_pos->x[0], "opp_x_[m]");
         set_plot(opp_pos->y[0], "opp_y_[m]");
         
         set_plot(check_opp_front(cvs), "detection");
-
-	// ----- opponents position computation end ----- //
 }
 
 /*! \brief compute a single opponent position
