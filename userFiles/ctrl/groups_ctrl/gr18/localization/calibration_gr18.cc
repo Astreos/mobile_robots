@@ -82,7 +82,7 @@ void calibration(CtrlStruct *cvs)
 
                     speed_regulation(cvs, -7, 7);
 
-                    if (rob_pos->theta <= -M_PI + 0.05) {
+                    if (rob_pos->theta >= M_PI - 0.05) {
 			speed_regulation(cvs, 0, 0);
 
                         calib->flag = CALIB_STATE_D;
