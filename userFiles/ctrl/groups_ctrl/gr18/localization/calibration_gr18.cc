@@ -122,8 +122,8 @@ void calibration(CtrlStruct *cvs)
 		case CALIB_FINISH: // wait before the match is starting
                     
                     speed_regulation(cvs, 7, -7);
-
-                    if (rob_pos->theta >= -M_PI/2.0) {
+                    
+                    if (rob_pos->theta < 0 && rob_pos->theta >= -M_PI/2.0) {
 			speed_regulation(cvs, 0, 0);
                     }
                     
