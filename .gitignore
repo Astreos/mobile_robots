@@ -7,6 +7,3 @@ mbsysCopy/**
 resultsR/**
 symbolicR/**
 workR/**
-
-userfctR/**
-!userfctR/user_dirdyn.c
