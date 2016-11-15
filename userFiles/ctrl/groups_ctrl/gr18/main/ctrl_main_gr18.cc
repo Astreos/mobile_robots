@@ -13,6 +13,7 @@
 #include "calibration_gr18.h"
 #include "triangulation_gr18.h"
 #include "strategy_gr18.h"
+#include "path_regulation_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -87,15 +88,6 @@ void controller_loop(CtrlStruct *cvs)
 
 	// tower control
 	outputs->tower_command = 15;
-
-        /*
-        if (t>=-15 and t<0)
-        {
-            speed_regulation(cvs, 5, 5);
-        }
-        
-        return;
-        */
 
 	switch (cvs->main_state)
 	{

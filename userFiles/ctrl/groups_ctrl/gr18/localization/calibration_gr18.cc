@@ -125,6 +125,8 @@ void calibration(CtrlStruct *cvs)
                     
                     if (((rob_pos->theta < 0) && (rob_pos->theta >= -M_PI/2.0) && not team_id) || ((rob_pos->theta > 0) && (rob_pos->theta <= M_PI/2.0) && team_id)) {
 			speed_regulation(cvs, 0, 0);
+                        
+                        cvs->main_state = WAIT_INIT_STATE;
                     }
                     
                     break;

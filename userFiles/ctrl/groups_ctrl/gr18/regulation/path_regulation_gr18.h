@@ -12,6 +12,7 @@
 NAMESPACE_INIT(ctrlGr18);
 
 void follow_path(CtrlStruct *cvs);
+void turn(CtrlStruct *cvs, double theta_ref, int sens);
 
 NAMESPACE_CLOSE();
 
