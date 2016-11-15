@@ -57,9 +57,9 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
         //set_plot(mbs_data->q[FJ_T2_robot_B_id], "Blue_y_[m]");
         //set_plot(mbs_data->q[FJ_R3_robot_B_id], "Blue_theta_[rad]");
         
-        set_plot(mbs_data->q[FJ_T1_robot_Y_id], "Yellow_x_[m]");
-        set_plot(mbs_data->q[FJ_T2_robot_Y_id], "Yellow_y_[m]");
-        set_plot(mbs_data->q[FJ_R3_robot_Y_id], "Yellow_theta_[rad]");
+        //set_plot(mbs_data->q[FJ_T1_robot_Y_id], "Yellow_x_[m]");
+        //set_plot(mbs_data->q[FJ_T2_robot_Y_id], "Yellow_y_[m]");
+        //set_plot(mbs_data->q[FJ_R3_robot_Y_id], "Yellow_theta_[rad]");
 }
 
 /*! \brief user own finishing functions
