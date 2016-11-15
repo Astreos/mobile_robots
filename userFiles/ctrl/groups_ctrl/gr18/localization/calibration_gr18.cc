@@ -56,8 +56,8 @@ void calibration(CtrlStruct *cvs)
                     if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
                         speed_regulation(cvs, 0, 0);
 
-                        rob_pos->y = 1.44;
-                        rob_pos->theta = -M_PI/2.0;
+                        rob_pos->y = 1.44*team(team_id);
+                        rob_pos->theta = -M_PI/2.0*team(team_id);
                         
                         calib->flag = CALIB_STATE_B;
                         calib->t_flag = t;
@@ -69,7 +69,7 @@ void calibration(CtrlStruct *cvs)
 
                     speed_regulation(cvs, 7, 7);
 
-                    if (rob_pos->y <= 1.25) {
+                    if ((rob_pos->y <= 1.25 && not team_id) || (rob_pos->y >= -1.25 && team_id)) {
                         speed_regulation(cvs, 0, 0);
 
                         calib->flag = CALIB_STATE_C;
@@ -80,9 +80,9 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_STATE_C: // state C
 
-                    speed_regulation(cvs, -7, 7);
+                    speed_regulation(cvs, -7*team(team_id), 7*team(team_id));
 
-                    if (rob_pos->theta >= M_PI - 0.05) {
+                    if (((rob_pos->theta > 0) && (rob_pos->theta <= M_PI) && not team_id) || ((rob_pos->theta < 0) && (rob_pos->theta <= M_PI) && team_id)) {
 			speed_regulation(cvs, 0, 0);
 
                         calib->flag = CALIB_STATE_D;
@@ -121,9 +121,9 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_FINISH: // wait before the match is starting
                     
-                    speed_regulation(cvs, 7, -7);
+                    speed_regulation(cvs, 7*team(team_id), -7*team(team_id));
                     
-                    if (rob_pos->theta < 0 && rob_pos->theta >= -M_PI/2.0) {
+                    if (((rob_pos->theta < 0) && (rob_pos->theta >= -M_PI/2.0) && not team_id) || ((rob_pos->theta > 0) && (rob_pos->theta <= M_PI/2.0) && team_id)) {
 			speed_regulation(cvs, 0, 0);
                     }
                     
@@ -138,12 +138,11 @@ void calibration(CtrlStruct *cvs)
 NAMESPACE_CLOSE();
 
 /*
-                        // go to state B after 2 seconds
-			if (t - calib->t_flag > 2.0)
-			{
-
-                            calib->flag = CALIB_STATE_B;
-                            calib->t_flag = t;
-			}
-			break;
+    // go to state B after 2 seconds
+    if (t - calib->t_flag > 2.0)
+    {
+        calib->flag = CALIB_STATE_B;
+        calib->t_flag = t;
+    }
+    break;
 */
