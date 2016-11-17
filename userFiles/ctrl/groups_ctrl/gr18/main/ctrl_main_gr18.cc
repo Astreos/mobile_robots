@@ -57,6 +57,11 @@ void controller_init(CtrlStruct *cvs)
 	cvs->sp_reg->last_t = t;
         cvs->sp_reg->int_error_r = 0;
         cvs->sp_reg->int_error_l = 0;
+        
+        // position regulation
+	cvs->pos_reg->last_t = t;
+        cvs->pos_reg->int_error_r = 0;
+        cvs->pos_reg->int_error_l = 0;
 }
 
 /*! \brief controller loop (called every time-step)
@@ -100,7 +105,7 @@ void controller_loop(CtrlStruct *cvs)
 		case WAIT_INIT_STATE:
 			speed_regulation(cvs, 0.0, 0.0);
 
-			if (t > 0.0)
+			if (t > -4.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = GAME_STATE_A;
