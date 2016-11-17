@@ -71,4 +71,19 @@ double first_order_filter(double last_val, double new_val, double tau, double de
 	return f * frac * new_val + frac * last_val;
 }
 
+// Return 1 if TEAM_A and -1 if TEAM_B
+int team(int team_id)
+{
+    if (team_id == 0)
+    {
+        team_id = 1;
+    }
+    else
+    {
+        team_id = -1;
+    }
+    
+    return team_id;
+}
+
 NAMESPACE_CLOSE();
