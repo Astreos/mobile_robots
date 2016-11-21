@@ -184,14 +184,14 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref)
     int Kp = 50;
     float Ti = 100;
 
-    pos_reg->int_error_r = nom_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)*dt + pos_reg->int_error_r;
-    pos_reg->int_error_l = nom_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)*dt + pos_reg->int_error_l;
+    pos_reg->int_error_r = norm_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)*dt + pos_reg->int_error_r;
+    pos_reg->int_error_l = norm_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)*dt + pos_reg->int_error_l;
 
-    speed_regulation(cvs, -Kp*nom_dist(x_ref - rob_pos->x, y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), -Kp*nom_dist(x_ref - rob_pos->x, y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_l, -3.0, 3.0));
+    speed_regulation(cvs, -Kp*norm_dist(x_ref - rob_pos->x, y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), -Kp*norm_dist(x_ref - rob_pos->x, y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_l, -3.0, 3.0));
 
     // ----- Wheels regulation computation end ----- //
 
-    if (fabs(nom_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)) < 0.0001)
+    if (fabs(norm_dist(x_ref - rob_pos->x, y_ref - rob_pos->y)) < 0.0001)
     {
         return 1;
     }
