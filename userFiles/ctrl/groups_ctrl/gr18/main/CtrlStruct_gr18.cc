@@ -4,6 +4,7 @@
 #include "odometry_gr18.h"
 #include "opp_pos_gr18.h"
 #include "speed_regulation_gr18.h"
+#include "path_regulation_gr18.h"
 #include "calibration_gr18.h"
 #include "path_planning_gr18.h"
 #include "strategy_gr18.h"
@@ -71,6 +72,14 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->sp_reg->int_error_l = 0.0;
 
 	cvs->sp_reg->last_t = 0.0;
+        
+        // position regulation
+	cvs->pos_reg = (PosRegulation*) malloc(sizeof(PosRegulation));
+
+	cvs->pos_reg->int_error_r = 0.0;
+	cvs->pos_reg->int_error_l = 0.0;
+
+	cvs->pos_reg->last_t = 0.0;
 
 	// calibration
 	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
@@ -97,6 +106,7 @@ void free_CtrlStruct(CtrlStruct *cvs)
 	free_strategy(cvs->strat);
 	free(cvs->calib);
 	free(cvs->sp_reg);
+        free(cvs->pos_reg);
 	free(cvs->opp_pos);
 	free(cvs->rob_pos);
 	free(cvs->triang_pos);

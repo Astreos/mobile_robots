@@ -28,6 +28,7 @@ enum {TEAM_A, TEAM_B, NB_TEAMS};
 // forward declaration
 typedef struct RobotPosition RobotPosition;
 typedef struct SpeedRegulation SpeedRegulation;
+typedef struct PosRegulation PosRegulation;
 typedef struct RobotCalibration RobotCalibration;
 typedef struct OpponentsPosition OpponentsPosition;
 typedef struct PathPlanning PathPlanning;
@@ -43,6 +44,7 @@ typedef struct CtrlStruct
 	RobotPosition *triang_pos;  ///< robot position coming from the triangulation
 	OpponentsPosition *opp_pos; ///< opponents position
 	SpeedRegulation *sp_reg;    ///< speed regulation
+	PosRegulation *pos_reg;    ///< speed regulation
 	RobotCalibration *calib;    ///< calibration
 	PathPlanning *path;         ///< path-planning
 	Strategy *strat;            ///< strategy

@@ -11,7 +11,20 @@
 
 NAMESPACE_INIT(ctrlGr18);
 
+/// position regulation
+typedef struct PosRegulation
+{
+	double int_error_r; ///< integral term of the error for the right wheel
+	double int_error_l; ///< integral term of the error for the left wheel
+
+	double last_t; ///< last time the speed regulation was updated
+
+} PosRegulation;
+
 void follow_path(CtrlStruct *cvs);
+int turn(CtrlStruct *cvs, double theta_ref, int sens);
+int run_x(CtrlStruct *cvs, double x_ref);
+int run_y(CtrlStruct *cvs, double y_ref);
 
 NAMESPACE_CLOSE();
 
