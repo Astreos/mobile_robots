@@ -8,9 +8,10 @@
 #include <iostream>
 
 enum { GOAL_01, GOAL_02, GOAL_03 };
+enum { RUN, TURN, CONTINUE};
 
-#define WIDTH 2164
-#define HEIGHT 3124
+#define WIDTH 2000
+#define HEIGHT 3000
 
 #define CELL_X 20
 #define CELL_Y 30
@@ -30,7 +31,7 @@ enum { GOAL_01, GOAL_02, GOAL_03 };
 static int sens = SENS_BAS;
 static int tab_cases[20][30] = { { 0 },{ 0 } };
 static int goal_flag = 0;
-static int direction_pre = -1; // indique qu'il n'y a pas encore de direction precedente
+static int flag = TURN;
 
 
 NAMESPACE_INIT(ctrlGr18);
@@ -209,10 +210,15 @@ void number_assigment(int x, int y)
 	return;
 }
 
-void trajectory(CtrlStruct *cvs, int x, int y)
+int trajectory(CtrlStruct *cvs, int x, int y)
 {
+	/*
+	x = cvs->path->rob_pos_XY->x;
+	y = cvs->path->rob_pos_XY->y;
+	*/
+	
 	int i, j;
-	int somme[4] = { 0 };
+	int somme[4] = {0};
 	int direction;
 	int minimum;
 	goal_flag = 0;
@@ -254,78 +260,145 @@ void trajectory(CtrlStruct *cvs, int x, int y)
 			minimum = somme[i];
 			direction = i;
 		}
+		
+		//printf("Somme1 = %d \n Somme2 = %d \n Somme3 = %d \n Somme4 = %d \n", somme[0], somme[1], somme[2], somme [3]);
 	}
 
-	printf("ok \n");
-	printf("%d \n", minimum);
-	printf("%d \n", somme_pre);
+	printf("Minimum = %d \n", minimum);
+	printf("Somme_pre = %d \n", somme_pre);
+	
+	//printf("Goal_flag = %d \n", goal_flag);
 	
 	if (minimum > somme_pre)
 	{
 		goal_flag = 1;
+		//printf("Goal_flag = %d \n", goal_flag);
+		return 1;
 	}
 
 	somme_pre = minimum;
 
-	printf("%d \n", goal_flag);
+	
 	
 	if(goal_flag == 0) 
 	{
-		if (direction == -1)
+		/*if (direction == -1)
 		{
 			if (turn(cvs, -M_PI/2.0, 1)) // alors tourner pour se mettre dans la direction -y
 			{
 				direction = SENS_BAS;
 			}
-		}
+		}*/
 		switch (direction)
 		{
 		case SENS_BAS:
-			if (turn(cvs, -M_PI/2.0, 1)) //on tourne d'abord avant d'avancer suivant -y
+			switch(flag)
 			{
-				if (run_y(cvs, Y_to_y(y-1)))
-				{
+				case TURN:
+					//printf("%d \n", turn(cvs, -M_PI/2.0, 1));
+					if (turn(cvs, -M_PI/2.0, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+				//printf("%f \n", Y_to_y(y-1));
+					if (run_y(cvs, Y_to_y(y-1)) == 1)
+					{
+						//flag = CONTINUE;
+						trajectory(cvs, x, y-1);
+					}
+					break;
+				case CONTINUE:
+				flag = TURN;
 					trajectory(cvs, x, y-1);
-				}
+				break;
 			}
-			direction_pre = SENS_BAS;
+				printf("bas \n");
+				
 			break;
 			
 		case SENS_HAUT:
-			if (turn(cvs, M_PI/2.0, 1)) //on tourne d'abord avant d'avancer suivant y
+		switch(flag)
 			{
-				if (run_y(cvs, Y_to_y(y+1)))
-				{
-					trajectory(cvs, x, y+1);
-				}
+				case TURN:
+					if (turn(cvs, M_PI/2.0, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+					if (run_y(cvs, Y_to_y(y+1)) == 1)
+					{
+						flag = TURN;
+						trajectory(cvs, x, y+1);
+					}
+					break;
+					case CONTINUE:
+				flag = TURN;
+					trajectory(cvs, x, y-1);
+				break;
+					
 			}
-			direction_pre = SENS_HAUT;
+			printf("haut \n");
+			
 			break;
 
 		case SENS_GAUCHE:
-			if (turn(cvs, 0, 1)) //on tourne d'abord avant d'avancer suivant -x
+		switch(flag)
 			{
-				if (run_y(cvs, X_to_x(x-1)))
-				{
-					trajectory(cvs, x-1, y);
-				}
+				case TURN:
+					if (turn(cvs, M_PI, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+					if (run_y(cvs, X_to_x(x-1)) == 1)
+					{
+						flag = TURN;
+						trajectory(cvs, x-1, y);
+					}
+					break;
+					case CONTINUE:
+				flag = TURN;
+					trajectory(cvs, x, y-1);
+				break;
+					
 			}
-			direction_pre = SENS_GAUCHE;
+			printf("gauche \n");
+			
 			break;
 
 		case SENS_DROITE:
-			if (turn(cvs, M_PI, 1)) //on tourne d'abord avant d'avancer suivant x
+		switch(flag)
 			{
-				if (run_x(cvs, X_to_x(x+1)))
-				{
-					trajectory(cvs, x+1, y);
-				}
+				case TURN:
+					if (turn(cvs, 0, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+					if (run_y(cvs, X_to_x(x+1)) == 1)
+					{
+						flag = TURN;
+						trajectory(cvs, x+1, y);
+					}
+					break;
+					case CONTINUE:
+				flag = TURN;
+					trajectory(cvs, x, y-1);
+				break;
+					
 			}
-			direction_pre = SENS_DROITE;
+		printf("droite \n");
+				
 			break;
 		}
 	}
-
+	
+	return 0;
 	//stocker la somme, appeleer le truc de deplacement ou stocker la direction
 }
 
@@ -340,12 +413,24 @@ void xy_to_XY(CtrlStruct *cvs)
 
 double X_to_x(int X)
 {
-	return (WIDTH * X / CELL_X - WIDTH/2.0) / 1000.0;
+	return (X-10)*0.1 - 0.05;
 }
 
 double Y_to_y(int Y)
 {
-	return (HEIGHT * Y / CELL_Y - HEIGHT/2.0) / 1000.0;
+	return (Y-15)*0.1 - 0.05;
 }
+
+/*
+double X_to_x(int X)
+{
+	return (WIDTH * (X-10) / CELL_X - WIDTH/2.0) / 1000.0;
+}
+
+double Y_to_y(int Y)
+{
+	return (HEIGHT * (Y-15) / CELL_Y - HEIGHT/2.0) / 1000.0;
+}
+*/
 
 NAMESPACE_CLOSE();

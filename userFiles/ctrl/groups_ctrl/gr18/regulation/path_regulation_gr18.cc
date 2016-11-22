@@ -57,6 +57,9 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     speed_regulation(cvs, (Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -2.0*M_PI, 2.0*M_PI))*dir, -(Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -2.0*M_PI, 2.0*M_PI))*dir);
 
     // ----- Wheels regulation computation end ----- //
+    
+    // last update time
+    pos_reg->last_t = inputs->t;
 
     if (fabs(theta_ref - rob_pos->theta) < 0.001)
     {
@@ -66,9 +69,6 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     {
         return 0;
     }
-
-    // last update time
-    pos_reg->last_t = inputs->t;
 }
 
 int run_x(CtrlStruct *cvs, double x_ref)
@@ -101,6 +101,9 @@ int run_x(CtrlStruct *cvs, double x_ref)
     speed_regulation(cvs, Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0));
 
     // ----- Wheels regulation computation end ----- //
+    
+    // last update time
+    pos_reg->last_t = inputs->t;
 
     if (fabs(x_ref - rob_pos->x) < 0.0001)
     {
@@ -110,9 +113,6 @@ int run_x(CtrlStruct *cvs, double x_ref)
     {
         return 0;
     }
-
-    // last update time
-    pos_reg->last_t = inputs->t;
 }
 
 int run_y(CtrlStruct *cvs, double y_ref)
@@ -143,9 +143,14 @@ int run_y(CtrlStruct *cvs, double y_ref)
     pos_reg->int_error_r = (y_ref - rob_pos->y)*dt + pos_reg->int_error_r;
     pos_reg->int_error_l = (y_ref - rob_pos->y)*dt + pos_reg->int_error_l;
 
-    speed_regulation(cvs, -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_l, -3.0, 3.0));
+    speed_regulation(cvs, -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -0.5, 0.5), -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_l, -0.5, 0.5));
+    
+    //printf("%f \n", y_ref - rob_pos->y);
 
     // ----- Wheels regulation computation end ----- //
+    
+    // last update time
+    pos_reg->last_t = inputs->t;
 
     if (fabs(y_ref - rob_pos->y) < 0.0001)
     {
@@ -155,9 +160,6 @@ int run_y(CtrlStruct *cvs, double y_ref)
     {
         return 0;
     }
-
-    // last update time
-    pos_reg->last_t = inputs->t;
 }
 
 NAMESPACE_CLOSE();

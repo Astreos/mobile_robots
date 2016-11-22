@@ -49,10 +49,14 @@ void main_strategy(CtrlStruct *cvs)
 	{
             case GAME_STATE_A:
             somme_pre = 4000;
-			trajectory(cvs, 17, 27);
+			if (trajectory(cvs, 17, 27))
+			{
+				strat->main_state = GAME_STATE_B;
+			}
 			break;
 
 		case GAME_STATE_B:
+		printf("OKAY");
 			speed_regulation(cvs, 0.0, 0.0);
 			break;
 
