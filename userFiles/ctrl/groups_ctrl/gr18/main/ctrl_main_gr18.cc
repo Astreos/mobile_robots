@@ -105,7 +105,7 @@ void controller_loop(CtrlStruct *cvs)
 		case WAIT_INIT_STATE:
 			speed_regulation(cvs, 0.0, 0.0);
 
-			if (t > -4.0)
+			if (t > 0.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = GAME_STATE_A;

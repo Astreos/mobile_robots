@@ -67,7 +67,7 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_STATE_B: // state B
 
-                    speed_regulation(cvs, 7, 7);
+                    speed_regulation(cvs, 5, 5);
 
                     if ((rob_pos->y <= 1.25 && not team_id) || (rob_pos->y >= -1.25 && team_id)) {
                         speed_regulation(cvs, 0, 0);
@@ -108,7 +108,7 @@ void calibration(CtrlStruct *cvs)
                     
                 case CALIB_STATE_E: // state E
                     
-                    speed_regulation(cvs, 7, 7);
+                    speed_regulation(cvs, 5, 5);
 
                     if (rob_pos->x <= 0.75) {
 			speed_regulation(cvs, 0, 0);
@@ -121,7 +121,7 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_FINISH: // wait before the match is starting
                     
-                    speed_regulation(cvs, 7*team(team_id), -7*team(team_id));
+                    speed_regulation(cvs, 3*team(team_id), -3*team(team_id));
                     
                     if (((rob_pos->theta < 0) && (rob_pos->theta >= -M_PI/2.0) && not team_id) || ((rob_pos->theta > 0) && (rob_pos->theta <= M_PI/2.0) && team_id)) {
 			speed_regulation(cvs, 0, 0);
