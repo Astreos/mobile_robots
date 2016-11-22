@@ -23,7 +23,6 @@ struct PathPlanning
 	RobotPosition *rob_pos_XY; // coordonnées pour tableau
 	RobotPosition *rob_goal_XY;
 	int goal_id;
-
 };
 
 PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition);
@@ -32,8 +31,12 @@ void free_path_planning(PathPlanning *path);
 void update_path_planning(CtrlStruct *cvs);
 void mapcreating();
 void number_assigment(int x, int y);
-void trajectory(int x, int y);
-void coordonnee_tab(CtrlStruct *cvs);
+void trajectory(CtrlStruct *cvs, int x, int y);
+void xy_to_XY(CtrlStruct *cvs);
+double X_to_x(int X);
+double Y_to_y(int Y);
+
+static int somme_pre = 4000; // somme min précédente ,arbitraire pour etre hyper grand a l'initialisation
 
 NAMESPACE_CLOSE();
 

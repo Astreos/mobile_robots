@@ -47,8 +47,9 @@ void main_strategy(CtrlStruct *cvs)
 
 	switch (strat->main_state)
 	{
-            case GAME_STATE_A:                        
-			speed_regulation(cvs, 0.0, 0.0);
+            case GAME_STATE_A: 
+            somme_pre = 4000;                       
+			trajectory(cvs, 6, 13);
 			break;
 
 		case GAME_STATE_B:

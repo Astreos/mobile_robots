@@ -31,7 +31,7 @@ static int sens = SENS_BAS;
 static int tab_cases[20][30] = { { 0 },{ 0 } };
 static int goal_flag = 0;
 static int direction_pre = -1; // indique qu'il n'y a pas encore de direction precedente
-static int somme_pre = 4000; // somme min précédente ,arbitraire pour etre hyper grand a l'initialisation
+
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -45,15 +45,17 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 
 	// memory allocation
 	path = (PathPlanning*)malloc(sizeof(PathPlanning));
+	
+	// variable initialization
 	path->goal_id = 0;
+	int x = 11, y = 15;
+	int i, j;
 
 	// ----- path-planning initialization start ----- //
 
-	mapcreating();
-
-	int x = 5, y = 10;
-	int i, j;
-
+	mapcreating(); //création de la map
+	
+	/*
 	for (j = 0; j<CELL_Y; j++)
 	{
 		for (i = 0; i<CELL_X; i++)
@@ -61,12 +63,11 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 		printf("\n");
 	}
 	printf("\n\n");
+	*/
 
-
-	// Test goal number_assigment
-	tab_cases[x][y] = 0;
-	number_assigment(x, y);
-
+	number_assigment(x, y); //algorithme d'expansion
+	
+	/*
 	for (j = 0; j<CELL_Y; j++)
 	{
 		for (i = 0; i<CELL_X; i++)
@@ -74,8 +75,9 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 		printf("\n");
 	}
 	printf("\n\n");
+	* */
 
-	trajectory(6, 13); //test
+	//trajectory(6, 13); //test
 
 	path->rob_pos_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 	path->rob_goal_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
@@ -107,12 +109,11 @@ void free_path_planning(PathPlanning *path)
 
 void update_path_planning(CtrlStruct *cvs)
 {
-	coordonnee_tab(cvs);
+	xy_to_XY(cvs);
 
 	switch (cvs->path->goal_id)
 	{
 	case GOAL_01:
-
 
 		if (cvs->path->rob_pos_XY == cvs->path->rob_goal_XY)
 			cvs->path->goal_id = GOAL_02;
@@ -165,16 +166,17 @@ void mapcreating()
 
 void number_assigment(int x, int y)
 {
-
 	int i, j;
+	
 	int value = 0;
 	tab_cases[x][y] = value;
 
 	int cases_ni = 559; // 20 * 30 - 40 obstacle - la case du goal = 559
-	while (cases_ni) // tant qu'on a pas enregistré toute les cases
+	
+	while (cases_ni) // tant qu'on n'a pas enregistré toute les cases
 	{
-		for (i = 0; i <= 19; i++)
-		{							//Cher en memoire faut peu etre trouver un autre moyen de chopper toutes les cases qui viennent d'etre changés sans un double for aussi gros
+		for (i = 0; i <= 19; i++)	//Cher en memoire faut peu etre trouver un autre moyen de chopper toutes les cases qui viennent d'etre changés sans un double for aussi gros
+		{
 			for (j = 0; j <= 29; j++)
 			{
 				if (tab_cases[i][j] == value)
@@ -207,7 +209,7 @@ void number_assigment(int x, int y)
 	return;
 }
 
-void trajectory(int x, int y)
+void trajectory(CtrlStruct *cvs, int x, int y)
 {
 	int i, j;
 	int somme[4] = { 0 };
@@ -254,123 +256,80 @@ void trajectory(int x, int y)
 		}
 	}
 
-	printf("ok ");
-	printf("%d ", minimum);
+	printf("ok \n");
+	printf("%d \n", minimum);
 	printf("%d \n", somme_pre);
-	printf("%d \n", goal_flag);
+	
 	if (minimum > somme_pre)
+	{
 		goal_flag = 1;
+	}
 
 	somme_pre = minimum;
 
 	printf("%d \n", goal_flag);
-	while(goal_flag == 0) 
+	
+	if(goal_flag == 0) 
 	{
 		if (direction == -1)
-			;// alors tourner pour se mettre dans la direction -y
+		{
+			if (turn(cvs, -M_PI/2.0, 1)) // alors tourner pour se mettre dans la direction -y
+			{
+				direction = SENS_BAS;
+			}
+		}
 		switch (direction)
 		{
 		case SENS_BAS:
-			switch (direction_pre)
+			if (turn(cvs, -M_PI/2.0, 1)) //on tourne d'abord avant d'avancer suivant -y
 			{
-			case SENS_BAS:
-				//alors ok on mouve direct selon -y (100mm)
-				trajectory(x,y-1);
-				break;
-			case SENS_HAUT:
-				//on tourne d'abord de 180° avant d'avancer -y
-				trajectory(x, y - 1);
-				break;
-			case SENS_GAUCHE:
-				//tourne de 90° vers la gauche puis avance -y
-				trajectory(x, y - 1);
-				break;
-			case SENS_DROITE:
-				//tourne de 90° vers la droite puis avance -y
-				trajectory(x, y - 1);
-				break;
+				if (run_y(cvs, Y_to_y(y-1)))
+				{
+					trajectory(cvs, x, y-1);
+				}
 			}
 			direction_pre = SENS_BAS;
 			break;
-
+			
 		case SENS_HAUT:
-			switch (direction_pre)
+			if (turn(cvs, M_PI/2.0, 1)) //on tourne d'abord avant d'avancer suivant y
 			{
-			case SENS_BAS:
-				//on tourne d'abord de 180° avant d'avancer y
-				trajectory(x, y + 1);
-				break;
-			case SENS_HAUT:
-				// on mouve direct y (100 mm)
-				trajectory(x, y + 1);
-				break;
-			case SENS_GAUCHE:
-				//tourne de 90° vers la droite puis avance y
-				trajectory(x, y + 1);
-				break;
-			case SENS_DROITE:
-				//tourne de 90° vers la gauche puis avance y
-				trajectory(x, y + 1);
-				break;
+				if (run_y(cvs, Y_to_y(y+1)))
+				{
+					trajectory(cvs, x, y+1);
+				}
 			}
 			direction_pre = SENS_HAUT;
 			break;
 
 		case SENS_GAUCHE:
-			switch (direction_pre)
+			if (turn(cvs, 0, 1)) //on tourne d'abord avant d'avancer suivant -x
 			{
-			case SENS_BAS:
-				//tourne de 90° vers la droite puis avance -x
-				trajectory(x -1, y);
-				break;
-			case SENS_HAUT:
-				//tourne de 90° vers la gauche puis avance -x
-				trajectory(x - 1, y);
-				break;
-			case SENS_GAUCHE:
-				// on mouve direct -x
-				trajectory(x - 1, y);
-				break;
-			case SENS_DROITE:
-				//tourne de 180°  puis avance -x
-				trajectory(x - 1, y);
-				break;
+				if (run_y(cvs, X_to_x(x-1)))
+				{
+					trajectory(cvs, x-1, y);
+				}
 			}
 			direction_pre = SENS_GAUCHE;
 			break;
 
 		case SENS_DROITE:
-			switch (direction_pre)
+			if (turn(cvs, M_PI, 1)) //on tourne d'abord avant d'avancer suivant x
 			{
-			case SENS_BAS:
-				//tourne de 90° vers la gauche puis avance x
-				trajectory(x + 1, y);
-				break;
-			case SENS_HAUT:
-				//tourne de 90° vers la droie puis avance x
-				trajectory(x + 1, y);
-				break;
-			case SENS_GAUCHE:
-				//tourne de 180°  puis avance x
-				trajectory(x + 1, y);
-				break;
-			case SENS_DROITE:
-				// on mouve direct x
-				trajectory(x + 1, y);
-				break;
+				if (run_x(cvs, X_to_x(x+1)))
+				{
+					trajectory(cvs, x+1, y);
+				}
 			}
 			direction_pre = SENS_DROITE;
 			break;
 		}
 	}
-	direction = -1;
-	somme_pre = 4000;
-	return;
 
 	//stocker la somme, appeleer le truc de deplacement ou stocker la direction
 }
 
-void coordonnee_tab(CtrlStruct *cvs)
+void xy_to_XY(CtrlStruct *cvs)
 {
 	cvs->path->rob_pos_XY->x = floor((cvs->rob_pos->x * 1000 + WIDTH / 2) * CELL_X / WIDTH);
 	cvs->path->rob_pos_XY->y = floor((cvs->rob_pos->y * 1000 + HEIGHT / 2) * CELL_Y / HEIGHT);
@@ -378,4 +337,15 @@ void coordonnee_tab(CtrlStruct *cvs)
 	//printf("robpos xy: %f,%f , en XY : %f,%f\n",cvs->rob_pos->x,cvs->rob_pos->y, cvs->path->rob_goal_XY->x,cvs->path->rob_goal_XY->y);
 
 }
+
+double X_to_x(int X)
+{
+	return (WIDTH * X / CELL_X - WIDTH/2.0) / 1000.0;
+}
+
+double Y_to_y(int Y)
+{
+	return (HEIGHT * Y / CELL_Y - HEIGHT/2.0) / 1000.0;
+}
+
 NAMESPACE_CLOSE();
