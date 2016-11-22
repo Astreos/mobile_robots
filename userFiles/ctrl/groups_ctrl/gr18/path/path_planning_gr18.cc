@@ -43,7 +43,6 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 {
 	PathPlanning *path;
 
-
 	// memory allocation
 	path = (PathPlanning*)malloc(sizeof(PathPlanning));
 	path->goal_id = 0;
@@ -67,10 +66,6 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 	// Test goal number_assigment
 	tab_cases[x][y] = 0;
 	number_assigment(x, y);
-	
-
-	if(run_y(cvs, 0.750)==1)
-		speed_regulation(cvs,0,0);
 
 	for (j = 0; j<CELL_Y; j++)
 	{
@@ -306,7 +301,7 @@ void trajectory(int x, int y)
 				trajectory(x, y + 1);
 				break;
 			case SENS_HAUT:
-				// on mouve direct y
+				// on mouve direct y (100 mm)
 				trajectory(x, y + 1);
 				break;
 			case SENS_GAUCHE:
