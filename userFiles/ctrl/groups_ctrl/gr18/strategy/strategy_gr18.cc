@@ -1,8 +1,8 @@
 #include "strategy_gr18.h"
+#include "init_pos_gr18.h"
 #include "path_planning_gr18.h"
 #include "speed_regulation_gr18.h"
 #include "path_regulation_gr18.h"
-#include "init_pos_gr18.h"
 #include "opp_pos_gr18.h"
 #include "odometry_gr18.h"
 #include <math.h>
@@ -48,17 +48,11 @@ void main_strategy(CtrlStruct *cvs)
 	switch (strat->main_state)
 	{
             case GAME_STATE_A:                        
-                        if (run_y(cvs, 0.750) == 1)
-                        {
-                            strat->main_state = GAME_STATE_B;
-                        }
+			speed_regulation(cvs, 0.0, 0.0);
 			break;
 
 		case GAME_STATE_B:
-			if (turn(cvs, 0, 1) == 1)
-                        {
-                            strat->main_state = GAME_STATE_C;
-                        }
+			speed_regulation(cvs, 0.0, 0.0);
 			break;
 
 		case GAME_STATE_C:

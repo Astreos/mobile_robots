@@ -14,6 +14,7 @@
 #include "triangulation_gr18.h"
 #include "strategy_gr18.h"
 #include "path_regulation_gr18.h"
+#include "path_planning_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -62,6 +63,9 @@ void controller_init(CtrlStruct *cvs)
 	cvs->pos_reg->last_t = t;
         cvs->pos_reg->int_error_r = 0;
         cvs->pos_reg->int_error_l = 0;
+
+		//path 
+		cvs->path = init_path_planning(cvs, cvs->rob_pos);
 }
 
 /*! \brief controller loop (called every time-step)
