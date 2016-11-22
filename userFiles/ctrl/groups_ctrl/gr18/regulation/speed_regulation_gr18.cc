@@ -45,8 +45,8 @@ void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 
     // ----- Wheels regulation computation end ----- //
 
-    set_plot(r_sp, "R_wheel_reg_[rad/s]");
-    set_plot(l_sp, "L_wheel_reg_[rad/s]");
+    //set_plot(r_sp, "R_wheel_reg_[rad/s]");
+    //set_plot(l_sp, "L_wheel_reg_[rad/s]");
 
     // last update time
     sp_reg->last_t = inputs->t;
