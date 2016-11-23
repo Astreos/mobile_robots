@@ -12,8 +12,8 @@ enum {RUN, TURN, CONTINUE};
 #define WIDTH 2
 #define HEIGHT 3
 
-#define CELL_X 20
-#define CELL_Y 30
+#define CELL_X 22
+#define CELL_Y 32
 
 #define N_REGISTRED -1
 #define OBSTACLE  99
@@ -24,7 +24,7 @@ enum {RUN, TURN, CONTINUE};
 #define SENS_DROITE 3
 
 static int sens = SENS_BAS;
-static int tab_cases[CELL_X][CELL_Y];
+static float tab_cases[CELL_X][CELL_Y];
 static int goal_flag = 0;
 static int flag = TURN;
 static int direction_pre = 0;
@@ -50,18 +50,25 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 
 	// ----- path-planning initialization start ----- //
 
-	//mapcreating(); //création de la map
+	mapcreating(); //création de la map
 	
-	for (i = 0; i<CELL_X; j++)
+	number_assigment(19,7);
+
+	for (i = 0; i<CELL_X; i++)
 	{
-		for (j = 0; j<CELL_Y; i++)
+		for (j = 0; j<CELL_Y; j++)
 		{
-			printf("%d", tab_cases[i][j]);
+			if (tab_cases[i][j] < 10) {
+				printf("%1.2f ", tab_cases[i][j]);
+			}
+			else {
+				printf("%1.1f ", tab_cases[i][j]);
+			}
 		}
 		printf("\n");
 	}
-	printf("\n\n");
 
+/*
 	path->rob_pos_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 	path->rob_goal_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 
@@ -69,7 +76,7 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 	path->rob_pos_XY->y = 27;
 
 	// ----- path-planning initialization end ----- //
-
+*/
 	// return structure initialized
 	return path;
 }
@@ -90,8 +97,7 @@ void free_path_planning(PathPlanning *path)
 
 void mapcreating()
 {
-	int i = 0;
-	int j = 0;
+	int i, j;
 
 	for (i = 0; i < CELL_X; i++)
 	{
@@ -101,31 +107,43 @@ void mapcreating()
 		}
 	}
 
-	for (i = 0; i <= 4; i++)
+	for (i = 0; i < CELL_X; i++)
 	{
-		tab_cases[14][i] = OBSTACLE;     // Barrière en haut à droite (vertical)
-		tab_cases[14][25 + i] = OBSTACLE;     // Barrière en bas à droite (vertical)
+		tab_cases[i][0] = OBSTACLE; // Bordure supérieure
+		tab_cases[i][CELL_Y-1] = OBSTACLE; // Bordure inférieure
+	}
+	for (j = 0; j < CELL_Y; j++)
+	{
+		tab_cases[0][j] = OBSTACLE; //Bordure gauche
+		tab_cases[CELL_X-1][j] = OBSTACLE; //Bordure droite
+	}
+	
+	for (j = 1; j <= 5; j++)
+	{
+		tab_cases[16][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
+		tab_cases[16][25 + j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
 	}
 
-	for (i = 0; i <= 4; i++) // Barrière en haut à droite (horizonthal)
+	for (i = 1; i <= 5; i++)
 	{
-		tab_cases[i][6] = OBSTACLE;
-		tab_cases[i][23] = OBSTACLE;
+		tab_cases[i][7] = OBSTACLE; //Barrière en haut à gauche (camp bleu cible)
+		tab_cases[i][24] = OBSTACLE; //Barrière en haut à droite (camp jaune cible)
 	}
 
-	for (i = 8; i <= 11; i++) // Barrière milieu-bas (horizonthal)
+	for (i = 10; i <= 13; i++)
 	{
-		tab_cases[i][18] = OBSTACLE;
-		tab_cases[i][11] = OBSTACLE;
+		tab_cases[i][12] = OBSTACLE; //Barrière milieu-gauche
+		tab_cases[i][19] = OBSTACLE; //Barrière milieu-droit
+	}
+	for (i = 6; i <= 9; i++)
+	{
+		tab_cases[i][15] = OBSTACLE; // Barrière milieu-milieu verticale
+		tab_cases[i][16] = OBSTACLE;
 	}
 
-	for (i = 12; i <= 18; i++) // Barrière milieu (vertical)
-		tab_cases[8][i] = OBSTACLE;
-
-	for (i = 5; i <= 8; i++)
+	for (j = 12; j <= 18; j++)
 	{
-		tab_cases[i][14] = OBSTACLE; // Barrière milieu-milieu (horizonthal)
-		tab_cases[i][15] = OBSTACLE;
+		tab_cases[10][j] = OBSTACLE; // Barrière milieu horizontale
 	}
 	
 	return;
@@ -133,46 +151,66 @@ void mapcreating()
 
 void number_assigment(int x, int y)
 {
-	int i, j;
-	int value = 0;
-	tab_cases[x][y] = value;
+    int i, j;
+    int k, l;
+    int nb_cases = 559; // 22 * 32 - 144 obstacles - la case du goal = 559
 
-	int cases_ni = 559; // 20 * 30 - 40 obstacle - la case du goal = 559
-	
-	while (cases_ni) // tant qu'on n'a pas enregistré toute les cases
-	{
-		for (i = 0; i <= 19; i++)	//Cher en memoire faut peu etre trouver un autre moyen de chopper toutes les cases qui viennent d'etre changés sans un double for aussi gros
-		{
-			for (j = 0; j <= 29; j++)
-			{
-				if (tab_cases[i][j] == value)
-				{
-					if (i>0 && tab_cases[i - 1][j] == N_REGISTRED) // la premiere condition teste si c'est un bord 
-					{												  //les obstacles sont deja registred donc pas besoin d'un deuxieme test pour eux
-						tab_cases[i - 1][j] = value + 1;
-						cases_ni--;
-					}
-					if (i<19 && tab_cases[i + 1][j] == N_REGISTRED)
-					{
-						tab_cases[i + 1][j] = value + 1;
-						cases_ni--;
-					}
-					if (j>0 && tab_cases[i][j - 1] == N_REGISTRED)
-					{
-						tab_cases[i][j - 1] = value + 1;
-						cases_ni--;
-					}
-					if (j <29 && tab_cases[i][j + 1] == N_REGISTRED)
-					{
-						tab_cases[i][j + 1] = value + 1;
-						cases_ni--;
-					}
-				}
-			}
-		}
-		value++;// toute les cases avec value ont eté testé on passe a la value suivante
-	}
-	return;
+    tab_cases[x][y] = 0;
+
+    for(nb_cases = 559; nb_cases > 0; nb_cases--)
+    {
+        for (i = 0; i < CELL_X; i++)
+        {
+            for (j = 0; j < CELL_Y; j++)
+            {
+                if (tab_cases[i][j] != N_REGISTRED && tab_cases[i][j] != OBSTACLE)
+                {
+                    if (tab_cases[i-1][j] == N_REGISTRED)
+                    {
+                        tab_cases[i-1][j] = tab_cases[i][j] + 1;
+                        nb_cases--;
+                    }
+                    if (tab_cases[i+1][j] == N_REGISTRED)
+                    {
+                        tab_cases[i+1][j] = tab_cases[i][j] + 1;
+                        nb_cases--;
+                    }
+                    if (tab_cases[i][j-1] == N_REGISTRED)
+                    {
+                        tab_cases[i][j-1] = tab_cases[i][j] + 1;
+                        nb_cases--;
+                    }
+                    if (tab_cases[i][j+1] == N_REGISTRED)
+                    {
+                        tab_cases[i][j+1] = tab_cases[i][j] + 1;
+                        nb_cases--;
+                    }
+                    if (tab_cases[i-1][j-1] == N_REGISTRED)
+                    {
+                        tab_cases[i-1][j-1] = tab_cases[i][j] + sqrt(2);
+                        nb_cases--;
+                    }
+                    if (tab_cases[i-1][j+1] == N_REGISTRED)
+                    {
+                        tab_cases[i-1][j+1] = tab_cases[i][j] + sqrt(2);
+                        nb_cases--;
+                    }
+                    if (tab_cases[i+1][j-1] == N_REGISTRED)
+                    {
+                        tab_cases[i+1][j-1] = tab_cases[i][j] + sqrt(2);
+                        nb_cases--;
+                    }
+                    if (tab_cases[i+1][j+1] == N_REGISTRED)
+                    {
+                        tab_cases[i+1][j+1] = tab_cases[i][j] + sqrt(2);
+                        nb_cases--;
+                    }
+                }
+            }
+        }
+    }
+
+    return;
 }
 
 int trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
@@ -181,16 +219,6 @@ int trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	int goal_Y = floor((goal_y + HEIGHT/2.0) * CELL_Y / HEIGHT);
 	
 	number_assigment(goal_X, goal_Y); //algorithme d'expansion
-	
-	/*
-	for (j = 0; j<CELL_Y; j++)
-	{
-		for (i = 0; i<CELL_X; i++)
-			printf("%d ", tab_cases[i][j]);
-		printf("\n");
-	}
-	printf("\n\n");
-	* */
 	
 	int x = cvs->path->rob_pos_XY->x;
 	int y = cvs->path->rob_pos_XY->y;

@@ -4,11 +4,6 @@
 * \brief path-planning algorithm
 */
 
-#define CELL_X 20
-#define CELL_Y 30
-#define CELL_SIZE 250
-
-
 #ifndef _PATH_PLANNING_GR18_H_
 #define _PATH_PLANNING_GR18_H_
 

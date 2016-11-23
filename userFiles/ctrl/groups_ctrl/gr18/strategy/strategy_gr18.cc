@@ -48,12 +48,15 @@ void main_strategy(CtrlStruct *cvs)
 	switch (strat->main_state)
 	{
             case GAME_STATE_A:
+            /*
             somme_pre = 4000;
 			xy_to_XY(cvs);
 			if (trajectory(cvs, 0, 0))
 			{
 				strat->main_state = GAME_STATE_B;
 			}
+			* */
+			speed_regulation(cvs, 0.0, 0.0);
 			break;
 
 		case GAME_STATE_B:
