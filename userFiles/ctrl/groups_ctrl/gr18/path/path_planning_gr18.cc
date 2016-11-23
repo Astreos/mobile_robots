@@ -7,17 +7,13 @@
 #include <math.h>
 #include <iostream>
 
-enum { GOAL_01, GOAL_02, GOAL_03 };
-enum { RUN, TURN, CONTINUE};
+enum {RUN, TURN, CONTINUE};
 
-#define WIDTH 2000
-#define HEIGHT 3000
+#define WIDTH 2
+#define HEIGHT 3
 
 #define CELL_X 20
 #define CELL_Y 30
-
-#define FIRST_GOAL_X 0.0
-#define FIRST_GOAL_Y 0.0
 
 #define N_REGISTRED -1
 #define OBSTACLE  99
@@ -28,7 +24,7 @@ enum { RUN, TURN, CONTINUE};
 #define SENS_DROITE 3
 
 static int sens = SENS_BAS;
-static int tab_cases[CELL_X][CELL_Y] = { { 0 },{ 0 } };
+static int tab_cases[CELL_X][CELL_Y];
 static int goal_flag = 0;
 static int flag = TURN;
 static int direction_pre = 0;
@@ -54,40 +50,23 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 
 	// ----- path-planning initialization start ----- //
 
-	mapcreating(); //création de la map
+	//mapcreating(); //création de la map
 	
-	/*
-	for (j = 0; j<CELL_Y; j++)
+	for (i = 0; i<CELL_X; j++)
 	{
-		for (i = 0; i<CELL_X; i++)
-			printf("%d ", tab_cases[i][j]);
+		for (j = 0; j<CELL_Y; i++)
+		{
+			printf("%d", tab_cases[i][j]);
+		}
 		printf("\n");
 	}
 	printf("\n\n");
-	*/
-
-	number_assigment(x, y); //algorithme d'expansion
-	
-	/*
-	for (j = 0; j<CELL_Y; j++)
-	{
-		for (i = 0; i<CELL_X; i++)
-			printf("%d ", tab_cases[i][j]);
-		printf("\n");
-	}
-	printf("\n\n");
-	* */
-
-	//trajectory(6, 13); //test
 
 	path->rob_pos_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 	path->rob_goal_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 
 	path->rob_pos_XY->x = 17;
 	path->rob_pos_XY->y = 27;
-
-	path->rob_goal_XY->x = FIRST_GOAL_X;
-	path->rob_goal_XY->y = FIRST_GOAL_Y;
 
 	// ----- path-planning initialization end ----- //
 
@@ -107,27 +86,6 @@ void free_path_planning(PathPlanning *path)
 	// ----- path-planning memory release end ----- //
 
 	free(path);
-}
-
-void update_path_planning(CtrlStruct *cvs)
-{
-	xy_to_XY(cvs);
-
-	switch (cvs->path->goal_id)
-	{
-	case GOAL_01:
-
-		if (cvs->path->rob_pos_XY == cvs->path->rob_goal_XY)
-			cvs->path->goal_id = GOAL_02;
-
-		break;
-
-		// 			break;
-		//
-		// 			case GOAL_02:
-		//
-		// 				break;
-	}
 }
 
 void mapcreating()
@@ -169,6 +127,8 @@ void mapcreating()
 		tab_cases[i][14] = OBSTACLE; // Barrière milieu-milieu (horizonthal)
 		tab_cases[i][15] = OBSTACLE;
 	}
+	
+	return;
 }
 
 void number_assigment(int x, int y)
@@ -215,10 +175,25 @@ void number_assigment(int x, int y)
 	return;
 }
 
-int trajectory(CtrlStruct *cvs, int x, int y)
+int trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 {
-	x = cvs->path->rob_pos_XY->x;
-	y = cvs->path->rob_pos_XY->y;
+	int goal_X = floor((goal_x + WIDTH/2.0) * CELL_X / WIDTH);
+	int goal_Y = floor((goal_y + HEIGHT/2.0) * CELL_Y / HEIGHT);
+	
+	number_assigment(goal_X, goal_Y); //algorithme d'expansion
+	
+	/*
+	for (j = 0; j<CELL_Y; j++)
+	{
+		for (i = 0; i<CELL_X; i++)
+			printf("%d ", tab_cases[i][j]);
+		printf("\n");
+	}
+	printf("\n\n");
+	* */
+	
+	int x = cvs->path->rob_pos_XY->x;
+	int y = cvs->path->rob_pos_XY->y;
 	
 	int i, j;
 	int somme[4] = {0};
@@ -443,6 +418,29 @@ double X_to_x(int X)
 double Y_to_y(int Y)
 {
 	return (HEIGHT * (Y-15) / CELL_Y - HEIGHT/2.0) / 1000.0;
+}
+*/
+
+/*
+void update_path_planning(CtrlStruct *cvs)
+{
+	xy_to_XY(cvs);
+
+	switch (cvs->path->goal_id)
+	{
+	case GOAL_01:
+
+		if (cvs->path->rob_pos_XY == cvs->path->rob_goal_XY)
+			cvs->path->goal_id = GOAL_02;
+
+		break;
+
+		// 			break;
+		//
+		// 			case GOAL_02:
+		//
+		// 				break;
+	}
 }
 */
 

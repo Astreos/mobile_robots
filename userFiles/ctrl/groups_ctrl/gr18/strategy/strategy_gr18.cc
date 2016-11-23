@@ -50,7 +50,7 @@ void main_strategy(CtrlStruct *cvs)
             case GAME_STATE_A:
             somme_pre = 4000;
 			xy_to_XY(cvs);
-			if (trajectory(cvs, cvs->path->rob_pos_XY->x, cvs->path->rob_pos_XY->y))
+			if (trajectory(cvs, 0, 0))
 			{
 				strat->main_state = GAME_STATE_B;
 			}

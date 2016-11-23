@@ -31,7 +31,7 @@ void free_path_planning(PathPlanning *path);
 void update_path_planning(CtrlStruct *cvs);
 void mapcreating();
 void number_assigment(int x, int y);
-int trajectory(CtrlStruct *cvs, int x, int y);
+int trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 void xy_to_XY(CtrlStruct *cvs);
 double X_to_x(int X);
 double Y_to_y(int Y);
