@@ -19,7 +19,6 @@ enum { RUN, TURN, CONTINUE};
 #define FIRST_GOAL_X 0.0
 #define FIRST_GOAL_Y 0.0
 
-#define AJUSTMENT 0.008
 #define N_REGISTRED -1
 #define OBSTACLE  99
 
@@ -29,7 +28,7 @@ enum { RUN, TURN, CONTINUE};
 #define SENS_DROITE 3
 
 static int sens = SENS_BAS;
-static int tab_cases[20][30] = { { 0 },{ 0 } };
+static int tab_cases[CELL_X][CELL_Y] = { { 0 },{ 0 } };
 static int goal_flag = 0;
 static int flag = TURN;
 static int direction_pre = 0;
@@ -133,11 +132,16 @@ void update_path_planning(CtrlStruct *cvs)
 
 void mapcreating()
 {
-	int i = 0; int j = 0;
+	int i = 0;
+	int j = 0;
 
 	for (i = 0; i < CELL_X; i++)
+	{
 		for (j = 0; j < CELL_Y; j++)
+		{
 			tab_cases[i][j] = N_REGISTRED;
+		}
+	}
 
 	for (i = 0; i <= 4; i++)
 	{
@@ -170,7 +174,6 @@ void mapcreating()
 void number_assigment(int x, int y)
 {
 	int i, j;
-	
 	int value = 0;
 	tab_cases[x][y] = value;
 
@@ -214,10 +217,8 @@ void number_assigment(int x, int y)
 
 int trajectory(CtrlStruct *cvs, int x, int y)
 {
-	
 	x = cvs->path->rob_pos_XY->x;
 	y = cvs->path->rob_pos_XY->y;
-	
 	
 	int i, j;
 	int somme[4] = {0};
@@ -250,7 +251,8 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			for (j = y - 1; j <= y + 1; j++)
 				somme[SENS_DROITE] = somme[SENS_DROITE] + tab_cases[i][j];
 	}
-	printf("x : %d , y: %d \n", x, y);
+	
+	//printf("x : %d , y: %d \n", x, y);
 	minimum = somme[SENS_BAS];//On initialise la direction bas comme etant la plus petite par defaut
 	direction = SENS_BAS;
 
@@ -279,8 +281,6 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 	}
 
 	somme_pre = minimum;
-
-	
 	
 	if(goal_flag == 0) 
 	{
@@ -410,16 +410,18 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			break;
 		}
 	}
-	xy_to_XY(cvs);
-	return 0;
 	
-	//stocker la somme, appeleer le truc de deplacement ou stocker la direction
+	xy_to_XY(cvs);
+	
+	return 0;
 }
 
 void xy_to_XY(CtrlStruct *cvs)
 {
 	cvs->path->rob_pos_XY->x = floor((cvs->rob_pos->x * 1000 + WIDTH / 2) * CELL_X / WIDTH);
 	cvs->path->rob_pos_XY->y = floor((cvs->rob_pos->y * 1000 + HEIGHT / 2) * CELL_Y / HEIGHT);
+	
+	return;
 }
 
 double X_to_x(int X)
