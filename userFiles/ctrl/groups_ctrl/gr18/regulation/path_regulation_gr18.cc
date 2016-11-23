@@ -98,7 +98,7 @@ int run_x(CtrlStruct *cvs, double x_ref)
     pos_reg->int_error_r = (x_ref - rob_pos->x)*dt + pos_reg->int_error_r;
     pos_reg->int_error_l = (x_ref - rob_pos->x)*dt + pos_reg->int_error_l;
 
-    speed_regulation(cvs, Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0));
+    speed_regulation(cvs, -Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), -Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0));
 
     // ----- Wheels regulation computation end ----- //
     

@@ -32,6 +32,7 @@ static int sens = SENS_BAS;
 static int tab_cases[20][30] = { { 0 },{ 0 } };
 static int goal_flag = 0;
 static int flag = TURN;
+static int direction_pre = 0;
 
 
 NAMESPACE_INIT(ctrlGr18);
@@ -83,7 +84,8 @@ PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition)
 	path->rob_pos_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 	path->rob_goal_XY = (RobotPosition*)malloc(sizeof(RobotPosition));
 
-	path->rob_pos_XY = robposition;
+	path->rob_pos_XY->x = 17;
+	path->rob_pos_XY->y = 27;
 
 	path->rob_goal_XY->x = FIRST_GOAL_X;
 	path->rob_goal_XY->y = FIRST_GOAL_Y;
@@ -212,10 +214,10 @@ void number_assigment(int x, int y)
 
 int trajectory(CtrlStruct *cvs, int x, int y)
 {
-	/*
+	
 	x = cvs->path->rob_pos_XY->x;
 	y = cvs->path->rob_pos_XY->y;
-	*/
+	
 	
 	int i, j;
 	int somme[4] = {0};
@@ -248,7 +250,7 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			for (j = y - 1; j <= y + 1; j++)
 				somme[SENS_DROITE] = somme[SENS_DROITE] + tab_cases[i][j];
 	}
-	
+	printf("x : %d , y: %d \n", x, y);
 	minimum = somme[SENS_BAS];//On initialise la direction bas comme etant la plus petite par defaut
 	direction = SENS_BAS;
 
@@ -260,13 +262,13 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			minimum = somme[i];
 			direction = i;
 		}
-		
 		//printf("Somme1 = %d \n Somme2 = %d \n Somme3 = %d \n Somme4 = %d \n", somme[0], somme[1], somme[2], somme [3]);
 	}
 
-	printf("Minimum = %d \n", minimum);
-	printf("Somme_pre = %d \n", somme_pre);
-	
+	if(direction != direction_pre)
+		flag = TURN;
+	direction_pre = direction;
+
 	//printf("Goal_flag = %d \n", goal_flag);
 	
 	if (minimum > somme_pre)
@@ -282,6 +284,7 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 	
 	if(goal_flag == 0) 
 	{
+		
 		/*if (direction == -1)
 		{
 			if (turn(cvs, -M_PI/2.0, 1)) // alors tourner pour se mettre dans la direction -y
@@ -295,23 +298,25 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			switch(flag)
 			{
 				case TURN:
-					//printf("%d \n", turn(cvs, -M_PI/2.0, 1));
-					if (turn(cvs, -M_PI/2.0, 1) == 1)
+					if (turn(cvs,-M_PI/2.0, 1) == 1)
 					{
 						flag = RUN;
 					}
 					break;
 				case RUN:
-				//printf("%f \n", Y_to_y(y-1));
 					if (run_y(cvs, Y_to_y(y-1)) == 1)
 					{
-						//flag = CONTINUE;
-						trajectory(cvs, x, y-1);
+						xy_to_XY(cvs);
+						flag = TURN;
+						trajectory(cvs, x, y);
+						
 					}
 					break;
 				case CONTINUE:
+					
 				flag = TURN;
-					trajectory(cvs, x, y-1);
+				xy_to_XY(cvs);
+				trajectory(cvs, x, y);
 				break;
 			}
 				printf("bas \n");
@@ -325,18 +330,21 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 					if (turn(cvs, M_PI/2.0, 1) == 1)
 					{
 						flag = RUN;
+						
 					}
 					break;
 				case RUN:
 					if (run_y(cvs, Y_to_y(y+1)) == 1)
 					{
+						xy_to_XY(cvs);
 						flag = TURN;
-						trajectory(cvs, x, y+1);
+						trajectory(cvs, x, y);
 					}
 					break;
 					case CONTINUE:
 				flag = TURN;
-					trajectory(cvs, x, y-1);
+				xy_to_XY(cvs);
+				trajectory(cvs, x, y-1);
 				break;
 					
 			}
@@ -348,21 +356,24 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 		switch(flag)
 			{
 				case TURN:
-					if (turn(cvs, M_PI, 1) == 1)
+					if (turn(cvs, -M_PI, 1) == 1)
 					{
 						flag = RUN;
+						cvs->rob_pos->theta = M_PI;
 					}
 					break;
 				case RUN:
-					if (run_y(cvs, X_to_x(x-1)) == 1)
+					if (run_x(cvs, X_to_x(x-1)) == 1)
 					{
+						xy_to_XY(cvs);
 						flag = TURN;
-						trajectory(cvs, x-1, y);
+						trajectory(cvs, x, y);
 					}
 					break;
 					case CONTINUE:
-				flag = TURN;
-					trajectory(cvs, x, y-1);
+					xy_to_XY(cvs);
+					flag = TURN;
+					trajectory(cvs, x, y);
 				break;
 					
 			}
@@ -380,13 +391,15 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 					}
 					break;
 				case RUN:
-					if (run_y(cvs, X_to_x(x+1)) == 1)
+					if (run_x(cvs, X_to_x(x+1)) == 1)
 					{
+						xy_to_XY(cvs);
 						flag = TURN;
-						trajectory(cvs, x+1, y);
+						trajectory(cvs, x, y);
 					}
 					break;
 					case CONTINUE:
+						xy_to_XY(cvs);
 				flag = TURN;
 					trajectory(cvs, x, y-1);
 				break;
@@ -397,8 +410,9 @@ int trajectory(CtrlStruct *cvs, int x, int y)
 			break;
 		}
 	}
-	
+	xy_to_XY(cvs);
 	return 0;
+	
 	//stocker la somme, appeleer le truc de deplacement ou stocker la direction
 }
 
@@ -406,19 +420,16 @@ void xy_to_XY(CtrlStruct *cvs)
 {
 	cvs->path->rob_pos_XY->x = floor((cvs->rob_pos->x * 1000 + WIDTH / 2) * CELL_X / WIDTH);
 	cvs->path->rob_pos_XY->y = floor((cvs->rob_pos->y * 1000 + HEIGHT / 2) * CELL_Y / HEIGHT);
-
-	//printf("robpos xy: %f,%f , en XY : %f,%f\n",cvs->rob_pos->x,cvs->rob_pos->y, cvs->path->rob_goal_XY->x,cvs->path->rob_goal_XY->y);
-
 }
 
 double X_to_x(int X)
 {
-	return (X-10)*0.1 - 0.05;
+	return (X-10)*0.1 + 0.05;
 }
 
 double Y_to_y(int Y)
 {
-	return (Y-15)*0.1 - 0.05;
+	return (Y-15)*0.1 + 0.05;
 }
 
 /*
