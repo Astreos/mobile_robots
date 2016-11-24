@@ -4,16 +4,144 @@
 #include "init_pos_gr18.h"
 #include <math.h>
 
+//enum {RUN, TURN, CONTINUE}
+
+#define SENS_BAS 0
+#define SENS_HAUT 1
+#define SENS_GAUCHE 2
+#define SENS_DROITE 3
+
 NAMESPACE_INIT(ctrlGr18);
 
 /*! \brief follow a given path
  *
  * \param[in,out] cvs controller main structure
  */
+ /*
 void follow_path(CtrlStruct *cvs)
 {
+	if(goal_flag == 0) 
+	{
+		switch (direction)
+		{
+		case SENS_BAS:
+			switch(flag)
+			{
+				case TURN:
+					if (turn(cvs,-M_PI/2.0, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+					if (run_y(cvs, Y_to_y(y-1)) == 1)
+					{
+						xy_to_XY(cvs);
+						flag = TURN;
+						trajectory(cvs, x, y);
+						
+					}
+					break;
+				case CONTINUE:
+					
+				flag = TURN;
+				xy_to_XY(cvs);
+				trajectory(cvs, x, y);
+				break;
+			}
+				printf("bas \n");
+				
+			break;
+			
+		case SENS_HAUT:
+		switch(flag)
+			{
+				case TURN:
+					if (turn(cvs, M_PI/2.0, 1) == 1)
+					{
+						flag = RUN;
+						
+					}
+					break;
+				case RUN:
+					if (run_y(cvs, Y_to_y(y+1)) == 1)
+					{
+						xy_to_XY(cvs);
+						flag = TURN;
+						trajectory(cvs, x, y);
+					}
+					break;
+					case CONTINUE:
+				flag = TURN;
+				xy_to_XY(cvs);
+				trajectory(cvs, x, y-1);
+				break;
+					
+			}
+			printf("haut \n");
+			
+			break;
 
+		case SENS_GAUCHE:
+		switch(flag)
+			{
+				case TURN:
+					if (turn(cvs, -M_PI, 1) == 1)
+					{
+						flag = RUN;
+						cvs->rob_pos->theta = M_PI;
+					}
+					break;
+				case RUN:
+					if (run_x(cvs, X_to_x(x-1)) == 1)
+					{
+						xy_to_XY(cvs);
+						flag = TURN;
+						trajectory(cvs, x, y);
+					}
+					break;
+					case CONTINUE:
+					xy_to_XY(cvs);
+					flag = TURN;
+					trajectory(cvs, x, y);
+				break;
+					
+			}
+			printf("gauche \n");
+			
+			break;
+
+		case SENS_DROITE:
+		switch(flag)
+			{
+				case TURN:
+					if (turn(cvs, 0, 1) == 1)
+					{
+						flag = RUN;
+					}
+					break;
+				case RUN:
+					if (run_x(cvs, X_to_x(x+1)) == 1)
+					{
+						xy_to_XY(cvs);
+						flag = TURN;
+						trajectory(cvs, x, y);
+					}
+					break;
+					case CONTINUE:
+						xy_to_XY(cvs);
+				flag = TURN;
+					trajectory(cvs, x, y-1);
+				break;
+					
+			}
+		printf("droite \n");
+				
+			break;
+		}
+	}
 }
+* */
 
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
 {

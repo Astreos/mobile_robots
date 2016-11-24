@@ -65,7 +65,7 @@ void controller_init(CtrlStruct *cvs)
         cvs->pos_reg->int_error_l = 0;
 
 		//path 
-		cvs->path = init_path_planning(cvs, cvs->rob_pos);
+		cvs->path = init_path_planning(cvs);
 }
 
 /*! \brief controller loop (called every time-step)

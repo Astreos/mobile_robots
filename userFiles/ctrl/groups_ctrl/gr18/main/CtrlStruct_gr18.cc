@@ -91,7 +91,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->strat = init_strategy();
 
 	// path-planning
-	cvs->path = init_path_planning(cvs, cvs->rob_pos);
+	cvs->path = init_path_planning(cvs);
 
 	return cvs;
 }

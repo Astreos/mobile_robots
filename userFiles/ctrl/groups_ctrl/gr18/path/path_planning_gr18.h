@@ -15,23 +15,15 @@ NAMESPACE_INIT(ctrlGr18);
 /// path-planning main structure
 struct PathPlanning
 {
-	RobotPosition *rob_pos_XY; // coordonnées pour tableau
-	RobotPosition *rob_goal_XY;
-	int goal_id;
+	RobotPosition *rob_pos_XY; // coordonnées en cases
 };
 
-PathPlanning* init_path_planning(CtrlStruct *cvs, RobotPosition *robposition);
+PathPlanning* init_path_planning(CtrlStruct *cvs);
 void free_path_planning(PathPlanning *path);
 
-void update_path_planning(CtrlStruct *cvs);
-void mapcreating();
-void number_assigment(int x, int y);
-int trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
-void xy_to_XY(CtrlStruct *cvs);
-double X_to_x(int X);
-double Y_to_y(int Y);
-
-static int somme_pre = 4000; // somme min précédente ,arbitraire pour etre hyper grand a l'initialisation
+void map_creation(void);
+void number_assigment(int goal_X, int goal_Y);
+void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 
 NAMESPACE_CLOSE();
 
