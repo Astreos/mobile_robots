@@ -23,9 +23,9 @@ NAMESPACE_INIT(ctrlGr18);
 PathPlanning* init_path_planning(CtrlStruct *cvs)
 {
 	//variable declaration
-	int i, j;
-	
 	PathPlanning *path;
+	
+	int i, j;
 
 	// memory allocation
 	path = (PathPlanning*)malloc(sizeof(PathPlanning));
@@ -33,34 +33,6 @@ PathPlanning* init_path_planning(CtrlStruct *cvs)
 	// variable initialization
 	
 	// ----- path-planning initialization start ----- //
-
-	map_creation(); //création de la map
-	
-	trajectory(cvs, -0.5, -0.75);
-
-	// ----- path-planning initialization end ----- //
-	
-	// return structure initialized
-	return path;
-}
-
-/*! \brief close the path-planning algorithm (memory released)
-*
-* \param[in,out] path path-planning main structure
-*/
-void free_path_planning(PathPlanning *path)
-{
-	// ----- path-planning memory release start ----- //
-
-
-	// ----- path-planning memory release end ----- //
-
-	free(path);
-}
-
-void map_creation(void)
-{
-	int i, j;
 
 	for (i = 0; i < CELL_X; i++)
 	{
@@ -83,8 +55,10 @@ void map_creation(void)
 	
 	for (j = 1; j <= 5; j++)
 	{
-		tab_cases[16][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
+		tab_cases[15][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
+		tab_cases[16][j] = OBSTACLE;
 		tab_cases[16][25 + j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
+		tab_cases[16][25 + j] = OBSTACLE;
 	}
 
 	for (i = 1; i <= 5; i++)
@@ -93,32 +67,83 @@ void map_creation(void)
 		tab_cases[i][24] = OBSTACLE; //Barrière en haut à droite (camp jaune cible)
 	}
 
-	for (i = 10; i <= 13; i++)
+	for (i = 9; i <= 12; i++)
 	{
 		tab_cases[i][12] = OBSTACLE; //Barrière milieu-gauche
 		tab_cases[i][19] = OBSTACLE; //Barrière milieu-droit
 	}
-	for (i = 6; i <= 9; i++)
+	for (i = 6; i <= 8; i++)
 	{
 		tab_cases[i][15] = OBSTACLE; // Barrière milieu-milieu verticale
 		tab_cases[i][16] = OBSTACLE;
 	}
 
-	for (j = 12; j <= 18; j++)
+	for (j = 12; j <= 19; j++)
 	{
-		tab_cases[10][j] = OBSTACLE; // Barrière milieu horizontale
+		tab_cases[9][j] = OBSTACLE; // Barrière milieu horizontale
 	}
 	
-	return;
+	for (i = 0; i<CELL_X; i++)
+	{
+		for (j = 0; j<CELL_Y; j++)
+		{
+			if (tab_cases[i][j] < 10) {
+				printf("%1.2f ", tab_cases[i][j]);
+			}
+			else {
+				printf("%1.1f ", tab_cases[i][j]);
+			}
+		}
+		printf("\n");
+	}
+
+	// ----- path-planning initialization end ----- //
+	
+	// return structure initialized
+	return path;
 }
 
-void number_assigment(int X, int Y)
+/*! \brief close the path-planning algorithm (memory released)
+*
+* \param[in,out] path path-planning main structure
+*/
+void free_path_planning(PathPlanning *path)
 {
-    int i, j;
-    int k, l;
-    int n;
+	// ----- path-planning memory release start ----- //
 
-    tab_cases[X][Y] = 0;
+
+	// ----- path-planning memory release end ----- //
+
+	free(path);
+}
+
+void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
+{
+	// variables declaration
+	RobotPosition *rob_pos;
+	
+	int i, j;
+    int n, k;
+    
+    int X, Y;
+    int goal_X, goal_Y;
+    
+    int list_cases[100][2] = {{0},{0}};
+    float minimum;
+    
+    // variables initialization
+    rob_pos = cvs->rob_pos;
+    
+    k=0;
+    
+    X = floor(10.0*rob_pos->x) + (CELL_X - 2)/2;
+	Y = floor(10.0*rob_pos->y) + (CELL_Y - 2)/2;
+	goal_X = floor(10.0*goal_x) + (CELL_X - 2)/2;
+	goal_Y = floor(10.0*goal_y) + (CELL_Y - 2)/2;
+	
+    tab_cases[goal_X][goal_Y] = 0;
+    list_cases[0][0] = X;
+	list_cases[0][1] = Y;
 
     for(n = X; n > 0; n--)
     {
@@ -164,27 +189,8 @@ void number_assigment(int X, int Y)
             }
         }
     }
-
-    return;
-}
-
-void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
-{
-	int goal_X = floor(10.0*goal_x) + (CELL_X - 2)/2;
-	int goal_Y = floor(10.0*goal_y) + (CELL_Y - 2)/2;
 	
-	number_assigment(goal_X, goal_Y);
-	
-	int X = 19;
-	int Y = 27;
-	
-	int i, j;
-	int list_cases[100][2] = {{0},{0}};
-	list_cases[0][0] = X;
-	list_cases[0][1] = Y;
-	float minimum = tab_cases[X][Y];
-	
-	int k=0;
+	minimum = tab_cases[X][Y];
 	
 	while ((list_cases[k][0] != goal_X) || (list_cases[k][1] != goal_Y))
 	{
@@ -203,7 +209,6 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		}
 	}
 	
-	
 	for (i = 0; i <= k; i++)
 	{
 		tab_cases[list_cases[i][0]][list_cases[i][1]] = 55.0;
@@ -221,6 +226,55 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 			}
 		}
 		printf("\n");
+	}
+	
+	for (i = 0; i < CELL_X; i++)
+	{
+		for (j = 0; j < CELL_Y; j++)
+		{
+			tab_cases[i][j] = N_REGISTRED;
+		}
+	}
+
+	for (i = 0; i < CELL_X; i++)
+	{
+		tab_cases[i][0] = OBSTACLE; // Bordure supérieure
+		tab_cases[i][CELL_Y-1] = OBSTACLE; // Bordure inférieure
+	}
+	for (j = 0; j < CELL_Y; j++)
+	{
+		tab_cases[0][j] = OBSTACLE; //Bordure gauche
+		tab_cases[CELL_X-1][j] = OBSTACLE; //Bordure droite
+	}
+	
+	for (j = 1; j <= 5; j++)
+	{
+		tab_cases[15][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
+		tab_cases[16][j] = OBSTACLE;
+		tab_cases[16][25 + j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
+		tab_cases[16][25 + j] = OBSTACLE;
+	}
+
+	for (i = 1; i <= 5; i++)
+	{
+		tab_cases[i][7] = OBSTACLE; //Barrière en haut à gauche (camp bleu cible)
+		tab_cases[i][24] = OBSTACLE; //Barrière en haut à droite (camp jaune cible)
+	}
+
+	for (i = 9; i <= 12; i++)
+	{
+		tab_cases[i][12] = OBSTACLE; //Barrière milieu-gauche
+		tab_cases[i][19] = OBSTACLE; //Barrière milieu-droit
+	}
+	for (i = 6; i <= 8; i++)
+	{
+		tab_cases[i][15] = OBSTACLE; // Barrière milieu-milieu verticale
+		tab_cases[i][16] = OBSTACLE;
+	}
+
+	for (j = 12; j <= 19; j++)
+	{
+		tab_cases[9][j] = OBSTACLE; // Barrière milieu horizontale
 	}
 	
 	return;
