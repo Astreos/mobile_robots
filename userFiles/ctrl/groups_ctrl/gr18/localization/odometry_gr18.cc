@@ -44,7 +44,7 @@ void update_odometry(CtrlStruct *cvs)
         
         //set_plot(rob_pos->x, "x_odo_[m]");
         //set_plot(rob_pos->y, "y_odo_[m]");
-        //set_plot(rob_pos->theta, "theta_odo_[rad]");
+        set_plot(rob_pos->theta, "theta_odo_[rad]");
 
 	// last update time
 	rob_pos->last_t = inputs->t;

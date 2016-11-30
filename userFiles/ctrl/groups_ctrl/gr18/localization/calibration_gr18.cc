@@ -1,5 +1,6 @@
 #include "calibration_gr18.h"
 #include "speed_regulation_gr18.h"
+#include "path_regulation_gr18.h"
 #include "odometry_gr18.h"
 #include "useful_gr18.h"
 #include "init_pos_gr18.h"
@@ -67,7 +68,7 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_STATE_B: // state B
 
-                    speed_regulation(cvs, 5, 5);
+                    speed_regulation(cvs, 7, 7);
 
                     if ((rob_pos->y <= 1.25 && not team_id) || (rob_pos->y >= -1.25 && team_id)) {
                         speed_regulation(cvs, 0, 0);
@@ -80,14 +81,12 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_STATE_C: // state C
 
-                    speed_regulation(cvs, -7*team(team_id), 7*team(team_id));
-
-                    if (((rob_pos->theta > 0) && (rob_pos->theta <= M_PI) && not team_id) || ((rob_pos->theta < 0) && (rob_pos->theta <= M_PI) && team_id)) {
-			speed_regulation(cvs, 0, 0);
-
+						if (turn(cvs, M_PI, 0) == 1)
+							{
                         calib->flag = CALIB_STATE_D;
                         calib->t_flag = t;
-                    }
+					}
+                    
 
                     break;
 
@@ -108,7 +107,7 @@ void calibration(CtrlStruct *cvs)
                     
                 case CALIB_STATE_E: // state E
                     
-                    speed_regulation(cvs, 5, 5);
+                    speed_regulation(cvs, 7, 7);
 
                     if (rob_pos->x <= 0.75) {
 			speed_regulation(cvs, 0, 0);
@@ -121,13 +120,12 @@ void calibration(CtrlStruct *cvs)
 
 		case CALIB_FINISH: // wait before the match is starting
                     
-                    speed_regulation(cvs, 3*team(team_id), -3*team(team_id));
-                    
-                    if (((rob_pos->theta < 0) && (rob_pos->theta >= -M_PI/2.0) && not team_id) || ((rob_pos->theta > 0) && (rob_pos->theta <= M_PI/2.0) && team_id)) {
-			speed_regulation(cvs, 0, 0);
-                        
+                    if (turn(cvs, -M_PI/2.0, 0) == 1)
+							{
                         cvs->main_state = WAIT_INIT_STATE;
-                    }
+					}
+                        
+                
                     
                     break;
 

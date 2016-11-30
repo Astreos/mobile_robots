@@ -48,10 +48,10 @@ void main_strategy(CtrlStruct *cvs)
     switch (strat->main_state)
     {
     case GAME_STATE_A:
-        if (turn(cvs, M_PI/4.0, 0) == 1)
-        {
-            strat->main_state = GAME_STATE_B;
-        }
+		if (turn(cvs, 3.0*M_PI/4.0, 0) == 1)
+		{
+			speed_regulation(cvs, 0, 0);
+		}
         break;
 
     case GAME_STATE_B:

@@ -17,17 +17,17 @@ void follow_path(CtrlStruct *cvs)
 
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
 {
-    double dt;
-    double error;
-    int team_id;
-    int dir;
-    int sens_opt;
-
     // variables declaration
     RobotPosition *rob_pos;
     CtrlIn *inputs;
     CtrlOut *outputs;
     PosRegulation *pos_reg;
+    
+    double dt;
+    double error;
+    int team_id;
+    int dir;
+    int sens_opt;
 
     // variables initialization
     inputs  = cvs->inputs;
@@ -42,7 +42,7 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     // ----- Wheels regulation computation start ----- //
     
 	if (theta_ref*rob_pos->theta < 0)
-	{		
+	{
 		if ((2.0*M_PI - fabs(theta_ref) - fabs(rob_pos->theta)) <= (fabs(theta_ref) + fabs(rob_pos->theta)))
 		{
 			sens_opt = -1;
@@ -64,34 +64,22 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
 		}
 	}
 	
-	float Kp = 20;
-    float Ti = 5;
+	float Kp = 5.0;
+    float Ti = 10.0;
 	
 	if (sens == 0)
 	{		
 		dir = team(team_id)*sens_opt;
 		
-		if (sens_opt = 1)
+		if (sens_opt == 1)
 		{
 			if ((theta_ref*rob_pos->theta < 0) && (theta_ref < 0))
 			{
 				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
-				
-				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
-				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
-				
-				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
-				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
 			}
 			else
 			{
 				error = fabs(theta_ref - rob_pos->theta);
-				
-				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
-				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
-				
-				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
-				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
 			}
 		}
 		else
@@ -99,47 +87,31 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
 			if ((theta_ref*rob_pos->theta < 0) && (theta_ref > 0))
 			{
 				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
-				
-				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
-				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
-				
-				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
-				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
 			}
 			else
 			{
 				error = fabs(theta_ref - rob_pos->theta);
-				
-				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
-				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
-				
-				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
-				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
 			}
 		}
 	}
 	
-/*
-	// tourner par 0 OU tourner par pi, theta et theta_ref même signe
-	outputs->wheel_commands[0] = (Kp*fabs(theta_ref - rob_pos->theta) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
-	outputs->wheel_commands[1] = -(Kp*fabs(theta_ref - rob_pos->theta) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
+	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, 0, M_PI/2.0);
+	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, 0, M_PI/2.0);
 	
-	// tourner par pi, theta et theta_ref signe contraire
-	outputs->wheel_commands[0] = (Kp * (2.0*M_PI - fabs(theta_ref - rob_pos->theta)) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
-	outputs->wheel_commands[1] = -(Kp * (2.0*M_PI - fabs(theta_ref - rob_pos->theta)) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
-*/
+	speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*dir, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*dir);
 
     // ----- Wheels regulation computation end ----- //
     
-    set_plot(fabs(theta_ref - rob_pos->theta), "error");
+    //set_plot(fabs(theta_ref - rob_pos->theta), "error");
+    //set_plot(pos_reg->int_error_r, "int_error");
     
-    set_plot(outputs->wheel_commands[0], "R_wheel_[V]");
-    set_plot(outputs->wheel_commands[1], "L_wheel_[V]");
+    //set_plot(outputs->wheel_commands[0], "R_wheel_[V]");
+    //set_plot(outputs->wheel_commands[1], "L_wheel_[V]");
     
     // last update time
     pos_reg->last_t = inputs->t;
     
-    if (fabs(theta_ref - rob_pos->theta) < 0.01)
+    if (fabs(theta_ref - rob_pos->theta) < 0.00011)
     {
         return 1;
     }
