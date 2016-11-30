@@ -106,7 +106,7 @@ void free_CtrlStruct(CtrlStruct *cvs)
 	free_strategy(cvs->strat);
 	free(cvs->calib);
 	free(cvs->sp_reg);
-        free(cvs->pos_reg);
+    free(cvs->pos_reg);
 	free(cvs->opp_pos);
 	free(cvs->rob_pos);
 	free(cvs->triang_pos);
