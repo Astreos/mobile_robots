@@ -18,9 +18,10 @@ void follow_path(CtrlStruct *cvs)
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
 {
     double dt;
+    double error;
     int team_id;
     int dir;
-    double r_sp, l_sp;
+    int sens_opt;
 
     // variables declaration
     RobotPosition *rob_pos;
@@ -34,39 +35,106 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     rob_pos = cvs->rob_pos;
     team_id = cvs->team_id;
     pos_reg  = cvs->pos_reg;
-    
-    r_sp = inputs->r_wheel_speed;
-    l_sp = inputs->l_wheel_speed;
 
     // time
     dt = inputs->t - pos_reg->last_t; // time interval since last call
 
-    if (sens == 0)
-    {
-        dir = team(team_id);
-    }
-    else
-    {
-        dir = team(team_id)*sens;
-    }
-
     // ----- Wheels regulation computation start ----- //
-
-    float Kp = 20;
-    float Ti = 50;
-
-    pos_reg->int_error_r = (theta_ref - rob_pos->theta)*dt + pos_reg->int_error_r;
-    pos_reg->int_error_l = -(theta_ref - rob_pos->theta)*dt + pos_reg->int_error_l;
     
-    outputs->wheel_commands[0] = (Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
-    outputs->wheel_commands[1] = -(Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
-
-    //speed_regulation(cvs, (Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir, -(Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir);
+	if (theta_ref*rob_pos->theta < 0)
+	{		
+		if ((2.0*M_PI - fabs(theta_ref) - fabs(rob_pos->theta)) <= (fabs(theta_ref) + fabs(rob_pos->theta)))
+		{
+			sens_opt = -1;
+		}
+		else
+		{
+			sens_opt = 1;
+		}
+	}
+	else
+	{
+		if (theta_ref < rob_pos->theta)
+		{
+			sens_opt = -1;
+		}
+		else
+		{
+			sens_opt = 1;
+		}
+	}
+	
+	float Kp = 20;
+    float Ti = 5;
+	
+	if (sens == 0)
+	{		
+		dir = team(team_id)*sens_opt;
+		
+		if (sens_opt = 1)
+		{
+			if ((theta_ref*rob_pos->theta < 0) && (theta_ref < 0))
+			{
+				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
+				
+				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
+				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
+				
+				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+			}
+			else
+			{
+				error = fabs(theta_ref - rob_pos->theta);
+				
+				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
+				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
+				
+				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+			}
+		}
+		else
+		{
+			if ((theta_ref*rob_pos->theta < 0) && (theta_ref > 0))
+			{
+				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
+				
+				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
+				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
+				
+				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+			}
+			else
+			{
+				error = fabs(theta_ref - rob_pos->theta);
+				
+				pos_reg->int_error_r = error*dt + pos_reg->int_error_r;
+				pos_reg->int_error_l = error*dt + pos_reg->int_error_l;
+				
+				outputs->wheel_commands[0] = (Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+				outputs->wheel_commands[1] = -(Kp*error + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI, M_PI))*dir;
+			}
+		}
+	}
+	
+/*
+	// tourner par 0 OU tourner par pi, theta et theta_ref même signe
+	outputs->wheel_commands[0] = (Kp*fabs(theta_ref - rob_pos->theta) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
+	outputs->wheel_commands[1] = -(Kp*fabs(theta_ref - rob_pos->theta) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
+	
+	// tourner par pi, theta et theta_ref signe contraire
+	outputs->wheel_commands[0] = (Kp * (2.0*M_PI - fabs(theta_ref - rob_pos->theta)) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
+	outputs->wheel_commands[1] = -(Kp * (2.0*M_PI - fabs(theta_ref - rob_pos->theta)) + 0*(Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir;
+*/
 
     // ----- Wheels regulation computation end ----- //
     
-    set_plot(r_sp, "R_wheel_reg_[rad/s]");
-    set_plot(l_sp, "L_wheel_reg_[rad/s]");
+    set_plot(fabs(theta_ref - rob_pos->theta), "error");
+    
+    set_plot(outputs->wheel_commands[0], "R_wheel_[V]");
+    set_plot(outputs->wheel_commands[1], "L_wheel_[V]");
     
     // last update time
     pos_reg->last_t = inputs->t;
@@ -79,17 +147,6 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     {
         return 0;
     }
-
-/*
-    if ((fabs(theta_ref - rob_pos->theta) < 0.01) && (fabs((Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -M_PI/4.0, M_PI/4.0))*dir) < 0.75))
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-    */
 }
 
 int run_x(CtrlStruct *cvs, double x_ref)
