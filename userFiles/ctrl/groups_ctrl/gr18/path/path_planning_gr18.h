@@ -21,6 +21,7 @@ struct PathPlanning
 PathPlanning* init_path_planning(CtrlStruct *cvs);
 void free_path_planning(PathPlanning *path);
 
+void create_map(void);
 void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 
 NAMESPACE_CLOSE();

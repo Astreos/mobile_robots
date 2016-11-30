@@ -48,7 +48,7 @@ void main_strategy(CtrlStruct *cvs)
     switch (strat->main_state)
     {
     case GAME_STATE_A:
-        trajectory(cvs, -0.5, -0.75);
+        trajectory(cvs, -0.5, -1.00);
         break;
 
     case GAME_STATE_B:

@@ -110,7 +110,7 @@ void calibration(CtrlStruct *cvs)
                     
                     speed_regulation(cvs, 7, 7);
 
-                    if (rob_pos->x <= 0.65) {
+                    if (rob_pos->x <= 0.75) {
 			speed_regulation(cvs, 0, 0);
                         
                         calib->flag = CALIB_FINISH;
