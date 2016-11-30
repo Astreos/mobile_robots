@@ -41,32 +41,38 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     
 	if (theta_ref*rob_pos->theta < 0)
 	{		
-		if ((2.0*M_PI - fabs(theta_ref) - fabs(rob_pos->theta)) <= (fabs(theta_ref) + fabs(rob_pos->theta)))
+		if ((2.0*M_PI - fabs(theta_ref) - fabs(rob_pos->theta)) >= (fabs(theta_ref) + fabs(rob_pos->theta)))
 		{
-			sens_opt = -1;
-			
-			printf("la1 ");
+			if (theta_ref >= rob_pos->theta)
+			{
+				sens_opt = 1;
+			}
+			else
+			{
+				sens_opt = -1;
+			}
 		}
 		else
 		{
-			sens_opt = 1;
-			
-			printf("la2 ");
+			if (theta_ref <= rob_pos->theta)
+			{
+				sens_opt = 1;
+			}
+			else
+			{
+				sens_opt = -1;
+			}
 		}
 	}
 	else
 	{
-		if (theta_ref < rob_pos->theta)
+		if (theta_ref >= rob_pos->theta)
 		{
-			sens_opt = -1;
-			
-			printf("la3 ");
+			sens_opt = 1;
 		}
 		else
 		{
-			sens_opt = 1;
-			
-			printf("la4 ");
+			sens_opt = -1;
 		}
 	}
 	
