@@ -63,9 +63,6 @@ void controller_init(CtrlStruct *cvs)
 	cvs->pos_reg->last_t = t;
         cvs->pos_reg->int_error_r = 0;
         cvs->pos_reg->int_error_l = 0;
-
-		//path 
-		cvs->path = init_path_planning(cvs);
 }
 
 /*! \brief controller loop (called every time-step)
@@ -73,7 +70,7 @@ void controller_init(CtrlStruct *cvs)
  * \param[in] cvs controller main structure
  */
 void controller_loop(CtrlStruct *cvs)
-{
+{	
 	// variables declaration
 	double t;
 	CtrlIn *inputs;
@@ -97,6 +94,8 @@ void controller_loop(CtrlStruct *cvs)
 
 	// tower control
 	outputs->tower_command = 15;
+	
+	trajectory(cvs, -0.5, -1.00);
 
 	switch (cvs->main_state)
 	{

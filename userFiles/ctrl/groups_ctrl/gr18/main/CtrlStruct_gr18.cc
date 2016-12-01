@@ -23,6 +23,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	CtrlStruct *cvs;
 
 	cvs = (CtrlStruct*) malloc(sizeof(CtrlStruct));
+	if (cvs == NULL) {exit(0);}
 
 	// io
 	cvs->inputs  = inputs;
@@ -37,6 +38,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	// robot position
 	cvs->rob_pos = (RobotPosition*) malloc(sizeof(RobotPosition));
+	if (cvs->rob_pos == NULL) {exit(0);}
 
 	cvs->rob_pos->x = 0.0;
 	cvs->rob_pos->y = 0.0;
@@ -46,6 +48,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	// triangulation position
 	cvs->triang_pos = (RobotPosition*) malloc(sizeof(RobotPosition));
+	if (cvs->triang_pos == NULL) {exit(0);}
 
 	cvs->triang_pos->x = 0.0;
 	cvs->triang_pos->y = 0.0;
@@ -55,6 +58,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	// opponents position
 	cvs->opp_pos = (OpponentsPosition*) malloc(sizeof(OpponentsPosition));
+	if (cvs->opp_pos == NULL) {exit(0);}
 
 	for(i=0; i<2; i++)
 	{
@@ -67,6 +71,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	// speed regulation
 	cvs->sp_reg = (SpeedRegulation*) malloc(sizeof(SpeedRegulation));
+	if (cvs->sp_reg == NULL) {exit(0);}
 
 	cvs->sp_reg->int_error_r = 0.0;
 	cvs->sp_reg->int_error_l = 0.0;
@@ -75,6 +80,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
         
         // position regulation
 	cvs->pos_reg = (PosRegulation*) malloc(sizeof(PosRegulation));
+	if (cvs->pos_reg == NULL) {exit(0);}
 
 	cvs->pos_reg->int_error_r = 0.0;
 	cvs->pos_reg->int_error_l = 0.0;
@@ -83,6 +89,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	// calibration
 	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
+	if (cvs->calib == NULL) {exit(0);}
 
 	cvs->calib->flag = 0;
 	cvs->calib->t_flag = 0.0;
@@ -91,7 +98,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->strat = init_strategy();
 
 	// path-planning
-	cvs->path = init_path_planning(cvs);
+	cvs->path = init_path_planning();
 
 	return cvs;
 }

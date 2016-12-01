@@ -13,16 +13,21 @@
 NAMESPACE_INIT(ctrlGr18);
 
 /// path-planning main structure
-struct PathPlanning
+typedef struct PathPlanning
 {
-	RobotPosition *rob_pos_XY; // coordonnées en cases
-};
+	float **map;
+	int **list_goal;
+	
+	//RobotPosition *rob_pos_XY; // coordonnées en cases
+} PathPlanning;
 
-PathPlanning* init_path_planning(CtrlStruct *cvs);
+PathPlanning* init_path_planning();
 void free_path_planning(PathPlanning *path);
 
-void create_map(void);
 void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
+void create_map(CtrlStruct *cvs);
+void assign_numbers(CtrlStruct *cvs);
+void find_path(CtrlStruct *cvs);
 
 NAMESPACE_CLOSE();
 
