@@ -5,7 +5,6 @@
 #include "path_regulation_gr18.h"
 #include "speed_regulation_gr18.h"
 #include <math.h>
-#include <iostream>
 
 #define RESOLUTION 2
 #define CELL_X (20*RESOLUTION + 2)
@@ -70,6 +69,9 @@ PathPlanning* init_path_planning()
 	// goal_XY
 	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
 	if (path->rob_pos_XY == NULL) {exit(0);}
+	
+	// flag
+	path->flag = 0;
 
 	// ----- path-planning initialization end ----- //
 	
@@ -121,10 +123,10 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
     rob_pos = cvs->rob_pos;
     path = cvs->path;
     
-    path->rob_pos_XY->X = RESOLUTION*floor(10.0*rob_pos->x) + (CELL_X - 2)/2;
-	path->rob_pos_XY->Y = RESOLUTION*floor(10.0*rob_pos->y) + (CELL_Y - 2)/2;
-	path->goal_XY->X = RESOLUTION*floor(10.0*goal_x) + (CELL_X - 2)/2;
-	path->goal_XY->Y = RESOLUTION*floor(10.0*goal_y) + (CELL_Y - 2)/2;
+    path->rob_pos_XY->X = x_to_X(rob_pos->x);
+	path->rob_pos_XY->Y = y_to_Y(rob_pos->y);
+	path->goal_XY->X = x_to_X(goal_x);
+	path->goal_XY->Y = y_to_Y(goal_y);
 	
 	create_map(cvs);
 	
@@ -153,20 +155,22 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		for (j = 0; j<CELL_Y; j++)
 		{
 			if (path->map[i][j] == OBSTACLE) {
-				printf("o ");
+				printf("o");
 			}
 			else if (path->map[i][j] == GOAL) {
-				printf("* ");
+				printf("*");
 			}
 			else if (path->map[i][j] == N_REGISTRED) {
-				printf("+ ");
+				printf("+");
 			}
 			else {
-				printf("  ");
+				printf(" ");
 			}
 		}
 		printf("\n");
 	}
+	
+	path->flag = 1;
 	
 	return;
 }
@@ -347,12 +351,34 @@ void find_path(CtrlStruct *cvs)
 		}
 	}
 	
+	path->nb_goals = k;
+	
 	for (i = 0; i <= k; i++)
 	{
 		path->map[path->list_goal[i][0]][path->list_goal[i][1]] = GOAL;
 	}
 	
 	return;
+}
+
+int x_to_X(double x)
+{
+	return RESOLUTION*floor(10.0*x) + (CELL_X - 2)/2;
+}
+
+int y_to_Y(double y)
+{
+	return RESOLUTION*floor(10.0*y) + (CELL_Y - 2)/2;
+}
+
+double X_to_x(int X)
+{
+	return ((X - CELL_X - 2.0)/RESOLUTION -0.5)/10;
+}
+
+double Y_to_y(int Y)
+{
+	return ((Y - CELL_Y - 2.0)/RESOLUTION -0.5)/10;
 }
 
 NAMESPACE_CLOSE();

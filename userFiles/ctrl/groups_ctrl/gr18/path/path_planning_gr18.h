@@ -23,6 +23,8 @@ typedef struct PathPlanning
 {
 	float **map;
 	int **list_goal;
+	int nb_goals;
+	int flag;
 	
 	PositionXY *rob_pos_XY; // coordonnées en cases
 	PositionXY *goal_XY;
@@ -35,6 +37,11 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 void create_map(CtrlStruct *cvs);
 void assign_numbers(CtrlStruct *cvs);
 void find_path(CtrlStruct *cvs);
+
+int x_to_X(double x);
+int y_to_Y(double y);
+double X_to_x(int X);
+double Y_to_y(int Y);
 
 NAMESPACE_CLOSE();
 

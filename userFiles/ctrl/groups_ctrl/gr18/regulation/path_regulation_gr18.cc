@@ -2,6 +2,7 @@
 #include "useful_gr18.h"
 #include "speed_regulation_gr18.h"
 #include "init_pos_gr18.h"
+#include "path_planning_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -12,7 +13,57 @@ NAMESPACE_INIT(ctrlGr18);
  */
 void follow_path(CtrlStruct *cvs)
 {
-
+	//variable declaration
+	PathPlanning *path;
+	int i;
+	
+	// variables initialization
+    path = cvs->path;
+    
+    for (i=0; i <= path->nb_goals; i++)
+    {
+		if (path->list_goal[i][0] < path->rob_pos_XY->X)
+		{
+			if (path->list_goal[i][1] < path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, -3.0*M_PI/4.0, 0)) {}
+			}
+			else if (path->list_goal[i][1] = path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, M_PI, 0)) {}
+			}
+			else if (path->list_goal[i][1] > path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, 3.0*M_PI/4.0, 0)) {}
+			}
+		}
+		else if (path->list_goal[i][0] = path->rob_pos_XY->X)
+		{
+			if (path->list_goal[i][1] < path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, -M_PI/2.0, 0)) {run_y(cvs, Y_to_y(path->list_goal[i][1])); printf("%f", Y_to_y(path->list_goal[i][1]));}
+			}
+			else if (path->list_goal[i][1] > path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, M_PI/2.0, 0)) {}
+			}
+		}
+		else if (path->list_goal[i][0] > path->rob_pos_XY->X)
+		{
+			if (path->list_goal[i][1] < path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, -M_PI/4.0, 0)) {}
+			}
+			else if (path->list_goal[i][1] = path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, 0, 0)) {}
+			}
+			else if (path->list_goal[i][1] > path->rob_pos_XY->Y)
+			{
+				if (turn(cvs, M_PI/4.0, 0)) {}
+			}
+		}
+	}
 }
 
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
