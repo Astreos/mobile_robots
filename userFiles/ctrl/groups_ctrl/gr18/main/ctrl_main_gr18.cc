@@ -14,7 +14,6 @@
 #include "triangulation_gr18.h"
 #include "strategy_gr18.h"
 #include "path_regulation_gr18.h"
-#include "path_planning_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -70,7 +69,7 @@ void controller_init(CtrlStruct *cvs)
  * \param[in] cvs controller main structure
  */
 void controller_loop(CtrlStruct *cvs)
-{	
+{
 	// variables declaration
 	double t;
 	CtrlIn *inputs;
@@ -106,7 +105,7 @@ void controller_loop(CtrlStruct *cvs)
 		case WAIT_INIT_STATE:
 			speed_regulation(cvs, 0.0, 0.0);
 
-			if (t > -4.0)
+			if (t > -5.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = GAME_STATE_A;

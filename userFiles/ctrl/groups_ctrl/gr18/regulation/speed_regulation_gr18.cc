@@ -33,20 +33,20 @@ void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 
     // ----- Wheels regulation computation start ----- //
 
-    int Kp = 40.0; //Kc = 90
-    float Ti = 0.05; //Tosc = 0.0057143 s
+    float Kp = 29.0; //Kc = 90 => Kopt = 40.5
+    float Ti = 0.07; //Tosc = 0.0057143 s
 
-    sp_reg->int_error_r = (r_sp_ref - r_sp)*dt + sp_reg->int_error_r;
-    sp_reg->int_error_l = (l_sp_ref - l_sp)*dt + sp_reg->int_error_l;
+    sp_reg->int_error_r = (r_sp_ref - r_sp)*dt + limit_range(sp_reg->int_error_r, -fabs(r_sp_ref), fabs(r_sp_ref));
+    sp_reg->int_error_l = (l_sp_ref - l_sp)*dt + limit_range(sp_reg->int_error_l, -fabs(l_sp_ref), fabs(l_sp_ref));
 
     // wheel commands
-    outputs->wheel_commands[0] = Kp * (r_sp_ref - r_sp) + (Kp/Ti)*limit_range(sp_reg->int_error_r, -fabs(r_sp_ref), fabs(r_sp_ref));
-    outputs->wheel_commands[1] = Kp * (l_sp_ref - l_sp) + (Kp/Ti)*limit_range(sp_reg->int_error_l, -fabs(l_sp_ref), fabs(l_sp_ref));
+    outputs->wheel_commands[0] = Kp*(r_sp_ref - r_sp) + (Kp/Ti)*sp_reg->int_error_r;
+    outputs->wheel_commands[1] = Kp*(l_sp_ref - l_sp) + (Kp/Ti)*sp_reg->int_error_l;
 
     // ----- Wheels regulation computation end ----- //
 
-    set_plot(r_sp, "R_wheel_reg_[rad/s]");
-    set_plot(l_sp, "L_wheel_reg_[rad/s]");
+    //set_plot(r_sp, "R_wheel_reg_[rad/s]");
+    //set_plot(l_sp, "L_wheel_reg_[rad/s]");
 
     // last update time
     sp_reg->last_t = inputs->t;
