@@ -50,11 +50,11 @@ void main_strategy(CtrlStruct *cvs)
     switch (strat->main_state)
     {
     case GAME_STATE_A:
-		if (path->flag != 1)
+		if (path->flag_trajectory != 1)
 		{
 			trajectory(cvs, 0.75, -0.5);
 		}
-		//follow_path(cvs);
+		follow_path(cvs);
         break;
 
     case GAME_STATE_B:

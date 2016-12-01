@@ -24,7 +24,9 @@ typedef struct PathPlanning
 	float **map;
 	int **list_goal;
 	int nb_goals;
-	int flag;
+	int flag_trajectory;
+	int flag_action;
+	int count_actions;
 	
 	PositionXY *rob_pos_XY; // coordonnées en cases
 	PositionXY *goal_XY;

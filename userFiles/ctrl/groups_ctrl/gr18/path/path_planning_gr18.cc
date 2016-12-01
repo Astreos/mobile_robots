@@ -70,8 +70,10 @@ PathPlanning* init_path_planning()
 	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
 	if (path->rob_pos_XY == NULL) {exit(0);}
 	
-	// flag
-	path->flag = 0;
+	// flags
+	path->flag_trajectory = 0;
+	path->flag_action = 0;
+	path->count_actions = 1;
 
 	// ----- path-planning initialization end ----- //
 	
@@ -170,7 +172,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	
-	path->flag = 1;
+	path->flag_trajectory = 1;
 	
 	return;
 }
@@ -258,8 +260,6 @@ void assign_numbers(CtrlStruct *cvs)
 	path = cvs->path;
 	
 	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;
-    path->list_goal[0][0] = path->rob_pos_XY->X;
-	path->list_goal[0][1] = path->rob_pos_XY->Y;
 
     for(n = path->rob_pos_XY->X; n > 0; n--)
     {
@@ -321,6 +321,9 @@ void find_path(CtrlStruct *cvs)
 	
 	minimum = path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y];
 	k=0;
+	
+	path->list_goal[0][0] = path->rob_pos_XY->X;
+	path->list_goal[0][1] = path->rob_pos_XY->Y;
 	
 	while ((path->list_goal[k][0] != path->goal_XY->X) || (path->list_goal[k][1] != path->goal_XY->Y))
 	{
