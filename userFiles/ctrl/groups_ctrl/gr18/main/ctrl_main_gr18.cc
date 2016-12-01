@@ -94,8 +94,6 @@ void controller_loop(CtrlStruct *cvs)
 
 	// tower control
 	outputs->tower_command = 15;
-	
-	trajectory(cvs, -0.5, -1.00);
 
 	switch (cvs->main_state)
 	{

@@ -12,13 +12,20 @@
 
 NAMESPACE_INIT(ctrlGr18);
 
+typedef struct PositionXY
+{
+	int X; ///< X position
+	int Y; ///< Y position
+} PositionXY;
+
 /// path-planning main structure
 typedef struct PathPlanning
 {
 	float **map;
 	int **list_goal;
 	
-	//RobotPosition *rob_pos_XY; // coordonnées en cases
+	PositionXY *rob_pos_XY; // coordonnées en cases
+	PositionXY *goal_XY;
 } PathPlanning;
 
 PathPlanning* init_path_planning();
