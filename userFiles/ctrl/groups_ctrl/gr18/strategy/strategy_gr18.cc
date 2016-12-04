@@ -41,16 +41,19 @@ void main_strategy(CtrlStruct *cvs)
     // variables declaration
     Strategy *strat;
     CtrlIn *inputs;
+	CtrlOut *outputs;
     PathPlanning *path;
 
     // variables initialization
     strat  = cvs->strat;
     inputs = cvs->inputs;
+	outputs = cvs->outputs;
     path = cvs->path;
 
     switch (strat->main_state)
     {
     case GAME_STATE_A:
+		outputs->flag_release = 0;
 		if (path->flag_trajectory != 1)
 		{
 			trajectory(cvs, -0.77, 0);
@@ -96,6 +99,7 @@ void main_strategy(CtrlStruct *cvs)
 		if (follow_path(cvs, -0.70, 1.30))
 		{
 			speed_regulation(cvs, 0, 0);
+			outputs->flag_release = 1;
 		}
         break;
 
