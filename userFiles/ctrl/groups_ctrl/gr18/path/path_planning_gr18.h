@@ -22,10 +22,9 @@ typedef struct PositionXY
 typedef struct PathPlanning
 {
 	float **map;
+	int flag_trajectory;
 	int **list_goal;
 	int nb_goals;
-	int flag_trajectory;
-	int flag_action;
 	int count_actions;
 	
 	PositionXY *rob_pos_XY; // coordonnées en cases
@@ -37,8 +36,6 @@ void free_path_planning(PathPlanning *path);
 
 void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 void create_map(CtrlStruct *cvs);
-void put_keypoints(CtrlStruct *cvs);
-int manage_keypoints(CtrlStruct *cvs, int KP_X, int KP_Y);
 void assign_numbers(CtrlStruct *cvs);
 void find_path(CtrlStruct *cvs);
 

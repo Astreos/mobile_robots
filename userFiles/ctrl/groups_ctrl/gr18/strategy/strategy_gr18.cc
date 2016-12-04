@@ -18,6 +18,7 @@ Strategy* init_strategy()
     Strategy *strat;
 
     strat = (Strategy*) malloc(sizeof(Strategy));
+	if (strat == NULL) {exit(0);}
 
     return strat;
 }
@@ -52,33 +53,50 @@ void main_strategy(CtrlStruct *cvs)
     case GAME_STATE_A:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.5, -1.1);
-			/*for (int i=0; i<=path->nb_goals; i++)
-			{
-				printf("X = %d et Y= %d", path->list_goal[i][0], path->list_goal[i][1]);
-				printf("goal_x = %f et goal_y = %f \n", X_to_x(path->list_goal[i][0]), Y_to_y(path->list_goal[i][1]));
-			}*/
+			trajectory(cvs, -0.77, 0);
 		}
-		if (follow_path(cvs))
+		if (follow_path(cvs, -0.77, 0))
 		{
-			printf("OKAY");
+			path->flag_trajectory = 0;
+			strat->main_state = GAME_STATE_B;
 		}
         break;
 
     case GAME_STATE_B:
-		speed_regulation(cvs, 0.0, 0.0);
+		if (turn(cvs, M_PI/4.0, 0))
+		{
+			strat->main_state = GAME_STATE_C;
+		}
         break;
 
     case GAME_STATE_C:
-        speed_regulation(cvs, 0.0, 0.0);
+		if (path->flag_trajectory != 1)
+		{
+			trajectory(cvs, -0.40, 0.60);
+		}
+		if (follow_path(cvs, -0.40, 0.60))
+		{
+			path->flag_trajectory = 0;
+			strat->main_state = GAME_STATE_D;
+		}
         break;
 
     case GAME_STATE_D:
-        speed_regulation(cvs, 0.0, 0.0);
+		if (turn(cvs, 0, 0))
+		{
+			strat->main_state = GAME_STATE_E;
+		}
         break;
 
     case GAME_STATE_E:
-        speed_regulation(cvs, 0.0, 0.0);
+		if (path->flag_trajectory != 1)
+		{
+			trajectory(cvs, -0.70, 1.30);
+		}
+		if (follow_path(cvs, -0.70, 1.30))
+		{
+			speed_regulation(cvs, 0, 0);
+		}
         break;
 
     default:
