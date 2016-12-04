@@ -52,13 +52,21 @@ void main_strategy(CtrlStruct *cvs)
     case GAME_STATE_A:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, 0.75, -0.5);
+			trajectory(cvs, -0.5, -1.1);
+			/*for (int i=0; i<=path->nb_goals; i++)
+			{
+				printf("X = %d et Y= %d", path->list_goal[i][0], path->list_goal[i][1]);
+				printf("goal_x = %f et goal_y = %f \n", X_to_x(path->list_goal[i][0]), Y_to_y(path->list_goal[i][1]));
+			}*/
 		}
-		follow_path(cvs);
+		if (follow_path(cvs))
+		{
+			printf("OKAY");
+		}
         break;
 
     case GAME_STATE_B:
-        speed_regulation(cvs, 0.0, 0.0);
+		speed_regulation(cvs, 0.0, 0.0);
         break;
 
     case GAME_STATE_C:

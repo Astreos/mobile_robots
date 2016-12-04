@@ -14,6 +14,7 @@
 #include "triangulation_gr18.h"
 #include "strategy_gr18.h"
 #include "path_regulation_gr18.h"
+#include "path_planning_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 

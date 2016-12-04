@@ -11,7 +11,7 @@ NAMESPACE_INIT(ctrlGr18);
  *
  * \param[in,out] cvs controller main structure
  */
-void follow_path(CtrlStruct *cvs)
+int follow_path(CtrlStruct *cvs)
 {
 	//variable declaration
 	PathPlanning *path;
@@ -19,11 +19,12 @@ void follow_path(CtrlStruct *cvs)
 	// variables initialization
     path = cvs->path;
     
-    if (path->count_actions <= path->nb_goals)
+    if (path->count_actions < path->nb_goals)
     {
 		switch(path->flag_action)
 		{
-		case 0:
+		case 5:
+			
 			if (path->list_goal[path->count_actions][0] < path->rob_pos_XY->X)
 			{
 				if (path->list_goal[path->count_actions][1] < path->rob_pos_XY->Y)
@@ -40,7 +41,7 @@ void follow_path(CtrlStruct *cvs)
 				}
 			}
 			else if (path->list_goal[path->count_actions][0] = path->rob_pos_XY->X)
-			{				
+			{
 				if (path->list_goal[path->count_actions][1] < path->rob_pos_XY->Y)
 				{
 					if (turn(cvs, -M_PI/2.0, 0)) {path->flag_action = 1;}
@@ -48,6 +49,10 @@ void follow_path(CtrlStruct *cvs)
 				else if (path->list_goal[path->count_actions][1] > path->rob_pos_XY->Y)
 				{
 					if (turn(cvs, M_PI/2.0, 0)) {path->flag_action = 1;}
+				}
+				else if (path->list_goal[path->count_actions][1] = path->rob_pos_XY->Y)
+				{
+					path->flag_action = 1;
 				}
 			}
 			else if (path->list_goal[path->count_actions][0] > path->rob_pos_XY->X)
@@ -68,17 +73,25 @@ void follow_path(CtrlStruct *cvs)
 				
 			break;
 			
-		case 1:
-			if (run_y(cvs, Y_to_y(path->list_goal[path->count_actions][1])))
+		case 0:
+			
+			//printf("%d", path->count_actions);
+			
+			if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0))
 			{
-				path->flag_action = 0;
 				path->count_actions++;
 				
-				printf("%d ", path->count_actions);
+				path->flag_action = 0;
 			}
 			
 			break;
 		}
+		
+		return 0;
+	}
+	else
+	{
+		return 1;
 	}
 }
 
@@ -187,10 +200,11 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     // last update time
     pos_reg->last_t = inputs->t;
     
-    if (error <= 0.00011)
+    if (error <= 0.0005) //0.00011
     {
 		pos_reg->int_error_r = 0;
 		pos_reg->int_error_l = 0;
+		speed_regulation(cvs, 0, 0);
         return 1;
     }
     else
@@ -238,6 +252,7 @@ int run_x(CtrlStruct *cvs, double x_ref)
     {
 		pos_reg->int_error_r = 0;
 		pos_reg->int_error_l = 0;
+		speed_regulation(cvs, 0, 0);
         return 1;
     }
     else
@@ -285,12 +300,62 @@ int run_y(CtrlStruct *cvs, double y_ref)
     {
 		pos_reg->int_error_r = 0;
 		pos_reg->int_error_l = 0;
+		speed_regulation(cvs, 0, 0);
         return 1;
     }
     else
     {
         return 0;
     }
+}
+
+int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref)
+{
+	// variables declaration
+	RobotPosition *rob_pos;
+	CtrlIn *inputs;
+	PosRegulation *pos_reg;
+	
+	double rho, alpha, beta;
+	double dt;
+	
+	// variables initialization
+	inputs  = cvs->inputs;
+	rob_pos = cvs->rob_pos;
+	pos_reg  = cvs->pos_reg;
+	
+	// time
+	dt = inputs->t - pos_reg->last_t; // time interval since last call
+	
+	// ----- Wheels regulation computation start ----- //
+	
+	float K_rho = 27.0;
+	float K_alpha = 17.0;
+	float K_beta = 0;
+	
+	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
+	alpha = -rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x);
+	beta = -theta_ref - rob_pos->theta - alpha;
+	
+	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
+	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
+	
+	speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	
+	// ----- Wheels regulation computation end ----- //
+	
+	// last update time
+	pos_reg->last_t = inputs->t;
+	
+	if (rho < 0.1)
+	{
+		speed_regulation(cvs, 0, 0);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 NAMESPACE_CLOSE();

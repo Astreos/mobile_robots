@@ -37,6 +37,8 @@ void free_path_planning(PathPlanning *path);
 
 void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 void create_map(CtrlStruct *cvs);
+void put_keypoints(CtrlStruct *cvs);
+int manage_keypoints(CtrlStruct *cvs, int KP_X, int KP_Y);
 void assign_numbers(CtrlStruct *cvs);
 void find_path(CtrlStruct *cvs);
 
