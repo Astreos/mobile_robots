@@ -137,7 +137,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	find_path(cvs);
 	
-	FILE* file = fopen("../../../tableau.txt", "w");
+	FILE* file = fopen("../../last_map.txt", "w");
 	
 	for (i = 0; i<CELL_X; i++)
 	{
