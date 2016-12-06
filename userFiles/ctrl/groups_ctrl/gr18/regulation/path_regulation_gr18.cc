@@ -45,7 +45,6 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     double dt;
     double error;
     int team_id;
-    int dir;
     int sens_opt;
 
     // variables initialization
@@ -100,9 +99,7 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     float Ti = 10.0;
 	
 	if (sens == 0)
-	{		
-		dir = team(team_id)*sens_opt;
-		
+	{
 		if (sens_opt == 1)
 		{
 			if ((theta_ref*rob_pos->theta < 0) && (theta_ref < 0))
@@ -130,7 +127,7 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
 	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, 0, M_PI/2.0);
 	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, 0, M_PI/2.0);
 	
-	speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*dir, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*dir);
+	speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt);
 
     // ----- Wheels regulation computation end ----- //
     

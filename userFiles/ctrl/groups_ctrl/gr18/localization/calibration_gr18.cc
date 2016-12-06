@@ -81,7 +81,7 @@ void calibration(CtrlStruct *cvs)
 
     case CALIB_STATE_C: // state C
 
-        if (turn(cvs, M_PI, 0) == 1)
+        if (turn(cvs, M_PI*team(team_id), 0) == 1)
         {
             calib->flag = CALIB_STATE_D;
             calib->t_flag = t;
@@ -119,7 +119,7 @@ void calibration(CtrlStruct *cvs)
 
     case CALIB_FINISH: // wait before the match is starting
 
-        if (turn(cvs, -M_PI/2.0, 0) == 1)
+		if (turn(cvs, (-M_PI/2.0)*team(team_id), 0) == 1)
         {
             cvs->main_state = WAIT_INIT_STATE;
         }
