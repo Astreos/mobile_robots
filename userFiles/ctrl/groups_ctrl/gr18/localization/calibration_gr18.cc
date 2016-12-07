@@ -1,5 +1,6 @@
 #include "calibration_gr18.h"
 #include "speed_regulation_gr18.h"
+#include "path_regulation_gr18.h"
 #include "odometry_gr18.h"
 #include "useful_gr18.h"
 #include "init_pos_gr18.h"
@@ -13,128 +14,122 @@ NAMESPACE_INIT(ctrlGr18);
 enum {CALIB_START, CALIB_STATE_A, CALIB_STATE_B, CALIB_STATE_C, CALIB_STATE_D, CALIB_STATE_E, CALIB_FINISH};
 
 /*! \brief calibration of the robot to calibrate its position
- * 
+ *
  * \param[in,out] cvs controller main structure
- * 
+ *
  * This FSM can be adapted, depending on the map and on the robots initial position.
  */
 void calibration(CtrlStruct *cvs)
 {
-	// variables declaration
-	int team_id;
-	double t;
+    // variables declaration
+    int team_id;
+    double t;
 
-	CtrlIn *inputs;
-	RobotCalibration *calib;
-	RobotPosition *rob_pos;
+    CtrlIn *inputs;
+    RobotCalibration *calib;
+    RobotPosition *rob_pos;
 
-	// variables initialization
-	inputs = cvs->inputs;
-	calib  = cvs->calib;
+    // variables initialization
+    inputs = cvs->inputs;
+    calib  = cvs->calib;
 
-	rob_pos = cvs->rob_pos;
+    rob_pos = cvs->rob_pos;
 
-	t = inputs->t;
-	team_id = cvs->team_id;
+    t = inputs->t;
+    team_id = cvs->team_id;
 
-	// finite state machine (FSM)        
-	switch (calib->flag)
-	{
-		case CALIB_START: // start calibration
+    // finite state machine (FSM)
+    switch (calib->flag)
+    {
+    case CALIB_START: // start calibration
 
-                    speed_regulation(cvs, 0, 0);
+        speed_regulation(cvs, 0, 0);
 
-                    calib->flag = CALIB_STATE_A;
-                    calib->t_flag = t;
+        calib->flag = CALIB_STATE_A;
+        calib->t_flag = t;
 
-                    break;
-                    
-                case CALIB_STATE_A: // state A
-                    
-                    speed_regulation(cvs, -7, -7);
+        break;
 
-                    if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
-                        speed_regulation(cvs, 0, 0);
+    case CALIB_STATE_A: // state A
 
-                        rob_pos->y = 1.44*team(team_id);
-                        rob_pos->theta = -M_PI/2.0*team(team_id);
-                        
-                        calib->flag = CALIB_STATE_B;
-                        calib->t_flag = t;
-                    }
+        speed_regulation(cvs, -7, -7);
 
-                    break;
+        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
+            speed_regulation(cvs, 0, 0);
 
-		case CALIB_STATE_B: // state B
+            rob_pos->y = 1.44*team(team_id);
+            rob_pos->theta = -M_PI/2.0*team(team_id);
 
-                    speed_regulation(cvs, 7, 7);
+            calib->flag = CALIB_STATE_B;
+            calib->t_flag = t;
+        }
 
-                    if ((rob_pos->y <= 1.25 && not team_id) || (rob_pos->y >= -1.25 && team_id)) {
-                        speed_regulation(cvs, 0, 0);
+        break;
 
-                        calib->flag = CALIB_STATE_C;
-                        calib->t_flag = t;
-                    }
+    case CALIB_STATE_B: // state B
 
-                    break;
+        speed_regulation(cvs, 7, 7);
 
-		case CALIB_STATE_C: // state C
+        if ((rob_pos->y <= 1.140 && not team_id) || (rob_pos->y >= -1.140 && team_id)) {
+            speed_regulation(cvs, 0, 0);
 
-                    speed_regulation(cvs, -7*team(team_id), 7*team(team_id));
+            calib->flag = CALIB_STATE_C;
+            calib->t_flag = t;
+        }
 
-                    if (((rob_pos->theta > 0) && (rob_pos->theta <= M_PI) && not team_id) || ((rob_pos->theta < 0) && (rob_pos->theta <= M_PI) && team_id)) {
-			speed_regulation(cvs, 0, 0);
+        break;
 
-                        calib->flag = CALIB_STATE_D;
-                        calib->t_flag = t;
-                    }
+    case CALIB_STATE_C: // state C
 
-                    break;
+        if (turn(cvs, M_PI*team(team_id), 0) == 1)
+        {
+            calib->flag = CALIB_STATE_D;
+            calib->t_flag = t;
+        }
 
-		case CALIB_STATE_D: // state D
-                    
-                    speed_regulation(cvs, -7, -7);
+        break;
 
-                    if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
-                        speed_regulation(cvs, 0, 0);
-                        
-                        rob_pos->x = 0.94;
-                        
-                        calib->flag = CALIB_STATE_E;
-                        calib->t_flag = t;
-                    }
+    case CALIB_STATE_D: // state D
 
-                    break;
-                    
-                case CALIB_STATE_E: // state E
-                    
-                    speed_regulation(cvs, 7, 7);
+        speed_regulation(cvs, -7, -7);
 
-                    if (rob_pos->x <= 0.75) {
-			speed_regulation(cvs, 0, 0);
-                        
-                        calib->flag = CALIB_FINISH;
-                        calib->t_flag = t;
-                    }
+        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
+            speed_regulation(cvs, 0, 0);
 
-                    break;
+            rob_pos->x = 0.94;
 
-		case CALIB_FINISH: // wait before the match is starting
-                    
-                    speed_regulation(cvs, 7*team(team_id), -7*team(team_id));
-                    
-                    if (((rob_pos->theta < 0) && (rob_pos->theta >= -M_PI/2.0) && not team_id) || ((rob_pos->theta > 0) && (rob_pos->theta <= M_PI/2.0) && team_id)) {
-			speed_regulation(cvs, 0, 0);
-                        
-                        cvs->main_state = WAIT_INIT_STATE;
-                    }
-                    
-                    break;
+            calib->flag = CALIB_STATE_E;
+            calib->t_flag = t;
+        }
 
-		default:
-			printf("Error: unknown state : %d !\n", calib->flag);
-			exit(EXIT_FAILURE);
-	}
+        break;
+
+    case CALIB_STATE_E: // state E
+
+        speed_regulation(cvs, 7, 7);
+
+        if (rob_pos->x <= 0.75) {
+            speed_regulation(cvs, 0, 0);
+
+            calib->flag = CALIB_FINISH;
+            calib->t_flag = t;
+        }
+
+        break;
+
+    case CALIB_FINISH: // wait before the match is starting
+
+		if (turn(cvs, (-M_PI/2.0)*team(team_id), 0) == 1)
+        {
+            cvs->main_state = WAIT_INIT_STATE;
+        }
+        
+        break;
+
+    default:
+        printf("Error: unknown state : %d !\n", calib->flag);
+        exit(EXIT_FAILURE);
+    }
 }
 
 NAMESPACE_CLOSE();

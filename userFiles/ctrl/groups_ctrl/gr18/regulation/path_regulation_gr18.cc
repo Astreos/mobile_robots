@@ -2,6 +2,7 @@
 #include "useful_gr18.h"
 #include "speed_regulation_gr18.h"
 #include "init_pos_gr18.h"
+#include "path_planning_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -10,26 +11,44 @@ NAMESPACE_INIT(ctrlGr18);
  *
  * \param[in,out] cvs controller main structure
  */
-void follow_path(CtrlStruct *cvs)
+int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 {
-
+	//variable declaration
+	PathPlanning *path;
+	
+	// variables initialization
+    path = cvs->path;
+    
+    if (path->count_actions <= path->nb_goals-5)
+	{
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0, 0.1))
+		{
+			path->count_actions++;
+		}
+		
+		return 0;
+	}
+	
+	else if (run(cvs, goal_x, goal_y, 0, 0.001))
+	{
+		return 1;
+	}
 }
 
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
 {
-    double dt;
-    int team_id;
-    int dir;
-
     // variables declaration
     RobotPosition *rob_pos;
     CtrlIn *inputs;
-    CtrlOut *outputs;
     PosRegulation *pos_reg;
+    
+    double dt;
+    double error;
+    int team_id;
+    int sens_opt;
 
     // variables initialization
     inputs  = cvs->inputs;
-    outputs = cvs->outputs;
     rob_pos = cvs->rob_pos;
     team_id = cvs->team_id;
     pos_reg  = cvs->pos_reg;
@@ -37,127 +56,250 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     // time
     dt = inputs->t - pos_reg->last_t; // time interval since last call
 
-    if (sens == 0)
-    {
-        dir = team(team_id);
-    }
-    else
-    {
-        dir = team(team_id)*sens;
-    }
-
     // ----- Wheels regulation computation start ----- //
-
-    int Kp = 20; //Kc = 90
-    float Ti = 100; //Tosc = 0.0057143 s
-
-    pos_reg->int_error_r = (theta_ref - rob_pos->theta)*dt + pos_reg->int_error_r;
-    pos_reg->int_error_l = -(theta_ref - rob_pos->theta)*dt + pos_reg->int_error_l;
-
-    speed_regulation(cvs, (Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -2.0*M_PI, 2.0*M_PI))*dir, -(Kp*(theta_ref - rob_pos->theta) + (Kp/Ti)*limit_range(pos_reg->int_error_r, -2.0*M_PI, 2.0*M_PI))*dir);
+    
+	if (theta_ref*rob_pos->theta < 0)
+	{		
+		if ((2.0*M_PI - fabs(theta_ref) - fabs(rob_pos->theta)) >= (fabs(theta_ref) + fabs(rob_pos->theta)))
+		{
+			if (theta_ref >= rob_pos->theta)
+			{
+				sens_opt = 1;
+			}
+			else
+			{
+				sens_opt = -1;
+			}
+		}
+		else
+		{
+			if (theta_ref <= rob_pos->theta)
+			{
+				sens_opt = 1;
+			}
+			else
+			{
+				sens_opt = -1;
+			}
+		}
+	}
+	else
+	{
+		if (theta_ref >= rob_pos->theta)
+		{
+			sens_opt = 1;
+		}
+		else
+		{
+			sens_opt = -1;
+		}
+	}
+	
+	float Kp = 5.0;
+    float Ti = 10.0;
+	
+	if (sens == 0)
+	{
+		if (sens_opt == 1)
+		{
+			if ((theta_ref*rob_pos->theta < 0) && (theta_ref < 0))
+			{
+				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
+			}
+			else
+			{
+				error = fabs(theta_ref - rob_pos->theta);
+			}
+		}
+		else
+		{
+			if ((theta_ref*rob_pos->theta < 0) && (theta_ref > 0))
+			{
+				error = 2.0*M_PI - fabs(theta_ref - rob_pos->theta);
+			}
+			else
+			{
+				error = fabs(theta_ref - rob_pos->theta);
+			}
+		}
+	}
+	
+	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, 0, M_PI/2.0);
+	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, 0, M_PI/2.0);
+	
+	speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt);
 
     // ----- Wheels regulation computation end ----- //
-
-    if (fabs(theta_ref - rob_pos->theta) < 0.001)
+    
+    //set_plot(error, "error");
+    //set_plot(pos_reg->int_error_r, "int_error");
+    
+    // last update time
+    pos_reg->last_t = inputs->t;
+    
+    if (error <= 0.00011)
     {
+		pos_reg->int_error_r = 0;
+		pos_reg->int_error_l = 0;
         return 1;
     }
     else
     {
         return 0;
     }
+}
 
-    // last update time
-    pos_reg->last_t = inputs->t;
+int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon)
+{
+	// variables declaration
+	RobotPosition *rob_pos;
+	CtrlIn *inputs;
+	PosRegulation *pos_reg;
+	
+	double rho, alpha, beta;
+	double dt;
+	float K_rho, K_alpha, K_beta;
+	
+	// variables initialization
+	inputs  = cvs->inputs;
+	rob_pos = cvs->rob_pos;
+	pos_reg  = cvs->pos_reg;
+	
+	// time
+	dt = inputs->t - pos_reg->last_t; // time interval since last call
+	
+	// ----- Wheels regulation computation start ----- //
+	
+	if (epsilon >= 0.01)
+	{
+		K_rho = 27.0*4;
+		K_alpha = 17.0*4;
+		K_beta = 0;
+	}
+	else if (epsilon < 0.01)
+	{
+		K_rho = 27.0*1.5;
+		K_alpha = 17.0*1.5;
+		K_beta = 0;
+	}
+	
+	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
+	alpha = -rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x);
+	beta = -theta_ref - rob_pos->theta - alpha;
+	
+	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
+	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
+	
+	speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	
+	// ----- Wheels regulation computation end ----- //
+	
+	// last update time
+	pos_reg->last_t = inputs->t;
+	
+	if (rho < epsilon)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 int run_x(CtrlStruct *cvs, double x_ref)
 {
-    double dt;
-
-    // variables declaration
-    RobotPosition *rob_pos;
-    CtrlIn *inputs;
-    CtrlOut *outputs;
-    PosRegulation *pos_reg;
-
-    // variables initialization
-    inputs  = cvs->inputs;
-    outputs = cvs->outputs;
-    rob_pos = cvs->rob_pos;
-    pos_reg  = cvs->pos_reg;
-
-    // time
-    dt = inputs->t - pos_reg->last_t; // time interval since last call
-
-    // ----- Wheels regulation computation start ----- //
-
-    int Kp = 50;
-    float Ti = 100;
-
-    pos_reg->int_error_r = (x_ref - rob_pos->x)*dt + pos_reg->int_error_r;
-    pos_reg->int_error_l = (x_ref - rob_pos->x)*dt + pos_reg->int_error_l;
-
-    speed_regulation(cvs, Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), Kp*(x_ref - rob_pos->x) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0));
-
-    // ----- Wheels regulation computation end ----- //
-
-    if (fabs(x_ref - rob_pos->x) < 0.0001)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-
-    // last update time
-    pos_reg->last_t = inputs->t;
+	// variables declaration
+	RobotPosition *rob_pos;
+	CtrlIn *inputs;
+	PosRegulation *pos_reg;
+	
+	double dt;
+	double error;
+	
+	// variables initialization
+	inputs  = cvs->inputs;
+	rob_pos = cvs->rob_pos;
+	pos_reg  = cvs->pos_reg;
+	
+	// time
+	dt = inputs->t - pos_reg->last_t; // time interval since last call
+	
+	// ----- Wheels regulation computation start ----- //
+	
+	float Kp = 35.0;
+	float Ti = 20.0;
+	
+	error = x_ref - rob_pos->x;
+	
+	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
+	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
+	
+	speed_regulation(cvs, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r), -(Kp*error + (Kp/Ti)*pos_reg->int_error_r));
+	
+	// ----- Wheels regulation computation end ----- //
+	
+	// last update time
+	pos_reg->last_t = inputs->t;
+	
+	if (fabs(error) < 0.001)
+	{
+		pos_reg->int_error_r = 0;
+		pos_reg->int_error_l = 0;
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 int run_y(CtrlStruct *cvs, double y_ref)
 {
-    double dt;
-    int flag = 0;
-
-    // variables declaration
-    RobotPosition *rob_pos;
-    CtrlIn *inputs;
-    CtrlOut *outputs;
-    PosRegulation *pos_reg;
-
-    // variables initialization
-    inputs  = cvs->inputs;
-    outputs = cvs->outputs;
-    rob_pos = cvs->rob_pos;
-    pos_reg  = cvs->pos_reg;
-
-    // time
-    dt = inputs->t - pos_reg->last_t; // time interval since last call
-
-    // ----- Wheels regulation computation start ----- //
-
-    int Kp = 50;
-    float Ti = 100;
-
-    pos_reg->int_error_r = (y_ref - rob_pos->y)*dt + pos_reg->int_error_r;
-    pos_reg->int_error_l = (y_ref - rob_pos->y)*dt + pos_reg->int_error_l;
-
-    speed_regulation(cvs, -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_r, -3.0, 3.0), -Kp*(y_ref - rob_pos->y) - (Kp/Ti)*limit_range(pos_reg->int_error_l, -3.0, 3.0));
-
-    // ----- Wheels regulation computation end ----- //
-
-    if (fabs(y_ref - rob_pos->y) < 0.0001)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-
-    // last update time
-    pos_reg->last_t = inputs->t;
+	// variables declaration
+	RobotPosition *rob_pos;
+	CtrlIn *inputs;
+	PosRegulation *pos_reg;
+	
+	double dt;
+	double error;
+	
+	// variables initialization
+	inputs  = cvs->inputs;
+	rob_pos = cvs->rob_pos;
+	pos_reg  = cvs->pos_reg;
+	
+	// time
+	dt = inputs->t - pos_reg->last_t; // time interval since last call
+	
+	// ----- Wheels regulation computation start ----- //
+	
+	float Kp = 35.0;
+	float Ti = 20.0;
+	
+	error = y_ref - rob_pos->y;
+	
+	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
+	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
+	
+	speed_regulation(cvs, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r), -(Kp*error + (Kp/Ti)*pos_reg->int_error_l));
+	
+	// ----- Wheels regulation computation end ----- //
+	
+	// last update time
+	pos_reg->last_t = inputs->t;
+	
+	if (fabs(error) < 0.001)
+	{
+		pos_reg->int_error_r = 0;
+		pos_reg->int_error_l = 0;
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
+
 
 NAMESPACE_CLOSE();
