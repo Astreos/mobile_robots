@@ -42,6 +42,7 @@ typedef struct CtrlStruct
 
 	RobotPosition *rob_pos;     ///< robot position coming from the robot odometry
 	RobotPosition *triang_pos;  ///< robot position coming from the triangulation
+	RobotPosition *kalman_pos;     ///< robot position coming from the robot odometry
 	OpponentsPosition *opp_pos; ///< opponents position
 	SpeedRegulation *sp_reg;    ///< speed regulation
 	PosRegulation *pos_reg;    ///< speed regulation

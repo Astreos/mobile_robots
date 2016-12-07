@@ -56,6 +56,17 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->triang_pos->theta  = 0.0;
 	cvs->triang_pos->last_t = 0.0;
 
+	// Kalman position
+	cvs->kalman_pos = (RobotPosition*) malloc(sizeof(RobotPosition));
+	if (cvs->kalman_pos == NULL) {exit(0);}
+	
+	cvs->kalman_pos->x = 0.0;
+	cvs->kalman_pos->y = 0.0;
+	
+	cvs->kalman_pos->theta  = 0.0;
+	cvs->kalman_pos->last_t = 0.0;
+	
+	
 	// opponents position
 	cvs->opp_pos = (OpponentsPosition*) malloc(sizeof(OpponentsPosition));
 	if (cvs->opp_pos == NULL) {exit(0);}
@@ -117,7 +128,7 @@ void free_CtrlStruct(CtrlStruct *cvs)
 	free(cvs->opp_pos);
 	free(cvs->rob_pos);
 	free(cvs->triang_pos);
-
+	free(cvs->kalman_pos);
 	free(cvs);
 }
 
