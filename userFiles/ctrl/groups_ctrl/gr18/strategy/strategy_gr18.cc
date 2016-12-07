@@ -63,8 +63,11 @@ void main_strategy(CtrlStruct *cvs)
 		}
 		if (follow_path(cvs, -0.77, 0*team(team_id)))
 		{
-			path->flag_trajectory = 0;
-			strat->main_state = GAME_STATE_B;
+			if (inputs->nb_targets == 1)
+			{
+				path->flag_trajectory = 0;
+				strat->main_state = GAME_STATE_B;
+			}
 		}
         break;
 
@@ -75,12 +78,15 @@ void main_strategy(CtrlStruct *cvs)
 		}
 		if (follow_path(cvs, -0.40, -0.60*team(team_id)))
 		{
-			path->flag_trajectory = 0;
-			strat->main_state = GAME_STATE_C;
+			if (inputs->nb_targets == 2)
+			{
+				path->flag_trajectory = 0;
+				strat->main_state = GAME_STATE_C;
+			}
 		}
         break;
 
-    case GAME_STATE_C:
+   /* case GAME_STATE_C:
 		if (path->flag_trajectory != 1)
 		{
 			trajectory(cvs, -0.10, -0.70*team(team_id));
@@ -91,13 +97,13 @@ void main_strategy(CtrlStruct *cvs)
 			strat->main_state = GAME_STATE_D;
 		}
         break;
-
-    case GAME_STATE_D:
+		*/
+    case GAME_STATE_C:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.70, -1.20*team(team_id));
+			trajectory(cvs, -0.70, -1.30*team(team_id));
 		}
-		if (follow_path(cvs, -0.70, -1.20*team(team_id)))
+		if (follow_path(cvs, -0.70, -1.30*team(team_id)))
 		{
 			path->flag_trajectory = 0;
 			outputs->flag_release = 1;

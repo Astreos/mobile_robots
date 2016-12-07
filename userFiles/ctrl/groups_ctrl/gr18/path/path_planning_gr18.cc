@@ -289,7 +289,7 @@ void create_map(CtrlStruct *cvs)
 		
 		for (j = 1; j <= 5*RESOLUTION+3; j++) // Barrières adjacentes aux camps de départ
 		{
-			for (i = -3; i <= 3; i++)
+			for (i = -4; i <= 4; i++)
 			{
 				path->map[15*RESOLUTION-i][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
 				path->map[15*RESOLUTION-i][CELL_Y-1-j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
@@ -303,43 +303,43 @@ void create_map(CtrlStruct *cvs)
 			
 		}
 		
-		for (i = 1; i <= 5*RESOLUTION+4; i++) // Barrières adjacentes aux camps d'arrivée
+		for (i = 1; i <= 5*RESOLUTION+5; i++) // Barrières adjacentes aux camps d'arrivée
 		{
-			for (j = -3; j <= 3; j++)
+			for (j = -4; j <= 4; j++)
 			{
 				path->map[i][7*RESOLUTION+j] = OBSTACLE; // Barrière en haut à gauche (camp bleu cible)
 				path->map[i][CELL_Y-1-7*RESOLUTION+j] = OBSTACLE; // Barrière en haut à droite (camp jaune cible)
 			}
 		}
-		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+7; i++) // On augmente le pic de chaque barrière de 3
+		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+8; i++) // On augmente le pic de chaque barrière de 3
 		{
-			path->map[i][7*RESOLUTION] = OBSTACLE; // Barrière en haut à gauche (camp bleu cible)
-			path->map[i][CELL_Y-1-7*RESOLUTION] = OBSTACLE; // Barrière en haut à droite (camp jaune cible)
+			path->map[i][10] = OBSTACLE; // Barrière en haut à gauche (camp bleu cible)
+			path->map[i][CELL_Y-1-10] = OBSTACLE; // Barrière en haut à droite (camp jaune cible)
 		}
 		path->map[5*RESOLUTION+4][7*RESOLUTION+4] = OBSTACLE; // On augmente légèrement l'extrémité droite de la barrière en haut à gauche
 		path->map[5*RESOLUTION+5][7*RESOLUTION+3] = OBSTACLE; // On augmente légèrement l'extrémité basse de la barrière en haut à gauche
 		path->map[5*RESOLUTION+4][CELL_Y-1-(7*RESOLUTION+4)] = OBSTACLE; // On augmente légèrement l'extrémité droite de la barrière en haut à droite
 		path->map[5*RESOLUTION+5][CELL_Y-1-(7*RESOLUTION+3)] = OBSTACLE; // On augmente légèrement l'extrémité basse de la barrière en haut à droite
 		
-		for (i = 19; i <= 27; i++) // Barrières latérales du milieu
+		for (i = 19; i <= 28; i++) // Barrières latérales du milieu
 		{
-			for (j = 0; j <= 7; j++)
+			for (j = -1; j <= 8; j++)
 			{
 				path->map[i][20+j] = OBSTACLE; // Barrière milieu-gauche
 				path->map[i][34+j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
-		for (i = 8; i <= 16; i++)
+		for (i = 7; i <= 16; i++)
 		{
-			for (j = 0; j <= 9; j++)
+			for (j = -1; j <= 10; j++)
 			{
 				path->map[i][26+j] = OBSTACLE; // Barrière milieu-milieu verticale
 			}
 		}
 		
-		for (j = 0; j <= 21; j++)
+		for (j = -1; j <= 22; j++)
 		{
-			for (i = 0; i <= 4; i++)
+			for (i = -1; i <= 5; i++)
 			{
 				path->map[17+i][20+j] = OBSTACLE; // Barrière milieu horizontale
 			}
@@ -393,6 +393,23 @@ void assign_numbers(CtrlStruct *cvs)
 					if (path->map[i][j+1] == N_REGISTRED)
 					{
 						path->map[i][j+1] = path->map[i][j] + 1;
+					}
+
+					if (path->map[i - 1][j + 1] == N_REGISTRED)
+					{
+						path->map[i - 1][j + 1] = path->map[i][j] + 1;
+					}
+					if (path->map[i + 1][j - 1] == N_REGISTRED)
+					{
+						path->map[i + 1][j - 1] = path->map[i][j] + 1;
+					}
+					if (path->map[i - 1][j - 1] == N_REGISTRED)
+					{
+						path->map[i - 1][j - 1] = path->map[i][j] + 1;
+					}
+					if (path->map[i + 1][j + 1] == N_REGISTRED)
+					{
+						path->map[i + 1][j + 1] = path->map[i][j] + 1;
 					}
 				}
 			}

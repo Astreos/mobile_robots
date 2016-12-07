@@ -21,7 +21,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     
     if (path->count_actions <= path->nb_goals-5)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0, 0.1))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0, 0.5))
 		{
 			path->count_actions++;
 		}
@@ -29,7 +29,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 		return 0;
 	}
 	
-	else if (run(cvs, goal_x, goal_y, 0, 0.001))
+	else if (run(cvs, goal_x, goal_y, 0, 0.01))
 	{
 		return 1;
 	}
@@ -170,16 +170,16 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	// ----- Wheels regulation computation start ----- //
 	
-	if (epsilon >= 0.01)
+	if (epsilon >= 0.1)
 	{
-		K_rho = 27.0*4;
-		K_alpha = 17.0*4;
+		K_rho = 23.0*6;
+		K_alpha = 22.0*6;
 		K_beta = 0;
 	}
-	else if (epsilon < 0.01)
+	else if (epsilon < 0.1)
 	{
-		K_rho = 27.0*1.5;
-		K_alpha = 17.0*1.5;
+		K_rho = 22.0*5;
+		K_alpha = 18.0*5;
 		K_beta = 0;
 	}
 	

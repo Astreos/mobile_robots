@@ -70,7 +70,7 @@ void calibration(CtrlStruct *cvs)
 
         speed_regulation(cvs, 7, 7);
 
-        if ((rob_pos->y <= 1.140 && not team_id) || (rob_pos->y >= -1.140 && team_id)) {
+        if ((rob_pos->y <= 1.140 && !team_id) || (rob_pos->y >= -1.140 && team_id)) {
             speed_regulation(cvs, 0, 0);
 
             calib->flag = CALIB_STATE_C;
