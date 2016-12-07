@@ -101,15 +101,21 @@ void free_path_planning(PathPlanning *path)
 	free(path->map);
 	
 	// list_goal
-	for(i=0; i<100; i++)
+	for(i=0; i<=path->nb_goals; i++)
 	{
 		free(path->list_goal[i]);
 	}
 	free(path->list_goal);
 
-	// ----- path-planning memory release end ----- //
-
+	// rob_pos_XY
+	free(path->rob_pos_XY);
+	
+	// goal_XY
+	free(path->goal_XY);
+	
 	free(path);
+	
+	// ----- path-planning memory release end ----- //
 	
 	return;
 }

@@ -21,17 +21,42 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     
     if (path->count_actions <= path->nb_goals-5)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0, 0.5))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.3))
 		{
 			path->count_actions++;
 		}
 		
 		return 0;
 	}
-	
-	else if (run(cvs, goal_x, goal_y, 0, 0.01))
+	else
 	{
-		return 1;
+		if ((goal_x == -0.70) && (goal_y == -1.30))
+		{
+			if (run(cvs, goal_x, goal_y, -M_PI, 0.01))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
+		else if ((goal_x == 0.20) && (goal_y == 0))
+		{
+			if (run(cvs, goal_x, goal_y, M_PI, 0.01))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
+		else
+		{
+			if (run(cvs, goal_x, goal_y, 66, 0.01))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
 	}
 }
 
@@ -172,20 +197,25 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 23.0*6;
-		K_alpha = 22.0*6;
-		K_beta = 0;
+		K_rho = 22.0*3;
+		K_alpha = 23.0*3;
+		K_beta = -10.0*3;
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 22.0*5;
-		K_alpha = 18.0*5;
+		K_rho = 18.0*2.5;
+		K_alpha = 22.0*2.5;
+		K_beta = -10.0*2.5;
+	}
+	
+	if (theta_ref == 66)
+	{
 		K_beta = 0;
 	}
 	
 	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
 	alpha = -rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x);
-	beta = -theta_ref - rob_pos->theta - alpha;
+	beta = theta_ref - rob_pos->theta - alpha;
 	
 	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
 	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);

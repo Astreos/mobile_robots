@@ -65,7 +65,6 @@ void main_strategy(CtrlStruct *cvs)
 		{
 			if (inputs->nb_targets == 1)
 			{
-				path->flag_trajectory = 0;
 				strat->main_state = GAME_STATE_B;
 			}
 		}
@@ -80,40 +79,45 @@ void main_strategy(CtrlStruct *cvs)
 		{
 			if (inputs->nb_targets == 2)
 			{
-				path->flag_trajectory = 0;
 				strat->main_state = GAME_STATE_C;
 			}
 		}
         break;
 
-   /* case GAME_STATE_C:
+	case GAME_STATE_C:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.10, -0.70*team(team_id));
+			trajectory(cvs, -0.70, -1.15*team(team_id));
 		}
-		if (follow_path(cvs, -0.10, -0.70*team(team_id)))
+		if (follow_path(cvs, -0.70, -1.15*team(team_id)))
 		{
-			path->flag_trajectory = 0;
+			outputs->flag_release = 1;
 			strat->main_state = GAME_STATE_D;
 		}
-        break;
-		*/
-    case GAME_STATE_C:
-		if (path->flag_trajectory != 1)
+		break;
+		
+    case GAME_STATE_D:
+		if (turn(cvs, 0, 0))
 		{
-			trajectory(cvs, -0.70, -1.30*team(team_id));
-		}
-		if (follow_path(cvs, -0.70, -1.30*team(team_id)))
-		{
-			path->flag_trajectory = 0;
-			outputs->flag_release = 1;
 			strat->main_state = GAME_STATE_E;
 		}
         break;
 
     case GAME_STATE_E:
-		speed_regulation(cvs, 0, 0);
+		if (path->flag_trajectory != 1)
+		{
+			trajectory(cvs, 0.10, 0*team(team_id));
+		}
+		outputs->flag_release = 0;
+		if (follow_path(cvs, 0.10, 0*team(team_id)))
+		{
+			strat->main_state = GAME_STATE_F;
+		}
         break;
+		
+	case GAME_STATE_F:
+		speed_regulation(cvs, 0, 0);
+		break;
 
     default:
         printf("Error: unknown strategy main state: %d !\n", strat->main_state);
