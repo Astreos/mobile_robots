@@ -16,9 +16,11 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 {
 	//variable declaration
 	PathPlanning *path;
+	int team_id;
 	
 	// variables initialization
     path = cvs->path;
+	team_id = cvs->team_id;
     
     if (path->count_actions <= path->nb_goals-5)
 	{
@@ -31,16 +33,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	else
 	{
-		if ((goal_x == -0.70) && (goal_y == -1.30))
-		{
-			if (run(cvs, goal_x, goal_y, -M_PI, 0.01))
-			{
-				free_path_planning(path);
-				path = init_path_planning();
-				return 1;
-			}
-		}
-		else if ((goal_x == 0.20) && (goal_y == 0))
+		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
 		{
 			if (run(cvs, goal_x, goal_y, M_PI, 0.01))
 			{
@@ -198,15 +191,15 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 22.0*3;
-		K_alpha = 23.0*3;
-		K_beta = -10.0*3;
+		K_rho = 22.0*5; // K_rho > 0
+		K_alpha = 23.0*5; // K_alpha > K_rho
+		K_beta = -10.0*5; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 18.0*2.5;
-		K_alpha = 22.0*2.5;
-		K_beta = -10.0*2.5;
+		K_rho = 18.0*3; // K_rho > 0
+		K_alpha = 22.0*3; // K_alpha > K_rho
+		K_beta = -10.0*3; // K_beta < 0
 	}
 	
 	if (theta_ref == 66)
