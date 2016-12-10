@@ -3,6 +3,7 @@
 #include "speed_regulation_gr18.h"
 #include "init_pos_gr18.h"
 #include "path_planning_gr18.h"
+#include "opp_pos_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -214,13 +215,20 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	}
 	
 	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
-	alpha = -rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x);
-	beta = theta_ref - rob_pos->theta - alpha;
+	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
+	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
 	
 	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
 	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
 	
-	speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	if (check_opp_front(cvs))
+	{
+		speed_regulation(cvs, 0, 0);
+	}
+	else
+	{
+		speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	}
 	
 	// ----- Wheels regulation computation end ----- //
 	

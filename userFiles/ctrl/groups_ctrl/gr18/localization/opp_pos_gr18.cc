@@ -66,43 +66,43 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// ----- opponents position computation start ----- //
         
-        if (inputs->t <= -9.0) {
-            opp_pos->x[0] = 0.65;
-            opp_pos->y[0] = -1.10;
-            opp_pos->x[1] = 0.65;
-            opp_pos->y[1] = -1.10;
-        }
+	if (inputs->t <= -9.0) {
+		opp_pos->x[0] = 0.65;
+		opp_pos->y[0] = -1.10;
+		opp_pos->x[1] = 0.65;
+		opp_pos->y[1] = -1.10;
+	}
         
-        double old_opp_pos_x[2];
-        double old_opp_pos_y[2];
+	double old_opp_pos_x[2];
+	double old_opp_pos_y[2];
         
-        old_opp_pos_x[0] = opp_pos->x[0];
-        old_opp_pos_y[0] = opp_pos->y[0];
-        old_opp_pos_x[1] = opp_pos->x[1];
-        old_opp_pos_y[1] = opp_pos->y[1];
+	old_opp_pos_x[0] = opp_pos->x[0];
+	old_opp_pos_y[0] = opp_pos->y[0];
+	old_opp_pos_x[1] = opp_pos->x[1];
+	old_opp_pos_y[1] = opp_pos->y[1];
 
 	single_opp_tower(rise_1, fall_1, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x, opp_pos->y);
         
-        opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 0.7, delta_t);
-        opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 0.7, delta_t);
+	opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 0.7, delta_t);
+	opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 0.7, delta_t);
         
-        if (nb_opp == 2)
+	if (nb_opp == 2)
 	{
-            single_opp_tower(rise_2, fall_2, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x + 1, opp_pos->y + 1);
+		single_opp_tower(rise_2, fall_2, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x + 1, opp_pos->y + 1);
             
-            opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 0.7, delta_t);
-            opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 0.7, delta_t);
-        }
+		opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 0.7, delta_t);
+		opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 0.7, delta_t);
+	}
 
 	// ----- opponents position computation end ----- //
         
-        //set_plot(opp_pos->x[0], "opp1_x_[m]");
-        //set_plot(opp_pos->y[0], "opp1_y_[m]");
+	//set_plot(opp_pos->x[0], "opp1_x_[m]");
+	//set_plot(opp_pos->y[0], "opp1_y_[m]");
         
-        //set_plot(opp_pos->x[1], "opp2_x_[m]");
-        //set_plot(opp_pos->y[1], "opp2_y_[m]");
+	//set_plot(opp_pos->x[1], "opp2_x_[m]");
+	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
-        //set_plot(check_opp_front(cvs), "detection");
+	set_plot(check_opp_front(cvs), "detection");
 }
 
 /*! \brief compute a single opponent position
@@ -133,16 +133,16 @@ int check_opp_front(CtrlStruct *cvs)
 {
 	// variables declaration
 	int i, nb_opp;
-        int rise_index[2], fall_index[2];
-        
-        double rise[2], fall[2];
+	int rise_index[2], fall_index[2];
+	
+	double rise[2], fall[2];
 
-        CtrlIn *inputs;
+	CtrlIn *inputs;
 	OpponentsPosition *opp_pos;
 	RobotPosition *rob_pos;
 
 	// variables initialization
-        inputs  = cvs->inputs;
+	inputs  = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	opp_pos = cvs->opp_pos;
 	nb_opp = opp_pos->nb_opp;
@@ -178,18 +178,19 @@ int check_opp_front(CtrlStruct *cvs)
 		fall[1] = inputs->last_falling[fall_index[1]];
 	}
 
-	for(i=0; i<nb_opp; i++)
-	{
 		// ----- opponents check computation start ----- //
             
-            if ((norm_dist(rob_pos->x - opp_pos->x[i], rob_pos->y - opp_pos->y[i]) < 0.50) && (((rise[i] <= M_PI/6.0) && (rise[i] >= -M_PI/6.0)) || ((fall[i] <= M_PI/6.0) && (fall[i] >= -M_PI/6.0)))) {
-                return 1;
-            }
+	if (nb_opp == 1)
+	{
+		return ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/4.0) && (rise[0] >= -M_PI/4.0)) || ((fall[0] <= M_PI/4.0) && (fall[0] >= -M_PI/4.0))));
+	}
+	else
+	{
+		return (((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/4.0) && (rise[0] >= -M_PI/4.0)) || ((fall[0] <= M_PI/4.0) && (fall[0] >= -M_PI/4.0))))
+		|| ((norm_dist(rob_pos->x - opp_pos->x[1], rob_pos->y - opp_pos->y[1]) < 0.50) && (((rise[1] <= M_PI/4.0) && (rise[1] >= -M_PI/4.0)) || ((fall[1] <= M_PI/4.0) && (fall[1] >= -M_PI/4.0)))));
+	}
             
 		// ----- opponents check computation end ----- //
-	}
-
-	return 0;
 }
 
 NAMESPACE_CLOSE();

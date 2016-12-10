@@ -97,13 +97,6 @@ void main_strategy(CtrlStruct *cvs)
 		break;
 		
     case GAME_STATE_D:
-		if (turn(cvs, 0, 0))
-		{
-			strat->main_state = GAME_STATE_E;
-		}
-        break;
-
-    case GAME_STATE_E:
 		if (path->flag_trajectory != 1)
 		{
 			trajectory(cvs, 0.10, 0*team(team_id));
@@ -111,8 +104,12 @@ void main_strategy(CtrlStruct *cvs)
 		outputs->flag_release = 0;
 		if (follow_path(cvs, 0.10, 0*team(team_id)))
 		{
-			strat->main_state = GAME_STATE_F;
+			strat->main_state = GAME_STATE_E;
 		}
+        break;
+
+    case GAME_STATE_E:
+		speed_regulation(cvs, 0, 0);
         break;
 		
 	case GAME_STATE_F:
