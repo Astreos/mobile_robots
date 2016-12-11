@@ -13,6 +13,7 @@
 #define N_REGISTRED 97
 #define OBSTACLE 99
 #define GOAL 98
+#define OPPONENT 95
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -139,6 +140,8 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
+	manage_opp(cvs);
+	
 	assign_numbers(cvs);
 	
 	find_path(cvs);
@@ -158,6 +161,9 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 			else if (path->map[i][j] == GOAL) {
 				fprintf(file, "@@@@ ");
 			}
+			else if (path->map[i][j] == OPPONENT) {
+				fprintf(file, "**** ");
+			}
 			else {
 				fprintf(file, "%1.1f ", path->map[i][j]);
 			}
@@ -175,6 +181,9 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 				printf("o ");
 			}
 			else if (path->map[i][j] == GOAL) {
+				printf("@ ");
+			}
+			else if (path->map[i][j] == OPPONENT) {
 				printf("* ");
 			}
 			else if (path->map[i][j] == N_REGISTRED) {
@@ -344,13 +353,19 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
-		for (i = 14*RESOLUTION; i <= 14*RESOLUTION+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
+		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
 		{
 			path->map[i][12*RESOLUTION-1] = OBSTACLE; // Moitié gauche de la barrière milieu-gauche
 			path->map[i][CELL_Y-1-(12*RESOLUTION-1)] = OBSTACLE; // Moitié gauche de la barrière milieu-droite
 			path->map[i][12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-gauche
 			path->map[i][CELL_Y-1-12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-droite
 		}
+		path->map[12*RESOLUTION+4][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
+		path->map[12*RESOLUTION+3][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+3][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
+		path->map[12*RESOLUTION+4][12*RESOLUTION-1-3] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-3)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
 		
 		for (j = 13*RESOLUTION-1; j <= 18*RESOLUTION; j++) // Construction de la barrière horizontale du milieu augmentées de 3
 		{
@@ -392,6 +407,58 @@ void create_map(CtrlStruct *cvs)
 	return;
 }
 
+void manage_opp(CtrlStruct *cvs)
+{
+	// variable declaration
+	PathPlanning *path;
+	OpponentsPosition *opp_pos;
+	int i, j, k;
+	int i_start, i_end, j_start, j_end;
+	
+	// variables initialization
+	path = cvs->path;
+	opp_pos = cvs->opp_pos;
+	
+	for (k = 0; k < opp_pos->nb_opp; k++)
+	{
+		i_start = x_to_X(opp_pos->x[k])-4-3;
+		i_end = x_to_X(opp_pos->x[k])+4+3;
+		j_start = y_to_Y(opp_pos->y[k])-4-3;
+		j_end = y_to_Y(opp_pos->y[k])+4+3;
+		
+		if (i_start < 0)
+		{
+			i_start = 0;
+		}
+		else if (i_end >= CELL_X)
+		{
+			i_end = CELL_X-1;
+		}
+		
+		if (j_start < 0)
+		{
+			j_start = 0;
+		}
+		else if (j_end >= CELL_Y)
+		{
+			j_end = CELL_Y-1;
+		}
+		
+		for (i = i_start; i <= i_end; i++)
+		{
+			for (j = j_start; j <= j_end; j++)
+			{
+				if (path->map[i][j] != OBSTACLE)
+				{
+					path->map[i][j] = OPPONENT;
+				}
+			}
+		}
+	}
+	
+	return;
+}
+
 void assign_numbers(CtrlStruct *cvs)
 {
 	// variable declaration
@@ -409,7 +476,7 @@ void assign_numbers(CtrlStruct *cvs)
 		{
 			for (j = 0; j < CELL_Y; j++)
 			{
-				if (path->map[i][j] != N_REGISTRED && path->map[i][j] != OBSTACLE)
+				if (path->map[i][j] != N_REGISTRED && path->map[i][j] != OBSTACLE && path->map[i][j] != OPPONENT)
 				{
 					if (path->map[i-1][j] == N_REGISTRED)
 					{
@@ -479,7 +546,7 @@ void find_path(CtrlStruct *cvs)
 				{
 					minimum = path->map[path->list_goal[k-1][0]+i][path->list_goal[k-1][1]+j];
 					
-					if (k > 9)
+					if (k >= 10*RESOLUTION)
 					{
 						int** list_goal_realloc;
 						
