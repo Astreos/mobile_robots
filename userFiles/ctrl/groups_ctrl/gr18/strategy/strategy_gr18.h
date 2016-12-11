@@ -19,7 +19,7 @@ typedef struct Strategy
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
-enum {GAME_STATE_A, GAME_STATE_B, GAME_STATE_C, GAME_STATE_D, GAME_STATE_E};
+enum {GAME_STATE_A, GAME_STATE_B, GAME_STATE_C, GAME_STATE_D, GAME_STATE_E, GAME_STATE_F, GAME_STATE_G};
 
 Strategy* init_strategy();
 void free_strategy(Strategy *strat);

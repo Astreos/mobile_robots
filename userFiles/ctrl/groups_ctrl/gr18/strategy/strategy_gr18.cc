@@ -59,12 +59,14 @@ void main_strategy(CtrlStruct *cvs)
 		outputs->flag_release = 0;
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.77, 0*team(team_id));
+			trajectory(cvs, -0.80, 0*team(team_id));
 		}
-		if (follow_path(cvs, -0.77, 0*team(team_id)))
+		if (follow_path(cvs, -0.80, 0*team(team_id)))
 		{
-			path->flag_trajectory = 0;
-			strat->main_state = GAME_STATE_B;
+			if (inputs->nb_targets == 1)
+			{
+				strat->main_state = GAME_STATE_B;
+			}
 		}
         break;
 
@@ -75,39 +77,70 @@ void main_strategy(CtrlStruct *cvs)
 		}
 		if (follow_path(cvs, -0.40, -0.60*team(team_id)))
 		{
-			path->flag_trajectory = 0;
-			strat->main_state = GAME_STATE_C;
+			if (inputs->nb_targets == 2)
+			{
+				strat->main_state = GAME_STATE_C;
+			}
 		}
         break;
 
-    case GAME_STATE_C:
+	case GAME_STATE_C:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.10, -0.70*team(team_id));
+			trajectory(cvs, -0.70, -1.15*team(team_id));
 		}
-		if (follow_path(cvs, -0.10, -0.70*team(team_id)))
+		if (follow_path(cvs, -0.70, -1.15*team(team_id)))
 		{
-			path->flag_trajectory = 0;
+			outputs->flag_release = 1;
 			strat->main_state = GAME_STATE_D;
 		}
-        break;
-
+		break;
+		
     case GAME_STATE_D:
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.70, -1.20*team(team_id));
+			trajectory(cvs, 0.10, 0*team(team_id));
 		}
-		if (follow_path(cvs, -0.70, -1.20*team(team_id)))
+		outputs->flag_release = 0;
+		if (follow_path(cvs, 0.10, 0*team(team_id)))
 		{
-			path->flag_trajectory = 0;
-			outputs->flag_release = 1;
-			strat->main_state = GAME_STATE_E;
+			if (inputs->nb_targets == 1)
+			{
+				strat->main_state = GAME_STATE_E;
+			}
 		}
         break;
 
     case GAME_STATE_E:
+		if (path->flag_trajectory != 1)
+		{
+			trajectory(cvs, 0.25, -1.25*team(team_id));
+		}
+		if (follow_path(cvs, 0.25, -1.25*team(team_id)))
+		{
+			if (inputs->nb_targets == 2)
+			{
+				strat->main_state = GAME_STATE_F;
+			}
+		}
+		break;
+		
+	case GAME_STATE_F:
+		if (path->flag_trajectory != 1)
+		{
+			trajectory(cvs, -0.70, -1.15*team(team_id));
+		}
+		if (follow_path(cvs, -0.70, -1.15*team(team_id)))
+		{
+			outputs->flag_release = 1;
+			strat->main_state = GAME_STATE_G;
+		}
+		break;
+		
+	case GAME_STATE_G:
+		outputs->flag_release = 0;
 		speed_regulation(cvs, 0, 0);
-        break;
+		break;
 
     default:
         printf("Error: unknown strategy main state: %d !\n", strat->main_state);

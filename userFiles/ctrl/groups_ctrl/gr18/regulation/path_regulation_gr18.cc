@@ -3,6 +3,7 @@
 #include "speed_regulation_gr18.h"
 #include "init_pos_gr18.h"
 #include "path_planning_gr18.h"
+#include "opp_pos_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -15,23 +16,50 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 {
 	//variable declaration
 	PathPlanning *path;
+	int team_id;
 	
 	// variables initialization
     path = cvs->path;
+	team_id = cvs->team_id;
     
     if (path->count_actions <= path->nb_goals-5)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 0, 0.1))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.2))
 		{
 			path->count_actions++;
 		}
 		
 		return 0;
 	}
-	
-	else if (run(cvs, goal_x, goal_y, 0, 0.001))
+	else
 	{
-		return 1;
+		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
+		{
+			if (run(cvs, goal_x, goal_y, M_PI, 0.005))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
+		else if ((goal_x == -0.80) && (goal_y == 0*team(team_id)))
+		{
+			if (run(cvs, goal_x, goal_y, -M_PI/2.0*team(team_id), 0.005))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
+		else
+		{
+			if (run(cvs, goal_x, goal_y, 66, 0.005))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
 	}
 }
 
@@ -170,27 +198,39 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	// ----- Wheels regulation computation start ----- //
 	
-	if (epsilon >= 0.01)
+	if (epsilon >= 0.1)
 	{
-		K_rho = 27.0*4;
-		K_alpha = 17.0*4;
-		K_beta = 0;
+		K_rho = 22.0*6; // K_rho > 0
+		K_alpha = 23.0*6; // K_alpha > K_rho
+		K_beta = -12.0*6; // K_beta < 0
 	}
-	else if (epsilon < 0.01)
+	else if (epsilon < 0.1)
 	{
-		K_rho = 27.0*1.5;
-		K_alpha = 17.0*1.5;
+		K_rho = 18.0*3; // K_rho > 0
+		K_alpha = 22.0*3; // K_alpha > K_rho
+		K_beta = -12.0*3; // K_beta < 0
+	}
+	
+	if (theta_ref == 66)
+	{
 		K_beta = 0;
 	}
 	
 	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
-	alpha = -rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x);
-	beta = -theta_ref - rob_pos->theta - alpha;
+	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
+	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
 	
 	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
 	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
 	
-	speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	if (check_opp_front(cvs))
+	{
+		speed_regulation(cvs, 0, 0);
+	}
+	else
+	{
+		speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
+	}
 	
 	// ----- Wheels regulation computation end ----- //
 	
