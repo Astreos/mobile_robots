@@ -182,12 +182,12 @@ int check_opp_front(CtrlStruct *cvs)
             
 	if (nb_opp == 1)
 	{
-		return ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/4.0) && (rise[0] >= -M_PI/4.0)) || ((fall[0] <= M_PI/4.0) && (fall[0] >= -M_PI/4.0))));
+		return ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))));
 	}
 	else
 	{
 		return (((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) || (norm_dist(rob_pos->x - opp_pos->x[1], rob_pos->y - opp_pos->y[1]) < 0.50))
-		&& (((rise[0] <= M_PI/4.0) && (rise[0] >= -M_PI/4.0)) || ((fall[0] <= M_PI/4.0) && (fall[0] >= -M_PI/4.0)) || ((rise[1] <= M_PI/4.0) && (rise[1] >= -M_PI/4.0)) || ((fall[1] <= M_PI/4.0) && (fall[1] >= -M_PI/4.0))));
+		&& (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0)) || ((rise[1] <= M_PI/5.0) && (rise[1] >= -M_PI/5.0)) || ((fall[1] <= M_PI/5.0) && (fall[1] >= -M_PI/5.0))));
 	}
             
 		// ----- opponents check computation end ----- //
