@@ -59,9 +59,9 @@ void main_strategy(CtrlStruct *cvs)
 		outputs->flag_release = 0;
 		if (path->flag_trajectory != 1)
 		{
-			trajectory(cvs, -0.77, 0*team(team_id));
+			trajectory(cvs, -0.80, 0*team(team_id));
 		}
-		if (follow_path(cvs, -0.77, 0*team(team_id)))
+		if (follow_path(cvs, -0.80, 0*team(team_id)))
 		{
 			if (inputs->nb_targets == 1)
 			{

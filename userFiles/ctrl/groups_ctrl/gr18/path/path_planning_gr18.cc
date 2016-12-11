@@ -71,7 +71,7 @@ PathPlanning* init_path_planning()
 	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
 	if (path->rob_pos_XY == NULL) {exit(0);}
 	
-	// flags
+	// flag
 	path->flag_trajectory = 0;
 	
 	// current action
@@ -195,6 +195,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		}
 		printf("\n");
 	}
+	printf("\n");
 	
 	path->flag_trajectory = 1;
 	
@@ -461,7 +462,7 @@ void manage_opp(CtrlStruct *cvs)
 
 void assign_numbers(CtrlStruct *cvs)
 {
-	// variable declaration
+	// variables declaration
 	PathPlanning *path;
 	int i, j, n;
 	
@@ -470,7 +471,7 @@ void assign_numbers(CtrlStruct *cvs)
 	
 	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;	
     
-    for(n = CELL_Y; n > 0; n--)
+    for(n = 50; n > 0; n--)
 	{
 		for (i = 0; i < CELL_X; i++)
 		{
@@ -495,21 +496,21 @@ void assign_numbers(CtrlStruct *cvs)
 						path->map[i][j+1] = path->map[i][j] + 1;
 					}
 
-					if (path->map[i - 1][j + 1] == N_REGISTRED)
+					if (path->map[i-1][j+1] == N_REGISTRED)
 					{
-						path->map[i - 1][j + 1] = path->map[i][j] + sqrt(2);
+						path->map[i-1][j+1] = path->map[i][j] + sqrt(2);
 					}
-					if (path->map[i + 1][j - 1] == N_REGISTRED)
+					if (path->map[i+1][j-1] == N_REGISTRED)
 					{
-						path->map[i + 1][j - 1] = path->map[i][j] + sqrt(2);
+						path->map[i+1][j-1] = path->map[i][j] + sqrt(2);
 					}
-					if (path->map[i - 1][j - 1] == N_REGISTRED)
+					if (path->map[i-1][j-1] == N_REGISTRED)
 					{
-						path->map[i - 1][j - 1] = path->map[i][j] + sqrt(2);
+						path->map[i-1][j-1] = path->map[i][j] + sqrt(2);
 					}
-					if (path->map[i + 1][j + 1] == N_REGISTRED)
+					if (path->map[i+1][j+1] == N_REGISTRED)
 					{
-						path->map[i + 1][j + 1] = path->map[i][j] + sqrt(2);
+						path->map[i+1][j+1] = path->map[i][j] + sqrt(2);
 					}
 				}
 			}
@@ -576,22 +577,22 @@ void find_path(CtrlStruct *cvs)
 
 int x_to_X(double x)
 {
-	return RESOLUTION*floor(10.0*x) + (CELL_X - 2)/2;
+	return RESOLUTION*floor(10.0*x + 1/RESOLUTION) + (CELL_X - 2)/RESOLUTION;
 }
 
 int y_to_Y(double y)
 {
-	return RESOLUTION*floor(10.0*y) + (CELL_Y - 2)/2;
+	return RESOLUTION*floor(10.0*y + 1/RESOLUTION) + (CELL_Y - 2)/RESOLUTION;
 }
 
 double X_to_x(int X)
 {
-	return (X - (CELL_X-2)/RESOLUTION - 0.5)/(10.0 * RESOLUTION);
+	return (X - (CELL_X-2-1)/RESOLUTION) / (10.0 * RESOLUTION);
 }
 
 double Y_to_y(int Y)
 {
-	return (Y - (CELL_Y-2)/RESOLUTION - 0.5)/(10.0 * RESOLUTION);
+	return (Y - (CELL_Y-2-1)/RESOLUTION) / (10.0 * RESOLUTION);
 }
 
 NAMESPACE_CLOSE();

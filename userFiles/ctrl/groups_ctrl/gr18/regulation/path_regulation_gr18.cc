@@ -42,6 +42,15 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 				return 1;
 			}
 		}
+		else if ((goal_x == -0.80) && (goal_y == 0*team(team_id)))
+		{
+			if (run(cvs, goal_x, goal_y, -M_PI/2.0*team(team_id), 0.005))
+			{
+				free_path_planning(path);
+				path = init_path_planning();
+				return 1;
+			}
+		}
 		else
 		{
 			if (run(cvs, goal_x, goal_y, 66, 0.005))
@@ -193,13 +202,13 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	{
 		K_rho = 22.0*6; // K_rho > 0
 		K_alpha = 23.0*6; // K_alpha > K_rho
-		K_beta = -10.0*6; // K_beta < 0
+		K_beta = -12.0*6; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
 		K_rho = 18.0*3; // K_rho > 0
 		K_alpha = 22.0*3; // K_alpha > K_rho
-		K_beta = -10.0*3; // K_beta < 0
+		K_beta = -12.0*3; // K_beta < 0
 	}
 	
 	if (theta_ref == 66)
