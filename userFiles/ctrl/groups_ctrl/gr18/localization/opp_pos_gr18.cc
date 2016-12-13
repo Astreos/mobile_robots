@@ -136,11 +136,7 @@ int check_opp_front(CtrlStruct *cvs)
 	int rise_index[2], fall_index[2];
 	
 	double rise[2], fall[2];
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> insaf
 	CtrlIn *inputs;
 	OpponentsPosition *opp_pos;
 	RobotPosition *rob_pos;
@@ -182,9 +178,8 @@ int check_opp_front(CtrlStruct *cvs)
 		fall[1] = inputs->last_falling[fall_index[1]];
 	}
 
-		// ----- opponents check computation start ----- //
-            
-<<<<<<< HEAD
+	// ----- opponents check computation start ----- //
+	
 	if (nb_opp == 1)
 	{
 		return ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))));
@@ -194,13 +189,8 @@ int check_opp_front(CtrlStruct *cvs)
 		return (((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) || (norm_dist(rob_pos->x - opp_pos->x[1], rob_pos->y - opp_pos->y[1]) < 0.50))
 		&& (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0)) || ((rise[1] <= M_PI/5.0) && (rise[1] >= -M_PI/5.0)) || ((fall[1] <= M_PI/5.0) && (fall[1] >= -M_PI/5.0))));
 	}
-=======
-		if ((norm_dist(rob_pos->x - opp_pos->x[i], rob_pos->y - opp_pos->y[i]) < 0.50) && (((rise[i] <= M_PI/6.0) && (rise[i] >= -M_PI/6.0)) || ((fall[i] <= M_PI/6.0) && (fall[i] >= -M_PI/6.0)))) {
-			return 1;
-		}
->>>>>>> insaf
             
-		// ----- opponents check computation end ----- //
+	// ----- opponents check computation end ----- //
 }
 
 NAMESPACE_CLOSE();
