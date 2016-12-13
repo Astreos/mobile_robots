@@ -143,7 +143,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	manage_opp(cvs, 3);
+	manage_opp(cvs, 1);
 	
 	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT && strat->list_targets[strat->nb_targets-1] != strat->list_targets[strat->nb_targets-2])
 	{
@@ -159,14 +159,17 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		return;
 	}
 	
-	if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OPPONENT)
+	assign_numbers(cvs);
+	
+	if ((path->goal_XY->X != N_REGISTRED) && (path->goal_XY->Y != N_REGISTRED))
+	{
+		find_path(cvs);
+		path->flag_trajectory = 1;
+	}
+	else
 	{
 		return;
 	}
-	
-	assign_numbers(cvs);
-	
-	find_path(cvs);
 	
 	FILE* file = fopen("../../last_map.txt", "w");
 	
@@ -218,8 +221,6 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
-	
-	path->flag_trajectory = 1;
 	
 	return;
 }
@@ -441,46 +442,58 @@ void manage_opp(CtrlStruct *cvs, int delta)
 	// variable declaration
 	PathPlanning *path;
 	OpponentsPosition *opp_pos;
+	RobotPosition *rob_pos;
 	int i, j, k;
 	int i_start, i_end, j_start, j_end;
 	
 	// variables initialization
 	path = cvs->path;
 	opp_pos = cvs->opp_pos;
+	rob_pos = cvs->rob_pos;
 	
 	for (k = 0; k < opp_pos->nb_opp; k++)
 	{
-		i_start = x_to_X(opp_pos->x[k])-4-delta;
-		i_end = x_to_X(opp_pos->x[k])+4+delta;
-		j_start = y_to_Y(opp_pos->y[k])-4-delta;
-		j_end = y_to_Y(opp_pos->y[k])+4+delta;
-		
-		if (i_start < 0)
+		if (sqrt(pow(rob_pos->x - opp_pos->x[k],2) + pow(rob_pos->y - opp_pos->y[k],2)) > 0.50)
 		{
-			i_start = 0;
-		}
-		else if (i_end >= CELL_X)
-		{
-			i_end = CELL_X-1;
-		}
-		
-		if (j_start < 0)
-		{
-			j_start = 0;
-		}
-		else if (j_end >= CELL_Y)
-		{
-			j_end = CELL_Y-1;
-		}
-		
-		for (i = i_start; i <= i_end; i++)
-		{
-			for (j = j_start; j <= j_end; j++)
+			i_start = x_to_X(opp_pos->x[k])-4-delta;
+			i_end = x_to_X(opp_pos->x[k])+4+delta;
+			j_start = y_to_Y(opp_pos->y[k])-4-delta;
+			j_end = y_to_Y(opp_pos->y[k])+4+delta;
+			
+			if (i_start < 0)
 			{
-				if (path->map[i][j] != OBSTACLE)
+				i_start = 0;
+			}
+			else if (i_end >= CELL_X)
+			{
+				i_end = CELL_X-1;
+			}
+			
+			if (j_start < 0)
+			{
+				j_start = 0;
+			}
+			else if (j_end >= CELL_Y)
+			{
+				j_end = CELL_Y-1;
+			}
+			
+			for (i = i_start; i <= i_end; i++)
+			{
+				for (j = j_start; j <= j_end; j++)
 				{
-					path->map[i][j] = OPPONENT;
+					if (path->map[i][j] != OBSTACLE)
+					{
+						path->map[i][j] = OPPONENT;
+					}
 				}
+			}
+		}
+		else
+		{
+			if (path->map[x_to_X(opp_pos->x[k])][y_to_Y(opp_pos->y[k])] != OBSTACLE)
+			{
+				path->map[x_to_X(opp_pos->x[k])][y_to_Y(opp_pos->y[k])] = OPPONENT;
 			}
 		}
 	}

@@ -389,7 +389,7 @@ void win_points(CtrlStruct *cvs)
 		case TRAJECTORY:
 			if (!path->flag_trajectory)
 			{
-				trajectory(cvs, -0.70, -1.15*team(team_id));
+				trajectory(cvs, -0.75, -1.15*team(team_id));
 			}
 			else
 			{
@@ -398,7 +398,7 @@ void win_points(CtrlStruct *cvs)
 			break;
 			
 		case FOLLOW_PATH:
-			if (follow_path(cvs, -0.70, -1.15*team(team_id)))
+			if (follow_path(cvs, -0.75, -1.15*team(team_id)))
 			{
 				speed_regulation(cvs, 0, 0);
 				strat->sub_state = RELEASE_TARGET;
