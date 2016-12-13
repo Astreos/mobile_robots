@@ -25,25 +25,25 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1,
 		case TEAM_A:
 			*x_beac_1 = 1.062;
 			*y_beac_1 = 1.562;
-
+			
 			*x_beac_2 = -1.062;
 			*y_beac_2 = 1.562;
-
+			
 			*x_beac_3 = 0.0;
 			*y_beac_3 = -1.562;
 			break;
-
+			
 		case TEAM_B:
 			*x_beac_1 = 1.062;
 			*y_beac_1 = -1.562;
-
-			*x_beac_2 = 0;
+			
+			*x_beac_2 = 0.0;
 			*y_beac_2 = 1.562;
-
+			
 			*x_beac_3 = -1.062;
 			*y_beac_3 = -1.562;
 			break;
-	
+			
 		default:
 			printf("Error unknown team ID (%d) !\n", team_id);
 			exit(EXIT_FAILURE);
@@ -123,19 +123,21 @@ void triangulation(CtrlStruct *cvs)
 	alpha_b = (inputs->last_rising_fixed[rise_index_2] + inputs->last_falling_fixed[fall_index_2])/2;
 	alpha_c = (inputs->last_rising_fixed[rise_index_3] + inputs->last_falling_fixed[fall_index_3])/2;
         
-        //set_plot(alpha_a, "alpha_a");
-        //set_plot(alpha_b, "alpha_b");
-        //set_plot(alpha_c, "alpha_c");
+	//set_plot(alpha_a, "alpha_a");
+	//set_plot(alpha_b, "alpha_b");
+	//set_plot(alpha_c, "alpha_c");
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
-        alpha_1_predicted = limit_angle(M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - rob_pos->theta);
-        alpha_2_predicted = limit_angle(M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - rob_pos->theta);
-        if (rob_pos->x >= 0) {
+	alpha_1_predicted = limit_angle(M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - rob_pos->theta);
+	alpha_2_predicted = limit_angle(M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - rob_pos->theta);
+	if (rob_pos->x >= 0)
+	{
 		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
-        }
-	else {
+	}
+	else
+	{
 		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
-        }
+	}
 	
 	// indexes of each beacon
 	alpha_1_index = index_predicted(alpha_1_predicted, alpha_a, alpha_b, alpha_c);
@@ -197,7 +199,7 @@ void triangulation(CtrlStruct *cvs)
 	// Compute the three cot(.) :
 	cot_1_2 = cos(alpha_2 - alpha_1)/sin(alpha_2 - alpha_1);
 	cot_2_3 = cos(alpha_3 - alpha_2)/sin(alpha_3 - alpha_2);
-	cot_3_1 = (1 - cot_1_2*cot_2_3)/(cot_1_2 + cot_2_3);
+	cot_3_1 = (1.0 - cot_1_2*cot_2_3)/(cot_1_2 + cot_2_3);
 
 	// Compute de modified circle center coordinates :
 	x_circ_1_2 = x_mod_beac_1 + cot_1_2*y_mod_beac_1;
@@ -226,18 +228,20 @@ void triangulation(CtrlStruct *cvs)
 	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - x_circ_1_2)/diam_tri - 0.083*sin(rob_pos->theta);
 
 	// robot orientation
-        if (pos_tri->x >= 0) {
+	if (pos_tri->x >= 0)
+	{
 		pos_tri->theta = limit_angle(3.0*M_PI/2.0 - atan(fabs(pos_tri->x - x_beac_3)/fabs(pos_tri->y - y_beac_3)) - alpha_3);
-        }
-	else {
+	}
+	else
+	{
 		pos_tri->theta = limit_angle(3.0*M_PI/2.0 + atan(fabs(pos_tri->x - x_beac_3)/fabs(pos_tri->y - y_beac_3)) - alpha_3);
-        }
+	}
 	
 	// ----- triangulation computation end ----- //
         
-        //set_plot(pos_tri->x, "x_tri_[m]");
-        //set_plot(pos_tri->y, "y_tri_[m]");
-        //set_plot(pos_tri->theta, "theta_tri_[rad]");
+	//set_plot(pos_tri->x, "x_tri_[m]");
+	//set_plot(pos_tri->y, "y_tri_[m]");
+    //set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();

@@ -36,15 +36,15 @@ void update_odometry(CtrlStruct *cvs)
 
 	// ----- odometry computation start ----- //
 
-        rob_pos->x = rob_pos->x + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * cos(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
-        rob_pos->y = rob_pos->y + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * sin(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
-        rob_pos->theta = limit_angle(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / 0.225);
+	rob_pos->x = rob_pos->x + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * cos(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
+	rob_pos->y = rob_pos->y + ((r_sp*0.030*dt + l_sp*0.030*dt) / 2) * sin(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / (2*0.225));
+	rob_pos->theta = limit_angle(rob_pos->theta + (r_sp*0.030*dt - l_sp*0.030*dt) / 0.225);
 
 	// ----- odometry computation end ----- //
         
-        //set_plot(rob_pos->x, "x_odo_[m]");
-        //set_plot(rob_pos->y, "y_odo_[m]");
-        //set_plot(rob_pos->theta, "theta_odo_[rad]");
+	//set_plot(rob_pos->x, "x_odo_[m]");
+	//set_plot(rob_pos->y, "y_odo_[m]");
+	//set_plot(rob_pos->theta, "theta_odo_[rad]");
 
 	// last update time
 	rob_pos->last_t = inputs->t;

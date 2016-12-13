@@ -140,7 +140,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	manage_opp(cvs);
+	//manage_opp(cvs);
 	
 	assign_numbers(cvs);
 	
@@ -324,15 +324,21 @@ void create_map(CtrlStruct *cvs)
 			path->map[15*RESOLUTION][CELL_Y-1-j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
 			
 		}
+		path->map[13*RESOLUTION][5*RESOLUTION+4] = OBSTACLE;
+		path->map[13*RESOLUTION][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
+		path->map[13*RESOLUTION+1][5*RESOLUTION+4] = OBSTACLE;
+		path->map[13*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
+		path->map[13*RESOLUTION][5*RESOLUTION+3] = OBSTACLE;
+		path->map[13*RESOLUTION][CELL_Y-1-(5*RESOLUTION+3)] = OBSTACLE;
 		
 		for (i = 2*RESOLUTION; i <= 5*RESOLUTION+3; i++) // Construction des barrières adjacentes aux camps d'arrivée augmentées de 3
 		{
-			for (j = -3; j <= 0; j++)
+			for (j = -2; j <= 0; j++)
 			{
 				path->map[i][6*RESOLUTION+1+j] = OBSTACLE; // Moitié gauche de la barrière en haut à gauche (camp bleu cible)
 				path->map[i][CELL_Y-1-(6*RESOLUTION+1+j)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
 			}
-			for (j = 0; j <= 3; j++)
+			for (j = 0; j <= 2; j++)
 			{
 				path->map[i][7*RESOLUTION+j] = OBSTACLE; // Moitié droite de la barrière en haut à gauche (camp bleu cible)
 				path->map[i][CELL_Y-1-(7*RESOLUTION+j)] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)

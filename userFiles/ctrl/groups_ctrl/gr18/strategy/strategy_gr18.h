@@ -16,14 +16,22 @@ typedef struct Strategy
 {
 	int main_state; ///< main state of the strategy
 	
+	double** list_targets_pos;
+	int* list_targets;
+	int current_action;
+	
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
-enum {GAME_STATE_A, GAME_STATE_B, GAME_STATE_C, GAME_STATE_D, GAME_STATE_E, GAME_STATE_F, GAME_STATE_G};
+enum {GAME_STATE_A, GAME_STATE_B, GAME_STATE_C, GAME_STATE_D, GAME_STATE_E};
 
 Strategy* init_strategy();
 void free_strategy(Strategy *strat);
 void main_strategy(CtrlStruct *cvs);
+void manage_THE_target(CtrlStruct *cvs);
+void manage_first_target(CtrlStruct *cvs);
+void manage_second_target(CtrlStruct *cvs);
+void win_points(CtrlStruct *cvs);
 
 NAMESPACE_CLOSE();
 
