@@ -15,9 +15,11 @@ NAMESPACE_INIT(ctrlGr18);
 typedef struct Strategy
 {
 	int main_state; ///< main state of the strategy
+	int sub_state; ///< sub state of the strategy
 	
 	double** list_targets_pos;
 	int* list_targets;
+	int nb_targets;
 	int current_action;
 	
 	double last_t;
@@ -25,7 +27,10 @@ typedef struct Strategy
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
-enum {GAME_STATE_A, GAME_STATE_B, GAME_STATE_C, GAME_STATE_D, GAME_STATE_E, GAME_STATE_F};
+enum {THE_TARGET, FIRST_TARGET, SECOND_TARGET, WIN_POINTS, CALIBRATE, FUNNY_ACTION};
+
+/// 'sub_state' states (adapt with your own states)
+enum {TRAJECTORY, FOLLOW_PATH, CHECK_TARGET, GET_TARGET, RELEASE_TARGET};
 
 Strategy* init_strategy();
 void free_strategy(Strategy *strat);

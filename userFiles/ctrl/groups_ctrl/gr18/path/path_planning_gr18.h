@@ -36,7 +36,7 @@ void free_path_planning(PathPlanning *path);
 
 void trajectory(CtrlStruct *cvs, double goal_x, double goal_y);
 void create_map(CtrlStruct *cvs);
-void manage_opp(CtrlStruct *cvs);
+void manage_opp(CtrlStruct *cvs, int delta);
 void assign_numbers(CtrlStruct *cvs);
 void find_path(CtrlStruct *cvs);
 

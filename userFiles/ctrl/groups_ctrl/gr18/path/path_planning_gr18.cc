@@ -4,6 +4,7 @@
 #include "useful_gr18.h"
 #include "path_regulation_gr18.h"
 #include "speed_regulation_gr18.h"
+#include "strategy_gr18.h"
 #include <math.h>
 
 #define RESOLUTION 2 //Fonctionnel pour 2 seulement
@@ -126,12 +127,14 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	// variables declaration
 	RobotPosition *rob_pos;
 	PathPlanning *path;
+	Strategy *strat;
 	
 	int i, j;
     
     // variables initialization
     rob_pos = cvs->rob_pos;
     path = cvs->path;
+	strat  = cvs->strat;
     
     path->rob_pos_XY->X = x_to_X(rob_pos->x);
 	path->rob_pos_XY->Y = y_to_Y(rob_pos->y);
@@ -140,7 +143,26 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	//manage_opp(cvs);
+	manage_opp(cvs, 3);
+	
+	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT && strat->list_targets[strat->nb_targets-1] != strat->list_targets[strat->nb_targets-2])
+	{
+		strat->nb_targets += 1;
+		
+		strat->list_targets = (int*) realloc(strat->list_targets, strat->nb_targets*sizeof(int));
+		if (strat->list_targets == NULL) {exit(0);}
+		
+		strat->list_targets[strat->nb_targets-1] = strat->list_targets[strat->current_action];
+		
+		strat->current_action += 1;
+		
+		return;
+	}
+	
+	if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OPPONENT)
+	{
+		return;
+	}
 	
 	assign_numbers(cvs);
 	
@@ -414,7 +436,7 @@ void create_map(CtrlStruct *cvs)
 	return;
 }
 
-void manage_opp(CtrlStruct *cvs)
+void manage_opp(CtrlStruct *cvs, int delta)
 {
 	// variable declaration
 	PathPlanning *path;
@@ -428,10 +450,10 @@ void manage_opp(CtrlStruct *cvs)
 	
 	for (k = 0; k < opp_pos->nb_opp; k++)
 	{
-		i_start = x_to_X(opp_pos->x[k])-4-3;
-		i_end = x_to_X(opp_pos->x[k])+4+3;
-		j_start = y_to_Y(opp_pos->y[k])-4-3;
-		j_end = y_to_Y(opp_pos->y[k])+4+3;
+		i_start = x_to_X(opp_pos->x[k])-4-delta;
+		i_end = x_to_X(opp_pos->x[k])+4+delta;
+		j_start = y_to_Y(opp_pos->y[k])-4-delta;
+		j_end = y_to_Y(opp_pos->y[k])+4+delta;
 		
 		if (i_start < 0)
 		{
@@ -554,9 +576,7 @@ void find_path(CtrlStruct *cvs)
 					minimum = path->map[path->list_goal[k-1][0]+i][path->list_goal[k-1][1]+j];
 					
 					if (k >= 10*RESOLUTION)
-					{
-						int** list_goal_realloc;
-						
+					{						
 						path->list_goal = (int**) realloc(path->list_goal, 10*sizeof(int*) + (k-9)*(sizeof(int*)));
 						if (path->list_goal == NULL) {exit(0);}
 						

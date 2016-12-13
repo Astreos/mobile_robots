@@ -113,7 +113,8 @@ void controller_loop(CtrlStruct *cvs)
 			if (t > 0.0)
 			{
 				cvs->main_state = RUN_STATE;
-				cvs->strat->main_state = GAME_STATE_A;
+				cvs->strat->main_state = THE_TARGET;
+				cvs->strat->sub_state = TRAJECTORY;
 			}
 			break;
 

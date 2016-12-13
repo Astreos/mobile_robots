@@ -83,26 +83,26 @@ void opponents_tower(CtrlStruct *cvs)
 
 	single_opp_tower(rise_1, fall_1, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x, opp_pos->y);
         
-	opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 0.7, delta_t);
-	opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 0.7, delta_t);
+	opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
+	opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
         
 	if (nb_opp == 2)
 	{
 		single_opp_tower(rise_2, fall_2, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x + 1, opp_pos->y + 1);
             
-		opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 0.7, delta_t);
-		opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 0.7, delta_t);
+		opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
+		opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
 	}
 
 	// ----- opponents position computation end ----- //
         
-	//set_plot(opp_pos->x[0], "opp1_x_[m]");
-	//set_plot(opp_pos->y[0], "opp1_y_[m]");
+	set_plot(opp_pos->x[0], "opp1_x_[m]");
+	set_plot(opp_pos->y[0], "opp1_y_[m]");
         
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
-	//set_plot(check_opp_front(cvs), "detection");
+	set_plot(check_opp_front(cvs), "detection");
 }
 
 /*! \brief compute a single opponent position

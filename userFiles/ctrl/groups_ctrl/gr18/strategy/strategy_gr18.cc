@@ -66,6 +66,9 @@ Strategy* init_strategy()
 	strat->list_targets[6] = 2;
 	strat->list_targets[7] = 7;
 	
+	//nb_targets
+	strat->nb_targets = 8;
+	
 	// current target
 	strat->current_action = 0;
 	
@@ -119,27 +122,27 @@ void main_strategy(CtrlStruct *cvs)
 
     switch (strat->main_state)
     {
-    case GAME_STATE_A:
+    case THE_TARGET:
 		manage_THE_target(cvs);
         break;
 
-    case GAME_STATE_B:
+    case FIRST_TARGET:
 		manage_first_target(cvs);
         break;
 
-	case GAME_STATE_C:
+	case SECOND_TARGET:
 		manage_second_target(cvs);
 		break;
 		
-    case GAME_STATE_D:
+    case WIN_POINTS:
 		win_points(cvs);
         break;
 		
-	case GAME_STATE_E:
+	case CALIBRATE:
 		calibrate(cvs);		
 		break;
 		
-	case GAME_STATE_F:
+	case FUNNY_ACTION:
 		speed_regulation(cvs, -7, 7);
 		break;
 
@@ -170,19 +173,48 @@ void manage_THE_target(CtrlStruct *cvs)
 	
 	outputs->flag_release = 0;
 	
-	if (path->flag_trajectory != 1)
+	switch (strat->sub_state)
 	{
-		trajectory(cvs, goal_x, goal_y*team(team_id));
-	}
-	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
-	{
-		speed_regulation(cvs, 0, 0);
-		
-		if (inputs->nb_targets == 1)
-		{
-			strat->current_action += 1;
-			strat->main_state = GAME_STATE_C;
-		}
+		case TRAJECTORY:
+			if (!path->flag_trajectory)
+			{
+				trajectory(cvs, goal_x, goal_y*team(team_id));
+			}
+			else
+			{
+				strat->sub_state = FOLLOW_PATH;
+			}
+			break;
+			
+		case FOLLOW_PATH:
+			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
+			{
+				speed_regulation(cvs, 0, 0);
+				strat->sub_state = CHECK_TARGET;
+			}
+			break;
+			
+		case CHECK_TARGET:
+			if (inputs->target_detected || (inputs->nb_targets == 1))
+			{
+				strat->sub_state = GET_TARGET;
+			}
+			else
+			{
+				strat->current_action += 1;
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = FIRST_TARGET;
+			}
+			break;
+			
+		case GET_TARGET:
+			if (inputs->nb_targets == 1)
+			{
+				strat->current_action += 1;
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = SECOND_TARGET;
+			}
+			break;
 	}
 }
 
@@ -207,23 +239,57 @@ void manage_first_target(CtrlStruct *cvs)
 	
 	outputs->flag_release = 0;
 	
-	if (path->flag_trajectory != 1)
+	switch (strat->sub_state)
 	{
-		trajectory(cvs, goal_x, goal_y*team(team_id));
-	}
-	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
-	{
-		speed_regulation(cvs, 0, 0);
-		
-		if (inputs->nb_targets == 1 && strat->current_action == 7)
-		{
-			strat->main_state = GAME_STATE_D;
-		}
-		else if (inputs->nb_targets == 1 && strat->current_action < 7)
-		{
-			strat->current_action += 1;
-			strat->main_state = GAME_STATE_C;
-		}
+		case TRAJECTORY:
+			if (!path->flag_trajectory)
+			{
+				trajectory(cvs, goal_x, goal_y*team(team_id));
+			}
+			else
+			{
+				strat->sub_state = FOLLOW_PATH;
+			}
+			break;
+			
+		case FOLLOW_PATH:
+			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
+			{
+				speed_regulation(cvs, 0, 0);
+				strat->sub_state = CHECK_TARGET;
+			}
+			break;
+			
+		case CHECK_TARGET:
+			if (inputs->target_detected || (inputs->nb_targets == 1))
+			{
+				strat->sub_state = GET_TARGET;
+			}
+			else if (strat->current_action < 7)
+			{
+				strat->current_action += 1;
+				strat->sub_state = TRAJECTORY;
+			}
+			else
+			{
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = WIN_POINTS;
+			}
+			break;
+			
+		case GET_TARGET:
+			if (inputs->nb_targets == 1 && strat->current_action == strat->nb_targets-1)
+			{
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = WIN_POINTS;
+			}
+			else if (inputs->nb_targets == 1 && strat->current_action < strat->nb_targets-1)
+			{
+				strat->current_action += 1;
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = SECOND_TARGET;
+			}
+			break;
 	}
 }
 
@@ -248,18 +314,51 @@ void manage_second_target(CtrlStruct *cvs)
 	
 	outputs->flag_release = 0;
 	
-	if (path->flag_trajectory != 1)
+	switch (strat->sub_state)
 	{
-		trajectory(cvs, goal_x, goal_y*team(team_id));
-	}
-	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
-	{
-		speed_regulation(cvs, 0, 0);
-		
-		if (inputs->nb_targets == 2)
-		{
-			strat->main_state = GAME_STATE_D;
-		}
+		case TRAJECTORY:
+			if (!path->flag_trajectory)
+			{
+				trajectory(cvs, goal_x, goal_y*team(team_id));
+			}
+			else
+			{
+				strat->sub_state = FOLLOW_PATH;
+			}
+			break;
+			
+		case FOLLOW_PATH:
+			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
+			{
+				speed_regulation(cvs, 0, 0);
+				strat->sub_state = CHECK_TARGET;
+			}
+			break;
+			
+		case CHECK_TARGET:
+			if (inputs->target_detected || (inputs->nb_targets == 2))
+			{
+				strat->sub_state = GET_TARGET;
+			}
+			else if (strat->current_action < strat->nb_targets-1)
+			{
+				strat->current_action += 1;
+				strat->sub_state = TRAJECTORY;
+			}
+			else
+			{
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = WIN_POINTS;
+			}
+			break;
+			
+		case GET_TARGET:
+			if (inputs->nb_targets == 2)
+			{
+				strat->sub_state = TRAJECTORY;
+				strat->main_state = WIN_POINTS;
+			}
+			break;
 	}
 }
 
@@ -285,17 +384,33 @@ void win_points(CtrlStruct *cvs)
 	
 	team_id = cvs->team_id;
 	
-	if (path->flag_trajectory != 1)
+	switch (strat->sub_state)
 	{
-		trajectory(cvs, -0.70, -1.15*team(team_id));
-	}
-	if (follow_path(cvs, -0.70, -1.15*team(team_id)))
-	{
-		speed_regulation(cvs, 0, 0);
-		outputs->flag_release = 1;
-		
-		strat->last_t = inputs->t;
-		strat->main_state = GAME_STATE_E;
+		case TRAJECTORY:
+			if (!path->flag_trajectory)
+			{
+				trajectory(cvs, -0.70, -1.15*team(team_id));
+			}
+			else
+			{
+				strat->sub_state = FOLLOW_PATH;
+			}
+			break;
+			
+		case FOLLOW_PATH:
+			if (follow_path(cvs, -0.70, -1.15*team(team_id)))
+			{
+				speed_regulation(cvs, 0, 0);
+				strat->sub_state = RELEASE_TARGET;
+			}
+			break;
+			
+		case RELEASE_TARGET:
+			outputs->flag_release = 1;
+			
+			strat->last_t = inputs->t;
+			strat->main_state = CALIBRATE;
+			break;
 	}
 }
 
@@ -319,23 +434,24 @@ void calibrate(CtrlStruct *cvs)
 	
 	if (inputs->t - strat->last_t > 2.0)
 	{
-		if (strat->current_action == 7)
+		if (strat->current_action == strat->nb_targets-1)
 		{
-			strat->main_state = GAME_STATE_F;
+			strat->main_state = FUNNY_ACTION;
 		}
 		else
 		{
 			strat->current_action += 1;
-			strat->main_state = GAME_STATE_B;
+			strat->sub_state = TRAJECTORY;
+			strat->main_state = FIRST_TARGET;
 		}
 	}
 	else if (inputs->t - strat->last_t > 1.0)
 	{
-		/*
-		rob_pos->x = pos_kalman->x;
-		rob_pos->y = pos_kalman->y;
-		rob_pos->theta = pos_kalman->theta;
-		*/
+		
+		//rob_pos->x = pos_kalman->x;
+		//rob_pos->y = pos_kalman->y;
+		//rob_pos->theta = pos_kalman->theta;
+		
 		/*
 		rob_pos->x = pos_tri->x;
 		rob_pos->y = pos_tri->y;
