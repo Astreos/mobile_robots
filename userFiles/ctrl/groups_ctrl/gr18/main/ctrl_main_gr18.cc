@@ -15,6 +15,7 @@
 #include "strategy_gr18.h"
 #include "path_regulation_gr18.h"
 #include "path_planning_gr18.h"
+#include "kalman_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -88,6 +89,9 @@ void controller_loop(CtrlStruct *cvs)
 
 	// triangulation
 	triangulation(cvs);
+	
+	// kalman
+	kalman(cvs);
 
 	// opponents position
 	opponents_tower(cvs);
