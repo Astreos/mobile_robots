@@ -17,8 +17,7 @@ NAMESPACE_INIT(ctrlGr18);
  *
  * This function can be adapted, depending on the map.
  */
-void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1,
-	double *x_beac_2, double *y_beac_2, double *x_beac_3, double *y_beac_3)
+void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1, double *x_beac_2, double *y_beac_2, double *x_beac_3, double *y_beac_3)
 {
 	switch (team_id)
 	{
@@ -93,7 +92,9 @@ void triangulation(CtrlStruct *cvs)
 	double cot_1_2, cot_2_3, cot_3_1;
 	double x_circ_1_2, y_circ_1_2, x_circ_2_3, y_circ_2_3, x_circ_3_1, y_circ_3_1;
 	double k_3_1, diam_tri;
-
+	
+	double delta_t;
+	double old_pos_tri_x, old_pos_tri_y, old_pos_tri_theta;
 
 	// variables initialization
 	pos_tri = cvs->triang_pos;
@@ -223,6 +224,10 @@ void triangulation(CtrlStruct *cvs)
 		return;
 	}
 	
+	old_pos_tri_x = pos_tri->x;
+	old_pos_tri_y = pos_tri->y;
+	old_pos_tri_theta = pos_tri->theta;
+	
 	// robot position
 	pos_tri->x = x_beac_2 + k_3_1*(y_circ_1_2 - y_circ_2_3)/diam_tri - 0.083*cos(rob_pos->theta);
 	pos_tri->y = y_beac_2 + k_3_1*(x_circ_2_3 - x_circ_1_2)/diam_tri - 0.083*sin(rob_pos->theta);
@@ -237,11 +242,20 @@ void triangulation(CtrlStruct *cvs)
 		pos_tri->theta = limit_angle(3.0*M_PI/2.0 + atan(fabs(pos_tri->x - x_beac_3)/fabs(pos_tri->y - y_beac_3)) - alpha_3);
 	}
 	
+	// low pass filter time increment ('delta_t' is the last argument of the 'first_order_filter' function)
+	delta_t = inputs->t - pos_tri->last_t;
+	
+	pos_tri->x = first_order_filter(old_pos_tri_x, pos_tri->x, 0.5, delta_t);
+	pos_tri->y = first_order_filter(old_pos_tri_y, pos_tri->y, 0.5, delta_t);
+	pos_tri->theta = first_order_filter(old_pos_tri_theta, pos_tri->theta, 0.5, delta_t);
+	
+	pos_tri->last_t = inputs->t;
+	
 	// ----- triangulation computation end ----- //
         
-	//set_plot(pos_tri->x, "x_tri_[m]");
-	//set_plot(pos_tri->y, "y_tri_[m]");
-    //set_plot(pos_tri->theta, "theta_tri_[rad]");
+	set_plot(pos_tri->x, "x_tri_[m]");
+	set_plot(pos_tri->y, "y_tri_[m]");
+    set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 
 NAMESPACE_CLOSE();

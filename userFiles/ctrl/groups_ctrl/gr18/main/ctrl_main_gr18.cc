@@ -42,12 +42,12 @@ void controller_init(CtrlStruct *cvs)
 		case ROBOT_R: cvs->team_id = TEAM_A; break;
 		case ROBOT_Y: cvs->team_id = TEAM_B; break;
 		case ROBOT_W: cvs->team_id = TEAM_B; break;
-
+		
 		default:
 			printf("Error: unknown robot ID: %d !\n", inputs->robot_id);
 			exit(EXIT_FAILURE);
 	}
-
+	
 	// number of opponents
 	cvs->nb_opp = inputs->nb_opponents;
 
@@ -57,13 +57,13 @@ void controller_init(CtrlStruct *cvs)
 
 	// speed regulation
 	cvs->sp_reg->last_t = t;
-        cvs->sp_reg->int_error_r = 0;
-        cvs->sp_reg->int_error_l = 0;
+	cvs->sp_reg->int_error_r = 0;
+	cvs->sp_reg->int_error_l = 0;
         
-        // position regulation
+	// position regulation
 	cvs->pos_reg->last_t = t;
-        cvs->pos_reg->int_error_r = 0;
-        cvs->pos_reg->int_error_l = 0;
+	cvs->pos_reg->int_error_r = 0;
+	cvs->pos_reg->int_error_l = 0;
 }
 
 /*! \brief controller loop (called every time-step)
@@ -151,7 +151,7 @@ void controller_loop(CtrlStruct *cvs)
  */
 void controller_finish(CtrlStruct *cvs)
 {
-
+	free_CtrlStruct(cvs);
 }
 
 NAMESPACE_CLOSE();

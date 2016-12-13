@@ -6,6 +6,7 @@
 #include "opp_pos_gr18.h"
 #include "odometry_gr18.h"
 #include "useful_gr18.h"
+#include "kalman_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -68,6 +69,9 @@ Strategy* init_strategy()
 	// current target
 	strat->current_action = 0;
 	
+	// delta_t
+	strat->last_t = 0;
+	
 	// ----- strategy initialization end ----- //
 
     return strat;
@@ -108,16 +112,10 @@ void main_strategy(CtrlStruct *cvs)
     // variables declaration
     Strategy *strat;
     CtrlIn *inputs;
-	CtrlOut *outputs;
-    PathPlanning *path;
-	int team_id;
 
     // variables initialization
     strat  = cvs->strat;
     inputs = cvs->inputs;
-	outputs = cvs->outputs;
-    path = cvs->path;
-	team_id = cvs->team_id;
 
     switch (strat->main_state)
     {
@@ -136,8 +134,12 @@ void main_strategy(CtrlStruct *cvs)
     case GAME_STATE_D:
 		win_points(cvs);
         break;
-
-    case GAME_STATE_E:
+		
+	case GAME_STATE_E:
+		calibrate(cvs);		
+		break;
+		
+	case GAME_STATE_F:
 		speed_regulation(cvs, -7, 7);
 		break;
 
@@ -174,6 +176,8 @@ void manage_THE_target(CtrlStruct *cvs)
 	}
 	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 	{
+		speed_regulation(cvs, 0, 0);
+		
 		if (inputs->nb_targets == 1)
 		{
 			strat->current_action += 1;
@@ -209,6 +213,8 @@ void manage_first_target(CtrlStruct *cvs)
 	}
 	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 	{
+		speed_regulation(cvs, 0, 0);
+		
 		if (inputs->nb_targets == 1 && strat->current_action == 7)
 		{
 			strat->main_state = GAME_STATE_D;
@@ -248,6 +254,8 @@ void manage_second_target(CtrlStruct *cvs)
 	}
 	if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 	{
+		speed_regulation(cvs, 0, 0);
+		
 		if (inputs->nb_targets == 2)
 		{
 			strat->main_state = GAME_STATE_D;
@@ -262,6 +270,9 @@ void win_points(CtrlStruct *cvs)
 	CtrlIn *inputs;
 	CtrlOut *outputs;
 	PathPlanning *path;
+	RobotPosition *rob_pos;
+	KalmanStruct *pos_kalman;
+	
 	int team_id;
 	
 	// variables initialization
@@ -269,6 +280,9 @@ void win_points(CtrlStruct *cvs)
 	inputs = cvs->inputs;
 	outputs = cvs->outputs;
 	path = cvs->path;
+	rob_pos = cvs->rob_pos;
+	pos_kalman = cvs->kalman_pos;
+	
 	team_id = cvs->team_id;
 	
 	if (path->flag_trajectory != 1)
@@ -277,17 +291,56 @@ void win_points(CtrlStruct *cvs)
 	}
 	if (follow_path(cvs, -0.70, -1.15*team(team_id)))
 	{
+		speed_regulation(cvs, 0, 0);
 		outputs->flag_release = 1;
 		
+		strat->last_t = inputs->t;
+		strat->main_state = GAME_STATE_E;
+	}
+}
+
+void calibrate(CtrlStruct *cvs)
+{
+	// variables declaration
+	Strategy *strat;
+	CtrlIn *inputs;
+	RobotPosition *rob_pos;
+	KalmanStruct *pos_kalman;
+	RobotPosition *pos_tri;
+	
+	// variables initialization
+	strat  = cvs->strat;
+	inputs = cvs->inputs;
+	rob_pos = cvs->rob_pos;
+	pos_kalman = cvs->kalman_pos;
+	pos_tri = cvs->triang_pos;
+	
+	speed_regulation(cvs, 0, 0);
+	
+	if (inputs->t - strat->last_t > 2.0)
+	{
 		if (strat->current_action == 7)
 		{
-			strat->main_state = GAME_STATE_E;
+			strat->main_state = GAME_STATE_F;
 		}
 		else
 		{
 			strat->current_action += 1;
 			strat->main_state = GAME_STATE_B;
 		}
+	}
+	else if (inputs->t - strat->last_t > 1.0)
+	{
+		/*
+		rob_pos->x = pos_kalman->x;
+		rob_pos->y = pos_kalman->y;
+		rob_pos->theta = pos_kalman->theta;
+		*/
+		/*
+		rob_pos->x = pos_tri->x;
+		rob_pos->y = pos_tri->y;
+		rob_pos->theta = pos_tri->theta;
+		*/
 	}
 }
 

@@ -27,6 +27,7 @@ enum {TEAM_A, TEAM_B, NB_TEAMS};
 
 // forward declaration
 typedef struct RobotPosition RobotPosition;
+typedef struct KalmanStruct KalmanStruct;
 typedef struct SpeedRegulation SpeedRegulation;
 typedef struct PosRegulation PosRegulation;
 typedef struct RobotCalibration RobotCalibration;
@@ -42,7 +43,7 @@ typedef struct CtrlStruct
 
 	RobotPosition *rob_pos;     ///< robot position coming from the robot odometry
 	RobotPosition *triang_pos;  ///< robot position coming from the triangulation
-	RobotPosition *kalman_pos;     ///< robot position coming from the robot odometry
+	KalmanStruct *kalman_pos;  	///< robot position coming from the kalman filter
 	OpponentsPosition *opp_pos; ///< opponents position
 	SpeedRegulation *sp_reg;    ///< speed regulation
 	PosRegulation *pos_reg;    ///< speed regulation

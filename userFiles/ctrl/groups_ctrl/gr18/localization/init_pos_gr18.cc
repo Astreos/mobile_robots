@@ -15,9 +15,9 @@ void set_init_position(int robot_id, RobotPosition *rob_pos)
 	switch (robot_id)
 	{
 		case ROBOT_B: // blue robot
-			rob_pos->x = 0.67;
-			rob_pos->y = 1.15;
-			rob_pos->theta = -90.0;
+			rob_pos->x = 0.0;
+			rob_pos->y = 0.0;
+			rob_pos->theta = 0.0;
 			break;
 
 		case ROBOT_R: // red robot
