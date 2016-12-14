@@ -143,7 +143,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	manage_opp(cvs, 1);
+	manage_opp(cvs, 0);
 	
 	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT && strat->list_targets[strat->nb_targets-1] != strat->list_targets[strat->nb_targets-2])
 	{
@@ -161,13 +161,16 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	assign_numbers(cvs);
 	
-	if ((path->goal_XY->X != N_REGISTRED) && (path->goal_XY->Y != N_REGISTRED))
+	if (path->map[path->goal_XY->X][path->goal_XY->Y] != N_REGISTRED)
 	{
 		find_path(cvs);
 		path->flag_trajectory = 1;
 	}
 	else
 	{
+		free_path_planning(path);
+		path = init_path_planning();
+		
 		return;
 	}
 	
@@ -367,7 +370,7 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-(7*RESOLUTION+j)] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)
 			}
 		}
-		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+7; i++) // On augmente le pic de chaque barrière adjacente aux camps cibles de 3
+		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+6; i++) // On augmente le pic de chaque barrière adjacente aux camps cibles de 3
 		{
 			path->map[i][6*RESOLUTION+1] = OBSTACLE; // Moitié gauche de la barrière en haut à gauche (camp bleu cible)
 			path->map[i][CELL_Y-1-(6*RESOLUTION+1)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
@@ -383,7 +386,7 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
-		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
+		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+2; i++) // On augmente le pic de chaque barrière latérale du milieu de 2
 		{
 			path->map[i][12*RESOLUTION-1] = OBSTACLE; // Moitié gauche de la barrière milieu-gauche
 			path->map[i][CELL_Y-1-(12*RESOLUTION-1)] = OBSTACLE; // Moitié gauche de la barrière milieu-droite
@@ -411,7 +414,7 @@ void create_map(CtrlStruct *cvs)
 		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-3] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-4][CELL_Y-1-(12*RESOLUTION-1-3)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
 		
-		for (i = 4*RESOLUTION; i <= 7*RESOLUTION-1; i++) // Construction de la barrière verticale du milieu augmentées de 3
+		for (i = 3*RESOLUTION; i <= 7*RESOLUTION-1; i++) // Construction de la barrière verticale du milieu augmentées de 5
 		{
 			for (j = 15*RESOLUTION-1-3; j <= 16*RESOLUTION+3; j++)
 			{
@@ -583,109 +586,195 @@ void assign_numbers(CtrlStruct *cvs)
 	return;
 }
 
-/*
-void assign_numbers(CtrlStruct *cvs)
-{
-	// variables declaration
-	PathPlanning *path;
-	int i, j, n;
-	
-	// variables initialization
-	path = cvs->path;
-	
-	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;	
-    
-    for(n = 50; n > 0; n--)
-	{
-		for (i = 0; i < CELL_X; i++)
-		{
-			for (j = 0; j < CELL_Y; j++)
-			{
-				if (path->map[i][j] != N_REGISTRED && path->map[i][j] != OBSTACLE && path->map[i][j] != OPPONENT)
-				{
-					if (path->map[i-1][j+1] == N_REGISTRED)
-					{
-						path->map[i-1][j+1] = path->map[i][j] + sqrt(2);
-					}
-					if (path->map[i+1][j-1] == N_REGISTRED)
-					{
-						path->map[i+1][j-1] = path->map[i][j] + sqrt(2);
-					}
-					if (path->map[i-1][j-1] == N_REGISTRED)
-					{
-						path->map[i-1][j-1] = path->map[i][j] + sqrt(2);
-					}
-					if (path->map[i+1][j+1] == N_REGISTRED)
-					{
-						path->map[i+1][j+1] = path->map[i][j] + sqrt(2);
-					}
-					
-					if (path->map[i-1][j] == N_REGISTRED)
-					{
-						path->map[i-1][j] = path->map[i][j] + 1;
-					}
-					if (path->map[i+1][j] == N_REGISTRED)
-					{
-						path->map[i+1][j] = path->map[i][j] + 1;
-					}
-					if (path->map[i][j-1] == N_REGISTRED)
-					{
-						path->map[i][j-1] = path->map[i][j] + 1;
-					}
-					if (path->map[i][j+1] == N_REGISTRED)
-					{
-						path->map[i][j+1] = path->map[i][j] + 1;
-					}
-				}
-			}
-		}
-	}
-    
-    return;
-}
-*/
-
 void find_path(CtrlStruct *cvs)
 {
 	// variable declaration
 	PathPlanning *path;
-	int i, j, k;
-	float minimum;
+	int i, j, i_line, j_line, i_diag, j_diag, k, l, c;
+	float avg_temp, avg_line, avg_diag;
 	
 	// variables initialization
 	path = cvs->path;
 	
-	minimum = path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y];
-	k=0;
+	k = 0;
 	
 	path->list_goal[0][0] = path->rob_pos_XY->X;
 	path->list_goal[0][1] = path->rob_pos_XY->Y;
 	
-	while ((path->list_goal[k][0] != path->goal_XY->X) || (path->list_goal[k][1] != path->goal_XY->Y))
+	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 3)
 	{
 		k++;
-		for (i = -1; i <= 1; i++)
+		
+		avg_line = 100.0;
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
 		{
-			for (j = -1; j <= 1; j++)
+			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]] != OBSTACLE)
 			{
-				if (path->map[path->list_goal[k-1][0]+i][path->list_goal[k-1][1]+j] < minimum)
-				{
-					minimum = path->map[path->list_goal[k-1][0]+i][path->list_goal[k-1][1]+j];
-					
-					if (k >= 10*RESOLUTION)
-					{						
-						path->list_goal = (int**) realloc(path->list_goal, 10*sizeof(int*) + (k-9)*(sizeof(int*)));
-						if (path->list_goal == NULL) {exit(0);}
-						
-						path->list_goal[k] = (int*) malloc(2*sizeof(int));
-						if (path->list_goal[k] == NULL) {exit(0);}
-					}
-					
-					path->list_goal[k][0] = path->list_goal[k-1][0]+i;
-					path->list_goal[k][1] = path->list_goal[k-1][1]+j;
-				}
+				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]];
+				c += 1;
 			}
 		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]] != OBSTACLE))
+		{
+			avg_line = avg_temp;
+			i_line = 1;
+			j_line = 0;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]] != OBSTACLE))
+		{
+			avg_line = avg_temp;
+			i_line = -1;
+			j_line = 0;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+1] != OBSTACLE))
+		{
+			avg_line = avg_temp;
+			i_line = 0;
+			j_line = 1;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-1] != OBSTACLE))
+		{
+			avg_line = avg_temp;
+			i_line = 0;
+			j_line = -1;
+		}
+		
+		avg_diag = 100.0;
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]-l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]-l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]-1] != OBSTACLE))
+		{
+			avg_diag = avg_temp;
+			i_diag = -1;
+			j_diag = -1;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]+l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]+l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]+1] != OBSTACLE))
+		{
+			avg_diag = avg_temp;
+			i_diag = 1;
+			j_diag = 1;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]-l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]-l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]-1] != OBSTACLE))
+		{
+			avg_diag = avg_temp;
+			i_diag = 1;
+			j_diag = -1;
+		}
+		
+		avg_temp = 0;
+		c = 0;
+		for (l = 0; l <= 3; l++)
+		{
+			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]+l] != OBSTACLE)
+			{
+				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]+l];
+				c += 1;
+			}
+		}
+		avg_temp = avg_temp/c;
+		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]+1] != OBSTACLE))
+		{
+			avg_diag = avg_temp;
+			i_diag = -1;
+			j_diag = 1;
+		}
+		
+		if (avg_diag < avg_line)
+		{
+			i = i_diag;
+			j = j_diag;
+		}
+		else
+		{
+			i = i_line;
+			j = j_line;
+		}
+		
+		if (k >= 10*RESOLUTION)
+		{						
+			path->list_goal = (int**) realloc(path->list_goal, (k+1)*sizeof(int*));
+			if (path->list_goal == NULL) {exit(0);}
+			
+			path->list_goal[k] = (int*) malloc(2*sizeof(int));
+			if (path->list_goal[k] == NULL) {exit(0);}
+		}
+		
+		path->list_goal[k][0] = path->list_goal[k-1][0]+i;
+		path->list_goal[k][1] = path->list_goal[k-1][1]+j;
 	}
 	
 	path->nb_goals = k;

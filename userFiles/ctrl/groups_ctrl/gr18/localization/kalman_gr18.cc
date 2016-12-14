@@ -109,9 +109,9 @@ void kalman(CtrlStruct *cvs)
 	// low pass filter time increment ('delta_t' is the last argument of the 'first_order_filter' function)
 	delta_t = inputs->t - pos_kalman->last_t;
 	
-	pos_kalman->x = first_order_filter(old_kalman_x, pos_kalman->x, 0.7, delta_t);
-	pos_kalman->y = first_order_filter(old_kalman_y, pos_kalman->y, 0.7, delta_t);
-	pos_kalman->theta = first_order_filter(old_kalman_theta, pos_kalman->theta, 0.7, delta_t);
+	pos_kalman->x = first_order_filter(old_kalman_x, pos_kalman->x, 0.3, delta_t);
+	pos_kalman->y = first_order_filter(old_kalman_y, pos_kalman->y, 0.3, delta_t);
+	pos_kalman->theta = first_order_filter(old_kalman_theta, pos_kalman->theta, 0.3, delta_t);
 	
 	pos_kalman->last_t = inputs->t;
 	
@@ -119,8 +119,8 @@ void kalman(CtrlStruct *cvs)
 	//printf("odometry pos_x : %f & odometry pos_y : %f  \n",rob_pos->x,rob_pos->y);
 	//printf("kalman pos_x : %f & kalman pos_y : %f  \n\n",pos_kalman->x,pos_kalman->y);
 	
-	set_plot(pos_kalman->x, "x_kalm");
-    set_plot(pos_kalman->y, "y_kalm");
+	//set_plot(pos_kalman->x, "x_kalm");
+    //set_plot(pos_kalman->y, "y_kalm");
     //set_plot(pos_kalman->theta, "theta_kalm");
 }
 

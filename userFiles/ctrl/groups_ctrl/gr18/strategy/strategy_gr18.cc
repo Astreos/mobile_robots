@@ -104,6 +104,8 @@ void free_strategy(Strategy *strat)
     free(strat);
 	
 	// ----- strategy memory release end ----- //
+	
+	return;
 }
 
 /*! \brief startegy during the game
@@ -150,6 +152,8 @@ void main_strategy(CtrlStruct *cvs)
         printf("Error: unknown strategy main state: %d !\n", strat->main_state);
         exit(EXIT_FAILURE);
     }
+    
+    return;
 }
 
 void manage_THE_target(CtrlStruct *cvs)
@@ -189,7 +193,6 @@ void manage_THE_target(CtrlStruct *cvs)
 		case FOLLOW_PATH:
 			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 			{
-				speed_regulation(cvs, 0, 0);
 				strat->sub_state = CHECK_TARGET;
 			}
 			break;
@@ -216,6 +219,8 @@ void manage_THE_target(CtrlStruct *cvs)
 			}
 			break;
 	}
+	
+	return;
 }
 
 void manage_first_target(CtrlStruct *cvs)
@@ -255,7 +260,6 @@ void manage_first_target(CtrlStruct *cvs)
 		case FOLLOW_PATH:
 			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 			{
-				speed_regulation(cvs, 0, 0);
 				strat->sub_state = CHECK_TARGET;
 			}
 			break;
@@ -291,6 +295,8 @@ void manage_first_target(CtrlStruct *cvs)
 			}
 			break;
 	}
+	
+	return;
 }
 
 void manage_second_target(CtrlStruct *cvs)
@@ -330,7 +336,6 @@ void manage_second_target(CtrlStruct *cvs)
 		case FOLLOW_PATH:
 			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
 			{
-				speed_regulation(cvs, 0, 0);
 				strat->sub_state = CHECK_TARGET;
 			}
 			break;
@@ -360,6 +365,8 @@ void manage_second_target(CtrlStruct *cvs)
 			}
 			break;
 	}
+	
+	return;
 }
 
 void win_points(CtrlStruct *cvs)
@@ -389,7 +396,7 @@ void win_points(CtrlStruct *cvs)
 		case TRAJECTORY:
 			if (!path->flag_trajectory)
 			{
-				trajectory(cvs, -0.75, -1.15*team(team_id));
+				trajectory(cvs, -0.30, -1.30*team(team_id));
 			}
 			else
 			{
@@ -398,9 +405,8 @@ void win_points(CtrlStruct *cvs)
 			break;
 			
 		case FOLLOW_PATH:
-			if (follow_path(cvs, -0.75, -1.15*team(team_id)))
+			if (follow_path(cvs, -0.70, -1.15*team(team_id)))
 			{
-				speed_regulation(cvs, 0, 0);
 				strat->sub_state = RELEASE_TARGET;
 			}
 			break;
@@ -412,6 +418,8 @@ void win_points(CtrlStruct *cvs)
 			strat->main_state = CALIBRATE;
 			break;
 	}
+	
+	return;
 }
 
 void calibrate(CtrlStruct *cvs)
@@ -434,7 +442,7 @@ void calibrate(CtrlStruct *cvs)
 	{
 		rob_pos->x = pos_kalman->x;
 		rob_pos->y = pos_kalman->y;
-		rob_pos->theta = pos_kalman->theta;
+		//rob_pos->theta = pos_kalman->theta;
 		
 		
 		if (strat->current_action == strat->nb_targets-1)
@@ -448,6 +456,8 @@ void calibrate(CtrlStruct *cvs)
 			strat->main_state = FIRST_TARGET;
 		}
 	}
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

@@ -115,7 +115,7 @@ void controller_loop(CtrlStruct *cvs)
 			cvs->kalman_pos->y = 1.14*team(team_id);
 			cvs->kalman_pos->theta = -M_PI/2.0*team(team_id);
 
-			if (t > 0.0)
+			if (t > -5.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = THE_TARGET;

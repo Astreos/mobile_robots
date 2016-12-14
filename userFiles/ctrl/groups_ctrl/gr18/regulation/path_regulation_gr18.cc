@@ -24,7 +24,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     
     if (path->count_actions <= path->nb_goals-3)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.15))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.20))
 		{
 			path->count_actions++;
 		}
@@ -35,19 +35,25 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	{
 		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
 		{
-			if (run(cvs, goal_x, goal_y, M_PI, 0.005))
+			if (run(cvs, goal_x, goal_y, M_PI, 0.003))
 			{
+				speed_regulation(cvs, 0, 0);
+				
 				free_path_planning(path);
 				path = init_path_planning();
+				
 				return 1;
 			}
 		}
 		else
 		{
-			if (run(cvs, goal_x, goal_y, 66, 0.005))
+			if (run(cvs, goal_x, goal_y, 66, 0.003))
 			{
+				speed_regulation(cvs, 0, 0);
+				
 				free_path_planning(path);
 				path = init_path_planning();
+				
 				return 1;
 			}
 		}
@@ -174,6 +180,7 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	RobotPosition *rob_pos;
 	CtrlIn *inputs;
 	PosRegulation *pos_reg;
+	OpponentsPosition *opp_pos;
 	
 	double rho, alpha, beta;
 	double dt;
@@ -183,6 +190,7 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	inputs  = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	pos_reg  = cvs->pos_reg;
+	opp_pos = cvs->opp_pos;
 	
 	// time
 	dt = inputs->t - pos_reg->last_t; // time interval since last call
@@ -192,13 +200,13 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	if (epsilon >= 0.1)
 	{
 		K_rho = 20.0*7; // K_rho > 0
-		K_alpha = 25.0*7; // K_alpha > K_rho
+		K_alpha = 23.0*7; // K_alpha > K_rho
 		K_beta = -12.0*7; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
 		K_rho = 20.0*3; // K_rho > 0
-		K_alpha = 25.0*3; // K_alpha > K_rho
+		K_alpha = 23.0*3; // K_alpha > K_rho
 		K_beta = -12.0*3; // K_beta < 0
 	}
 	
@@ -214,9 +222,9 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
 	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
 	
-	if (check_opp_front(cvs))
+	if (opp_pos->opp_front)
 	{
-		speed_regulation(cvs, 0, 0);
+		speed_regulation(cvs, K_alpha*alpha, -K_alpha*alpha);
 	}
 	else
 	{
