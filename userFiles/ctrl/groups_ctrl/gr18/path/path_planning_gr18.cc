@@ -520,23 +520,6 @@ void assign_numbers(CtrlStruct *cvs)
 			{
 				if (path->map[i][j] != N_REGISTRED && path->map[i][j] != OBSTACLE && path->map[i][j] != OPPONENT)
 				{
-					if (path->map[i-1][j] == N_REGISTRED)
-					{
-						path->map[i-1][j] = path->map[i][j] + 1;
-					}
-					if (path->map[i+1][j] == N_REGISTRED)
-					{
-						path->map[i+1][j] = path->map[i][j] + 1;
-					}
-					if (path->map[i][j-1] == N_REGISTRED)
-					{
-						path->map[i][j-1] = path->map[i][j] + 1;
-					}
-					if (path->map[i][j+1] == N_REGISTRED)
-					{
-						path->map[i][j+1] = path->map[i][j] + 1;
-					}
-
 					if (path->map[i-1][j+1] == N_REGISTRED)
 					{
 						path->map[i-1][j+1] = path->map[i][j] + sqrt(2);
@@ -552,6 +535,23 @@ void assign_numbers(CtrlStruct *cvs)
 					if (path->map[i+1][j+1] == N_REGISTRED)
 					{
 						path->map[i+1][j+1] = path->map[i][j] + sqrt(2);
+					}
+					
+					if (path->map[i-1][j] == N_REGISTRED)
+					{
+						path->map[i-1][j] = path->map[i][j] + 1;
+					}
+					if (path->map[i+1][j] == N_REGISTRED)
+					{
+						path->map[i+1][j] = path->map[i][j] + 1;
+					}
+					if (path->map[i][j-1] == N_REGISTRED)
+					{
+						path->map[i][j-1] = path->map[i][j] + 1;
+					}
+					if (path->map[i][j+1] == N_REGISTRED)
+					{
+						path->map[i][j+1] = path->map[i][j] + 1;
 					}
 				}
 			}

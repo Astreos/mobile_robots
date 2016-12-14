@@ -421,19 +421,22 @@ void calibrate(CtrlStruct *cvs)
 	CtrlIn *inputs;
 	RobotPosition *rob_pos;
 	KalmanStruct *pos_kalman;
-	RobotPosition *pos_tri;
 	
 	// variables initialization
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	pos_kalman = cvs->kalman_pos;
-	pos_tri = cvs->triang_pos;
 	
 	speed_regulation(cvs, 0, 0);
 	
 	if (inputs->t - strat->last_t > 2.0)
 	{
+		rob_pos->x = pos_kalman->x;
+		rob_pos->y = pos_kalman->y;
+		rob_pos->theta = pos_kalman->theta;
+		
+		
 		if (strat->current_action == strat->nb_targets-1)
 		{
 			strat->main_state = FUNNY_ACTION;
@@ -444,19 +447,6 @@ void calibrate(CtrlStruct *cvs)
 			strat->sub_state = TRAJECTORY;
 			strat->main_state = FIRST_TARGET;
 		}
-	}
-	else if (inputs->t - strat->last_t > 1.0)
-	{
-		
-		//rob_pos->x = pos_kalman->x;
-		//rob_pos->y = pos_kalman->y;
-		//rob_pos->theta = pos_kalman->theta;
-		
-		/*
-		rob_pos->x = pos_tri->x;
-		rob_pos->y = pos_tri->y;
-		rob_pos->theta = pos_tri->theta;
-		*/
 	}
 }
 

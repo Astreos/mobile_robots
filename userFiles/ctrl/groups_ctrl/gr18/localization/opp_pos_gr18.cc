@@ -96,13 +96,13 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// ----- opponents position computation end ----- //
         
-	set_plot(opp_pos->x[0], "opp1_x_[m]");
-	set_plot(opp_pos->y[0], "opp1_y_[m]");
+	//set_plot(opp_pos->x[0], "opp1_x_[m]");
+	//set_plot(opp_pos->y[0], "opp1_y_[m]");
         
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
-	set_plot(check_opp_front(cvs), "detection");
+	//set_plot(check_opp_front(cvs), "detection");
 }
 
 /*! \brief compute a single opponent position

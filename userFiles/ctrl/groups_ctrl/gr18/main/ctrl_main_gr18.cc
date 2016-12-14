@@ -16,6 +16,7 @@
 #include "path_regulation_gr18.h"
 #include "path_planning_gr18.h"
 #include "kalman_gr18.h"
+#include "useful_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -76,10 +77,12 @@ void controller_loop(CtrlStruct *cvs)
 	double t;
 	CtrlIn *inputs;
 	CtrlOut *outputs;
+	int team_id;
 
 	// variables initialization
 	inputs  = cvs->inputs;
 	outputs = cvs->outputs;
+	team_id = cvs->team_id;
 
 	// time
 	t = inputs->t;
@@ -89,9 +92,6 @@ void controller_loop(CtrlStruct *cvs)
 
 	// triangulation
 	triangulation(cvs);
-	
-	// kalman
-	kalman(cvs);
 
 	// opponents position
 	opponents_tower(cvs);
@@ -109,6 +109,11 @@ void controller_loop(CtrlStruct *cvs)
 		// wait before match beginning
 		case WAIT_INIT_STATE:
 			speed_regulation(cvs, 0.0, 0.0);
+			
+			// kalman
+			cvs->kalman_pos->x = 0.75;
+			cvs->kalman_pos->y = 1.14*team(team_id);
+			cvs->kalman_pos->theta = -M_PI/2.0*team(team_id);
 
 			if (t > 0.0)
 			{
@@ -120,6 +125,9 @@ void controller_loop(CtrlStruct *cvs)
 
 		// during game
 		case RUN_STATE:
+			// kalman
+			kalman(cvs);
+			
 			main_strategy(cvs);
 
 			if (t > 89.0) // 1 second safety
