@@ -505,6 +505,89 @@ void assign_numbers(CtrlStruct *cvs)
 {
 	// variables declaration
 	PathPlanning *path;
+	int i, j, value, cases_ni;
+	
+	// variables initialization
+	path = cvs->path;
+	value = 0;
+	cases_ni = 0;
+	
+	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;
+	
+	for (i = 0; i < CELL_X; i++)
+	{
+		for (j = 0; j < CELL_Y; j++)
+		{
+			if (path->map[i][j] == N_REGISTRED)
+			{
+				cases_ni += 1;
+			}
+		}
+	}
+	
+	while(cases_ni > 0) // tant qu'on n'a pas enregistré toute les cases
+	{
+		for (i = 1; i < CELL_X-1; i++)
+		{
+			for (j = 1; j < CELL_Y-1; j++)
+			{
+				if (path->map[i][j] == value)
+				{
+					if (path->map[i - 1][j] == N_REGISTRED)
+					{
+						path->map[i - 1][j] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i + 1][j] == N_REGISTRED)
+					{
+						path->map[i + 1][j] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i][j - 1] == N_REGISTRED)
+					{
+						path->map[i][j - 1] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i][j + 1] == N_REGISTRED)
+					{
+						path->map[i][j + 1] = value + 1;
+						cases_ni--;
+					}
+					
+					if (path->map[i - 1][j - 1] == N_REGISTRED)
+					{
+						path->map[i - 1][j - 1] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i + 1][j - 1] == N_REGISTRED)
+					{
+						path->map[i + 1][j - 1] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i + 1][j + 1] == N_REGISTRED)
+					{
+						path->map[i + 1][j + 1] = value + 1;
+						cases_ni--;
+					}
+					if (path->map[i - 1][j + 1] == N_REGISTRED)
+					{
+						path->map[i - 1][j + 1] = value + 1;
+						cases_ni--;
+					}
+				}
+			}
+		}
+		value++;// toute les cases avec value ont eté testé on passe a la value suivante
+	}
+	
+	return;
+}
+
+/*
+void assign_numbers(CtrlStruct *cvs)
+{
+	// variables declaration
+	PathPlanning *path;
 	int i, j, n;
 	
 	// variables initialization
@@ -560,6 +643,7 @@ void assign_numbers(CtrlStruct *cvs)
     
     return;
 }
+*/
 
 void find_path(CtrlStruct *cvs)
 {
