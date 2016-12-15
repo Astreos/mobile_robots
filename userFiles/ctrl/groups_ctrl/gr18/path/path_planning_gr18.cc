@@ -156,6 +156,8 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		
 		strat->current_action += 1;
 		
+		printf("OPPONENT");
+		
 		return;
 	}
 	
@@ -168,8 +170,10 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	else
 	{
-		free_path_planning(path);
-		path = init_path_planning();
+		path->flag_trajectory = 0;
+		path->count_actions = 1;
+		
+		printf("N_REGISTRED");
 		
 		return;
 	}

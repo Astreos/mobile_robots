@@ -440,8 +440,8 @@ void calibrate(CtrlStruct *cvs)
 	
 	if (inputs->t - strat->last_t > 2.0)
 	{
-		rob_pos->x = pos_kalman->x;
-		rob_pos->y = pos_kalman->y;
+		//rob_pos->x = pos_kalman->x;
+		//rob_pos->y = pos_kalman->y;
 		//rob_pos->theta = pos_kalman->theta;
 		
 		
