@@ -138,6 +138,8 @@ void free_CtrlStruct(CtrlStruct *cvs)
 	free(cvs->triang_pos);
 	free(cvs->kalman_pos);
 	free(cvs);
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

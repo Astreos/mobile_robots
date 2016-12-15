@@ -65,6 +65,8 @@ void controller_init(CtrlStruct *cvs)
 	cvs->pos_reg->last_t = t;
 	cvs->pos_reg->int_error_r = 0;
 	cvs->pos_reg->int_error_l = 0;
+	
+	return;
 }
 
 /*! \brief controller loop (called every time-step)
@@ -118,7 +120,7 @@ void controller_loop(CtrlStruct *cvs)
 			if (t > -5.0)
 			{
 				cvs->main_state = RUN_STATE;
-				cvs->strat->main_state = THE_TARGET;
+				cvs->strat->main_state = FIRST_TARGET;
 				cvs->strat->sub_state = TRAJECTORY;
 			}
 			break;
@@ -152,6 +154,8 @@ void controller_loop(CtrlStruct *cvs)
 			printf("Error:unknown state : %d !\n", cvs->main_state);
 			exit(EXIT_FAILURE);
 	}
+	
+	return;
 }
 
 /*! \brief last controller operations (called once)
@@ -161,6 +165,8 @@ void controller_loop(CtrlStruct *cvs)
 void controller_finish(CtrlStruct *cvs)
 {
 	free_CtrlStruct(cvs);
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

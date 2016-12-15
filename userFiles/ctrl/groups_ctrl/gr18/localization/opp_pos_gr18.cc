@@ -109,6 +109,8 @@ void opponents_tower(CtrlStruct *cvs)
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
 	//set_plot(opp_pos->opp_front, "detection");
+	
+	return;
 }
 
 /*! \brief compute a single opponent position
@@ -197,6 +199,8 @@ void check_opp_front(CtrlStruct *cvs)
 	}
             
 	// ----- opponents check computation end ----- //
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

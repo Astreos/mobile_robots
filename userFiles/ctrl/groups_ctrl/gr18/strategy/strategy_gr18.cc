@@ -125,7 +125,7 @@ void main_strategy(CtrlStruct *cvs)
     switch (strat->main_state)
     {
     case THE_TARGET:
-		manage_THE_target(cvs);
+		//manage_THE_target(cvs);
         break;
 
     case FIRST_TARGET:

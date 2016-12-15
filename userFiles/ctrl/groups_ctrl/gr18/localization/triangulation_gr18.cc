@@ -47,6 +47,8 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1, dou
 			printf("Error unknown team ID (%d) !\n", team_id);
 			exit(EXIT_FAILURE);
 	}
+	
+	return;
 }
 
 /*! \brief get the index of the best angle prediction
@@ -259,6 +261,8 @@ void triangulation(CtrlStruct *cvs)
 	//set_plot(pos_tri->x, "x_tri_[m]");
 	//set_plot(pos_tri->y, "y_tri_[m]");
     //set_plot(pos_tri->theta, "theta_tri_[rad]");
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

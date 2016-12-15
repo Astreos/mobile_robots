@@ -39,8 +39,8 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			{
 				speed_regulation(cvs, 0, 0);
 				
-				free_path_planning(path);
-				path = init_path_planning();
+				path->flag_trajectory = 0;
+				path->count_actions = 1;
 				
 				return 1;
 			}
@@ -51,8 +51,8 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			{
 				speed_regulation(cvs, 0, 0);
 				
-				free_path_planning(path);
-				path = init_path_planning();
+				path->flag_trajectory = 0;
+				path->count_actions = 1;
 				
 				return 1;
 			}

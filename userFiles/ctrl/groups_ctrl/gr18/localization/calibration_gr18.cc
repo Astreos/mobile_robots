@@ -130,6 +130,8 @@ void calibration(CtrlStruct *cvs)
         printf("Error: unknown state : %d !\n", calib->flag);
         exit(EXIT_FAILURE);
     }
+    
+    return;
 }
 
 NAMESPACE_CLOSE();

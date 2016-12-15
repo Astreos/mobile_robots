@@ -50,6 +50,8 @@ void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 
     // last update time
     sp_reg->last_t = inputs->t;
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

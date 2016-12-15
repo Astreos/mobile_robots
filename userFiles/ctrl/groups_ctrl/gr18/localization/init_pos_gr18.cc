@@ -41,7 +41,9 @@ void set_init_position(int robot_id, RobotPosition *rob_pos)
 		default:
 			printf("Error: unknown robot ID: %d !\n", robot_id);
 			exit(EXIT_FAILURE);
-	}		
+	}
+	
+	return;
 }
 
 NAMESPACE_CLOSE();
