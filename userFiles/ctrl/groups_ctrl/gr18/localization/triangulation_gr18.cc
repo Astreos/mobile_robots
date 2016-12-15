@@ -36,11 +36,11 @@ void fixed_beacon_positions(int team_id, double *x_beac_1, double *y_beac_1, dou
 			*x_beac_1 = 1.062;
 			*y_beac_1 = -1.562;
 			
-			*x_beac_2 = 0.0;
-			*y_beac_2 = 1.562;
+			*x_beac_2 = -1.062;
+			*y_beac_2 = -1.562;
 			
-			*x_beac_3 = -1.062;
-			*y_beac_3 = -1.562;
+			*x_beac_3 = 0;
+			*y_beac_3 = 1.562;
 			break;
 			
 		default:
@@ -95,11 +95,15 @@ void triangulation(CtrlStruct *cvs)
 	
 	double delta_t;
 	double old_pos_tri_x, old_pos_tri_y, old_pos_tri_theta;
+	
+	int team_id;
 
 	// variables initialization
 	pos_tri = cvs->triang_pos;
 	rob_pos = cvs->rob_pos;
 	inputs  = cvs->inputs;
+	
+	team_id = cvs->team_id;
 
 	// safety
 	if ((inputs->rising_index_fixed < 0) || (inputs->falling_index_fixed < 0))
@@ -108,7 +112,7 @@ void triangulation(CtrlStruct *cvs)
 	}
 
 	// known positions of the beacons
-	fixed_beacon_positions(cvs->team_id, &x_beac_1, &y_beac_1, &x_beac_2, &y_beac_2, &x_beac_3, &y_beac_3);	
+	fixed_beacon_positions(cvs->team_id, &x_beac_1, &y_beac_1, &x_beac_2, &y_beac_2, &x_beac_3, &y_beac_3);
 
 	// indexes fot the angles detection
 	rise_index_1 = inputs->rising_index_fixed;
@@ -129,15 +133,15 @@ void triangulation(CtrlStruct *cvs)
 	//set_plot(alpha_c, "alpha_c");
 
 	// beacons angles predicted thanks to odometry measurements (to compute)
-	alpha_1_predicted = limit_angle(M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - rob_pos->theta);
-	alpha_2_predicted = limit_angle(M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - rob_pos->theta);
+	alpha_1_predicted = limit_angle(M_PI/2.0*team(team_id) - team(team_id)*atan(fabs(rob_pos->x - x_beac_1)/fabs(rob_pos->y - y_beac_1)) - rob_pos->theta);
+	alpha_2_predicted = limit_angle(M_PI/2.0*team(team_id) + team(team_id)*atan(fabs(rob_pos->x - x_beac_2)/fabs(rob_pos->y - y_beac_2)) - rob_pos->theta);
 	if (rob_pos->x >= 0)
 	{
-		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 - atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
+		alpha_3_predicted = limit_angle(M_PI + M_PI/2.0*team(team_id) - team(team_id)*atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
 	}
 	else
 	{
-		alpha_3_predicted = limit_angle(3.0*M_PI/2.0 + atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
+		alpha_3_predicted = limit_angle(M_PI + M_PI/2.0*team(team_id) + team(team_id)*atan(fabs(rob_pos->x - x_beac_3)/fabs(rob_pos->y - y_beac_3)) - rob_pos->theta);
 	}
 	
 	// indexes of each beacon
@@ -252,8 +256,8 @@ void triangulation(CtrlStruct *cvs)
 	
 	// ----- triangulation computation end ----- //
         
-	set_plot(pos_tri->x, "x_tri_[m]");
-	set_plot(pos_tri->y, "y_tri_[m]");
+	//set_plot(pos_tri->x, "x_tri_[m]");
+	//set_plot(pos_tri->y, "y_tri_[m]");
     //set_plot(pos_tri->theta, "theta_tri_[rad]");
 }
 

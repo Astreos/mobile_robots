@@ -69,13 +69,11 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
     
     double dt;
     double error;
-    int team_id;
     int sens_opt;
 
     // variables initialization
     inputs  = cvs->inputs;
     rob_pos = cvs->rob_pos;
-    team_id = cvs->team_id;
     pos_reg  = cvs->pos_reg;
 
     // time
