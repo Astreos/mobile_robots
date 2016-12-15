@@ -250,16 +250,16 @@ void triangulation(CtrlStruct *cvs)
 	// low pass filter time increment ('delta_t' is the last argument of the 'first_order_filter' function)
 	delta_t = inputs->t - pos_tri->last_t;
 	
-	pos_tri->x = first_order_filter(old_pos_tri_x, pos_tri->x, 0.9, delta_t);
-	pos_tri->y = first_order_filter(old_pos_tri_y, pos_tri->y, 0.9, delta_t);
-	pos_tri->theta = first_order_filter(old_pos_tri_theta, pos_tri->theta, 0.9, delta_t);
+	pos_tri->x = first_order_filter(old_pos_tri_x, pos_tri->x, 1.3, delta_t);
+	pos_tri->y = first_order_filter(old_pos_tri_y, pos_tri->y, 1.3, delta_t);
+	pos_tri->theta = first_order_filter(old_pos_tri_theta, pos_tri->theta, 1.3, delta_t);
 	
 	pos_tri->last_t = inputs->t;
 	
 	// ----- triangulation computation end ----- //
         
-	//set_plot(pos_tri->x, "x_tri_[m]");
-	//set_plot(pos_tri->y, "y_tri_[m]");
+	set_plot(pos_tri->x, "x_tri_[m]");
+	set_plot(pos_tri->y, "y_tri_[m]");
     //set_plot(pos_tri->theta, "theta_tri_[rad]");
 	
 	return;

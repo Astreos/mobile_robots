@@ -428,18 +428,24 @@ void calibrate(CtrlStruct *cvs)
 	Strategy *strat;
 	CtrlIn *inputs;
 	RobotPosition *rob_pos;
+	RobotPosition *pos_tri;
 	KalmanStruct *pos_kalman;
 	
 	// variables initialization
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
 	rob_pos = cvs->rob_pos;
+	pos_tri = cvs->triang_pos;
 	pos_kalman = cvs->kalman_pos;
 	
 	speed_regulation(cvs, 0, 0);
 	
-	if (inputs->t - strat->last_t > 2.0)
+	if (inputs->t - strat->last_t > 3.0)
 	{
+		rob_pos->x = pos_tri->x;
+		rob_pos->y = pos_tri->y;
+		//rob_pos->theta = pos_tri->theta;
+		
 		//rob_pos->x = pos_kalman->x;
 		//rob_pos->y = pos_kalman->y;
 		//rob_pos->theta = pos_kalman->theta;

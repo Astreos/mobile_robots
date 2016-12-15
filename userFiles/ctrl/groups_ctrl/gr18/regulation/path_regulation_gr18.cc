@@ -203,9 +203,9 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 20.0*3; // K_rho > 0
-		K_alpha = 23.0*3; // K_alpha > K_rho
-		K_beta = -12.0*3; // K_beta < 0
+		K_rho = 20.0*2; // K_rho > 0
+		K_alpha = 23.0*2; // K_alpha > K_rho
+		K_beta = -12.0*2; // K_beta < 0
 	}
 	
 	if (theta_ref == 66)

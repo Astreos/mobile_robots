@@ -160,6 +160,10 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		
 		return;
 	}
+	else if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OBSTACLE)
+	{
+		printf("OBSTACLE");
+	}
 	
 	assign_numbers(cvs);
 	
