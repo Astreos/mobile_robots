@@ -21,7 +21,7 @@ typedef struct PositionXY
 /// path-planning main structure
 typedef struct PathPlanning
 {
-	float **map;
+	int **map;
 	int flag_trajectory;
 	int **list_goal;
 	int nb_goals;

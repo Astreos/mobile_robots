@@ -35,12 +35,12 @@ PathPlanning* init_path_planning()
 	// ----- path-planning initialization start ----- //
 	
 	// map
-	path->map = (float**) malloc(CELL_X*sizeof(float*));
+	path->map = (int**) malloc(CELL_X*sizeof(int*));
 	if (path->map == NULL) {exit(0);}
 	
 	for(i=0; i<CELL_X; i++)
 	{
-		path->map[i] = (float*) malloc(CELL_Y*sizeof(float));
+		path->map[i] = (int*) malloc(CELL_Y*sizeof(int));
 		if (path->map[i] == NULL) {exit(0);}
 		
 		for(j=0; j<CELL_Y; j++)
@@ -143,7 +143,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	manage_opp(cvs, 0);
+	manage_opp(cvs, 3);
 	
 	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT && strat->list_targets[strat->nb_targets-1] != strat->list_targets[strat->nb_targets-2])
 	{
@@ -167,20 +167,9 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	assign_numbers(cvs);
 	
-	if (path->map[path->goal_XY->X][path->goal_XY->Y] != N_REGISTRED)
-	{
-		find_path(cvs);
-		path->flag_trajectory = 1;
-	}
-	else
-	{
-		path->flag_trajectory = 0;
-		path->count_actions = 1;
-		
-		printf("N_REGISTRED");
-		
-		return;
-	}
+	find_path(cvs);
+	
+	path->flag_trajectory = 1;
 	
 	FILE* file = fopen("../../last_map.txt", "w");
 	
@@ -189,19 +178,19 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		for (j = 0; j<CELL_Y; j++)
 		{
 			if (path->map[i][j] < 10) {
-				fprintf(file, "%1.2f ", path->map[i][j]);
+				fprintf(file, " %d ", path->map[i][j]);
 			}
 			else if (path->map[i][j] == OBSTACLE) {
-				fprintf(file, "oooo ");
+				fprintf(file, "oo ");
 			}
 			else if (path->map[i][j] == GOAL) {
-				fprintf(file, "@@@@ ");
+				fprintf(file, "@@ ");
 			}
 			else if (path->map[i][j] == OPPONENT) {
-				fprintf(file, "**** ");
+				fprintf(file, "** ");
 			}
 			else {
-				fprintf(file, "%1.1f ", path->map[i][j]);
+				fprintf(file, "%d ", path->map[i][j]);
 			}
 		}
 		fprintf(file, "\n\n");
@@ -536,7 +525,7 @@ void assign_numbers(CtrlStruct *cvs)
 		}
 	}
 	
-	while(cases_ni > 0) // tant qu'on n'a pas enregistré toute les cases
+	while ((cases_ni > 0) || (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == N_REGISTRED) || (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OBSTACLE)) // tant qu'on n'a pas enregistré toute les cases
 	{
 		for (i = 1; i < CELL_X-1; i++)
 		{
@@ -609,7 +598,7 @@ void find_path(CtrlStruct *cvs)
 	path->list_goal[0][0] = path->rob_pos_XY->X;
 	path->list_goal[0][1] = path->rob_pos_XY->Y;
 	
-	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 3)
+	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 1)
 	{
 		k++;
 		

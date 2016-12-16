@@ -24,9 +24,12 @@ typedef struct PosRegulation
 int follow_path(CtrlStruct *cvs, double goal_x, double goal_y);
 int turn(CtrlStruct *cvs, double theta_ref, int sens);
 int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon);
+
+// No longer used
+/*
 int run_x(CtrlStruct *cvs, double x_ref);
 int run_y(CtrlStruct *cvs, double y_ref);
-
+*/
 NAMESPACE_CLOSE();
 
 #endif

@@ -244,6 +244,7 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	}
 }
 
+/*
 int run_x(CtrlStruct *cvs, double x_ref)
 {
 	// variables declaration
@@ -337,6 +338,6 @@ int run_y(CtrlStruct *cvs, double y_ref)
 		return 0;
 	}
 }
-
+*/
 
 NAMESPACE_CLOSE();
