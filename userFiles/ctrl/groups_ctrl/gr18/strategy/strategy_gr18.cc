@@ -198,6 +198,8 @@ void manage_THE_target(CtrlStruct *cvs)
 			break;
 			
 		case CHECK_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->target_detected || (inputs->nb_targets == 1))
 			{
 				strat->sub_state = GET_TARGET;
@@ -211,6 +213,8 @@ void manage_THE_target(CtrlStruct *cvs)
 			break;
 			
 		case GET_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->nb_targets == 1)
 			{
 				strat->current_action += 1;
@@ -265,6 +269,8 @@ void manage_first_target(CtrlStruct *cvs)
 			break;
 			
 		case CHECK_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->target_detected || (inputs->nb_targets == 1))
 			{
 				strat->sub_state = GET_TARGET;
@@ -282,6 +288,8 @@ void manage_first_target(CtrlStruct *cvs)
 			break;
 			
 		case GET_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->nb_targets == 1 && strat->current_action == strat->nb_targets-1)
 			{
 				strat->sub_state = TRAJECTORY;
@@ -341,6 +349,8 @@ void manage_second_target(CtrlStruct *cvs)
 			break;
 			
 		case CHECK_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->target_detected || (inputs->nb_targets == 2))
 			{
 				strat->sub_state = GET_TARGET;
@@ -358,6 +368,8 @@ void manage_second_target(CtrlStruct *cvs)
 			break;
 			
 		case GET_TARGET:
+			speed_regulation(cvs, 0, 0);
+			
 			if (inputs->nb_targets == 2)
 			{
 				strat->sub_state = TRAJECTORY;
@@ -412,6 +424,7 @@ void win_points(CtrlStruct *cvs)
 			break;
 			
 		case RELEASE_TARGET:
+			speed_regulation(cvs, 0, 0);
 			outputs->flag_release = 1;
 			
 			strat->last_t = inputs->t;
@@ -428,28 +441,21 @@ void calibrate(CtrlStruct *cvs)
 	Strategy *strat;
 	CtrlIn *inputs;
 	RobotPosition *rob_pos;
-	RobotPosition *pos_tri;
 	KalmanStruct *pos_kalman;
 	
 	// variables initialization
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
 	rob_pos = cvs->rob_pos;
-	pos_tri = cvs->triang_pos;
 	pos_kalman = cvs->kalman_pos;
 	
 	speed_regulation(cvs, 0, 0);
 	
-	if (inputs->t - strat->last_t > 3.0)
-	{
-		rob_pos->x = pos_tri->x;
-		rob_pos->y = pos_tri->y;
-		//rob_pos->theta = pos_tri->theta;
-		
-		//rob_pos->x = pos_kalman->x;
-		//rob_pos->y = pos_kalman->y;
+	if (inputs->t - strat->last_t > 0.65)
+	{		
+		rob_pos->x = pos_kalman->x;
+		rob_pos->y = pos_kalman->y;
 		//rob_pos->theta = pos_kalman->theta;
-		
 		
 		if (strat->current_action == strat->nb_targets-1)
 		{
