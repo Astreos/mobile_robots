@@ -24,7 +24,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     
     if (path->count_actions <= path->nb_goals-5)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.15))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.20))
 		{
 			path->count_actions++;
 		}

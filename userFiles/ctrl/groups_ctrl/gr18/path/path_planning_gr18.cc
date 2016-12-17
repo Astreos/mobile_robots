@@ -312,27 +312,29 @@ void create_map(CtrlStruct *cvs)
 			path->map[CELL_X-1][CELL_Y-1-j] = OBSTACLE; // Bordure inférieure camp bleu
 		}
 		
-		for (j = 2*RESOLUTION; j <= 5*RESOLUTION+3; j++) // Construction des barrières adjacentes aux camps de départ augmentées de 3
+		for (j = 2*RESOLUTION; j <= 5*RESOLUTION+4; j++) // Construction des barrières adjacentes aux camps de départ augmentées de 4
 		{
-			for (i = -3; i <= 3; i++)
+			for (i = -4; i <= 3; i++)
 			{
 				path->map[15*RESOLUTION+i][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
 				path->map[15*RESOLUTION+i][CELL_Y-1-j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
 			}
 			
 		}
+		/*
 		for (j = 5*RESOLUTION+4; j <= 5*RESOLUTION+5; j++) // On augmente le pic de chaque barrière adjacente aux camps de départ de 2
 		{
 			path->map[15*RESOLUTION][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
 			path->map[15*RESOLUTION][CELL_Y-1-j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
 			
 		}
-		path->map[13*RESOLUTION][5*RESOLUTION+4] = OBSTACLE;
-		path->map[13*RESOLUTION][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
-		path->map[13*RESOLUTION+1][5*RESOLUTION+4] = OBSTACLE;
-		path->map[13*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
-		path->map[13*RESOLUTION][5*RESOLUTION+3] = OBSTACLE;
-		path->map[13*RESOLUTION][CELL_Y-1-(5*RESOLUTION+3)] = OBSTACLE;
+		*/
+		path->map[12*RESOLUTION+1][5*RESOLUTION+5] = OBSTACLE;
+		path->map[12*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+5)] = OBSTACLE;
+		path->map[13*RESOLUTION][5*RESOLUTION+5] = OBSTACLE;
+		path->map[13*RESOLUTION][CELL_Y-1-(5*RESOLUTION+5)] = OBSTACLE;
+		path->map[12*RESOLUTION+1][5*RESOLUTION+4] = OBSTACLE;
+		path->map[12*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
 		
 		for (i = 2*RESOLUTION; i <= 5*RESOLUTION+3; i++) // Construction des barrières adjacentes aux camps d'arrivée augmentées de 3
 		{
@@ -363,6 +365,7 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
+		/*
 		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
 		{
 			path->map[i][12*RESOLUTION-1] = OBSTACLE; // Moitié gauche de la barrière milieu-gauche
@@ -370,6 +373,7 @@ void create_map(CtrlStruct *cvs)
 			path->map[i][12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-gauche
 			path->map[i][CELL_Y-1-12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-droite
 		}
+		*/
 		path->map[12*RESOLUTION+4][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
 		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
 		path->map[12*RESOLUTION+3][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1

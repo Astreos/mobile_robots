@@ -372,7 +372,7 @@ void win_points(CtrlStruct *cvs)
 	{
 		case TRAJECTORY:
 			if (!path->flag_trajectory)
-				trajectory(cvs, -0.70, -1.15*team(team_id));
+				trajectory(cvs, -0.40, -1.20*team(team_id));
 			else
 				strat->sub_state = FOLLOW_PATH;
 			break;
@@ -466,6 +466,8 @@ void update_goal(CtrlStruct *cvs)
 			{
 				strat->goal_tab[i][WEIGHT] = 0.0;
 			}
+			
+			printf("weight = %f \n", strat->goal_tab[i][WEIGHT]);
 		}
 		
 		strat->goal = 0;

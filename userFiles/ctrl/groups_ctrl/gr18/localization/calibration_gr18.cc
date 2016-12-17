@@ -54,12 +54,16 @@ void calibration(CtrlStruct *cvs)
 
         speed_regulation(cvs, -7, -7);
 
-        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
+        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0))
+		{
             speed_regulation(cvs, 0, 0);
 
             rob_pos->y = 1.44*team(team_id);
             rob_pos->theta = -M_PI/2.0*team(team_id);
-
+		}
+		
+		if (t - calib->t_flag > 2.5)
+		{
             calib->flag = CALIB_STATE_B;
             calib->t_flag = t;
         }
@@ -70,7 +74,8 @@ void calibration(CtrlStruct *cvs)
 
         speed_regulation(cvs, 7, 7);
 
-        if ((rob_pos->y <= 1.14 && !team_id) || (rob_pos->y >= -1.14 && team_id)) {
+        if ((rob_pos->y <= 1.14 && !team_id) || (rob_pos->y >= -1.14 && team_id))
+		{
             speed_regulation(cvs, 0, 0);
 
             calib->flag = CALIB_STATE_C;
@@ -93,11 +98,15 @@ void calibration(CtrlStruct *cvs)
 
         speed_regulation(cvs, -7, -7);
 
-        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0)) {
+        if ((inputs->u_switch[0] == 1) && (inputs->u_switch[1] == 1) && (t - calib->t_flag > 2.0))
+		{
             speed_regulation(cvs, 0, 0);
 
             rob_pos->x = 0.94;
-
+		}
+		
+		if (t - calib->t_flag > 2.5)
+		{
             calib->flag = CALIB_STATE_E;
             calib->t_flag = t;
         }
@@ -108,7 +117,8 @@ void calibration(CtrlStruct *cvs)
 
         speed_regulation(cvs, 7, 7);
 
-        if (rob_pos->x <= 0.75) {
+        if (rob_pos->x <= 0.75)
+		{
             speed_regulation(cvs, 0, 0);
 
             calib->flag = CALIB_FINISH;
