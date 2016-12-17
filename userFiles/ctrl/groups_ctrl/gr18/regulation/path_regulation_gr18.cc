@@ -22,7 +22,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     path = cvs->path;
 	team_id = cvs->team_id;
     
-    if (path->current_checkpoint <= path->nb_checkpoints-7)
+    if (path->current_checkpoint <= path->nb_checkpoints-5)
 	{
 		if (run(cvs, X_to_x(path->list_checkpoints[path->current_checkpoint][0]), Y_to_y(path->list_checkpoints[path->current_checkpoint][1]), 66, 0.20))
 		{
@@ -194,14 +194,14 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	if (epsilon >= 0.1)
 	{
 		K_rho = 20.0*6; // K_rho > 0
-		K_alpha = 23.0*6; // K_alpha > K_rho
+		K_alpha = 21.0*6; // K_alpha > K_rho
 		K_beta = -12.0*6; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 20.0*2; // K_rho > 0
-		K_alpha = 23.0*2; // K_alpha > K_rho
-		K_beta = -12.0*2; // K_beta < 0
+		K_rho = 20.0*3; // K_rho > 0
+		K_alpha = 23.0*3; // K_alpha > K_rho
+		K_beta = -12.0*3; // K_beta < 0
 	}
 	
 	if (theta_ref == 66)

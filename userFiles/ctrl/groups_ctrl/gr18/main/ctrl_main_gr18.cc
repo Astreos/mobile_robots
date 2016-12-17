@@ -115,7 +115,7 @@ void controller_loop(CtrlStruct *cvs)
 			cvs->kalman_pos->y = cvs->rob_pos->y;
 			cvs->kalman_pos->theta = cvs->rob_pos->theta;
 
-			if (t > -4.0)
+			if (t > 0.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = FIRST_TARGET;
