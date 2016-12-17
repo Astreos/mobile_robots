@@ -143,15 +143,9 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	//manage_opp(cvs, 3);
 	
-	printf("LA1");
-	
 	assign_numbers(cvs);
-	
-	printf("LA2");
-	
+
 	find_path(cvs);
-	
-	printf("LA3");
 	
 	path->flag_trajectory = 1;
 	
@@ -342,15 +336,15 @@ void create_map(CtrlStruct *cvs)
 		
 		for (i = 2*RESOLUTION; i <= 5*RESOLUTION+3; i++) // Construction des barrières adjacentes aux camps d'arrivée augmentées de 3
 		{
-			for (j = -2; j <= 0; j++)
+			for (j = -3; j <= 0; j++)
 			{
 				path->map[i][6*RESOLUTION+1+j] = OBSTACLE; // Moitié gauche de la barrière en haut à gauche (camp bleu cible)
-				path->map[i][CELL_Y-1-(6*RESOLUTION+1+j)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
+				path->map[i][CELL_Y-1-(6*RESOLUTION+1+j)] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)
 			}
 			for (j = 0; j <= 2; j++)
 			{
 				path->map[i][7*RESOLUTION+j] = OBSTACLE; // Moitié droite de la barrière en haut à gauche (camp bleu cible)
-				path->map[i][CELL_Y-1-(7*RESOLUTION+j)] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)
+				path->map[i][CELL_Y-1-(7*RESOLUTION+j)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
 			}
 		}
 		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+6; i++) // On augmente le pic de chaque barrière adjacente aux camps cibles de 3
@@ -390,14 +384,13 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][j] = OBSTACLE; // Barrière milieu horizontale
 			}
 		}
-		/*
+		
 		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-4][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
-		*/
 		
 		for (i = 3*RESOLUTION; i <= 7*RESOLUTION-1; i++) // Construction de la barrière verticale du milieu augmentées de 5
 		{
@@ -406,12 +399,6 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][j] = OBSTACLE; // Barrière milieu-milieu verticale
 			}
 		}
-		path->map[4*RESOLUTION-1][15*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
-		path->map[4*RESOLUTION-1][CELL_Y-1-(15*RESOLUTION-1-4)] = OBSTACLE; // On augmente le pic du coin droit de la barrière verticale de 1
-		path->map[4*RESOLUTION][15*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
-		path->map[4*RESOLUTION][CELL_Y-1-(15*RESOLUTION-1-4)] = OBSTACLE; // On augmente le pic du coin droit de la barrière verticale de 1
-		path->map[4*RESOLUTION-1][15*RESOLUTION-1-3] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
-		path->map[4*RESOLUTION-1][CELL_Y-1-(15*RESOLUTION-1-3)] = OBSTACLE; // On augmente le pic du coin droit de la barrière verticale de 1
 		
 	// --- Fin de la création des obstacles avec la prise en compte l'empattement du robot pour une résolution de 2 --- //
 	}
@@ -513,7 +500,7 @@ void assign_numbers(CtrlStruct *cvs)
 		}
 	}
 	
-	while ((cases_ni > 0) && (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == N_REGISTRED)) // tant qu'on n'a pas enregistré toute les cases
+	while ((cases_ni > 0) && (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] > 90)) // tant qu'on n'a pas enregistré toute les cases
 	{
 		for (i = 1; i < CELL_X-1; i++)
 		{
@@ -521,45 +508,45 @@ void assign_numbers(CtrlStruct *cvs)
 			{
 				if (path->map[i][j] == value)
 				{
-					if (path->map[i - 1][j] == N_REGISTRED)
+					if ((path->map[i-1][j] == N_REGISTRED) || ((path->map[i-1][j] == OBSTACLE) && (i-1 == path->rob_pos_XY->X) && (j == path->rob_pos_XY->Y)))
 					{
-						path->map[i - 1][j] = value + 1;
+						path->map[i-1][j] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i + 1][j] == N_REGISTRED)
+					if ((path->map[i+1][j] == N_REGISTRED) || ((path->map[i+1][j] == OBSTACLE) && (i+1 == path->rob_pos_XY->X) && (j == path->rob_pos_XY->Y)))
 					{
-						path->map[i + 1][j] = value + 1;
+						path->map[i+1][j] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i][j - 1] == N_REGISTRED)
+					if ((path->map[i][j-1] == N_REGISTRED) || ((path->map[i][j-1] == OBSTACLE) && (i == path->rob_pos_XY->X) && (j-1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i][j - 1] = value + 1;
+						path->map[i][j-1] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i][j + 1] == N_REGISTRED)
+					if ((path->map[i][j+1] == N_REGISTRED) || ((path->map[i][j+1] == OBSTACLE) && (i == path->rob_pos_XY->X) && (j+1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i][j + 1] = value + 1;
+						path->map[i][j+1] = value + 1;
 						cases_ni--;
 					}
 					
-					if (path->map[i - 1][j - 1] == N_REGISTRED)
+					if ((path->map[i-1][j-1] == N_REGISTRED) || ((path->map[i-1][j-1] == OBSTACLE) && (i-1 == path->rob_pos_XY->X) && (j-1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i - 1][j - 1] = value + 1;
+						path->map[i-1][j-1] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i + 1][j - 1] == N_REGISTRED)
+					if ((path->map[i+1][j-1] == N_REGISTRED) || ((path->map[i+1][j-1] == OBSTACLE) && (i+1 == path->rob_pos_XY->X) && (j-1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i + 1][j - 1] = value + 1;
+						path->map[i+1][j-1] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i + 1][j + 1] == N_REGISTRED)
+					if ((path->map[i+1][j+1] == N_REGISTRED) || ((path->map[i+1][j+1] == OBSTACLE) && (i+1 == path->rob_pos_XY->X) && (j+1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i + 1][j + 1] = value + 1;
+						path->map[i+1][j+1] = value + 1;
 						cases_ni--;
 					}
-					if (path->map[i - 1][j + 1] == N_REGISTRED)
+					if ((path->map[i-1][j+1] == N_REGISTRED) || ((path->map[i-1][j+1] == OBSTACLE) && (i-1 == path->rob_pos_XY->X) && (j+1 == path->rob_pos_XY->Y)))
 					{
-						path->map[i - 1][j + 1] = value + 1;
+						path->map[i-1][j+1] = value + 1;
 						cases_ni--;
 					}
 				}
@@ -583,28 +570,8 @@ void find_path(CtrlStruct *cvs)
 	
 	k = 0;
 	
-	if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] != OBSTACLE)
-	{
-		path->list_goal[0][0] = path->rob_pos_XY->X;
-		path->list_goal[0][1] = path->rob_pos_XY->Y;
-	}
-	else
-	{
-		for (l = -2; l <= 2; i++)
-		{
-			for (c = -2; c <= 2; j++)
-			{
-				if (path->map[path->rob_pos_XY->X + l][path->rob_pos_XY->Y + c] < 90)
-				{
-					i = l;
-					j = c;
-				}
-			}
-		}
-		
-		path->list_goal[0][0] = path->rob_pos_XY->X + i;
-		path->list_goal[0][1] = path->rob_pos_XY->Y + j;
-	}
+	path->list_goal[0][0] = path->rob_pos_XY->X;
+	path->list_goal[0][1] = path->rob_pos_XY->Y;
 	
 	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 1)
 	{

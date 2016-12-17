@@ -176,7 +176,7 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 {
 	// variables declaration
 	RobotPosition *rob_pos;
-	CtrlIn *inputs;
+	
 	PosRegulation *pos_reg;
 	OpponentsPosition *opp_pos;
 	
@@ -185,26 +185,22 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	float K_rho, K_alpha, K_beta;
 	
 	// variables initialization
-	inputs  = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	pos_reg  = cvs->pos_reg;
 	opp_pos = cvs->opp_pos;
-	
-	// time
-	dt = inputs->t - pos_reg->last_t; // time interval since last call
 	
 	// ----- Wheels regulation computation start ----- //
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 20.0*5; // K_rho > 0
-		K_alpha = 25.0*5; // K_alpha > K_rho
-		K_beta = -12.0*5; // K_beta < 0
+		K_rho = 20.0*7; // K_rho > 0
+		K_alpha = 21.0*7; // K_alpha > K_rho
+		K_beta = -12.0*7; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 17.0*3; // K_rho > 0
-		K_alpha = 20.0*3; // K_alpha > K_rho
+		K_rho = 20.0*3; // K_rho > 0
+		K_alpha = 21.0*3; // K_alpha > K_rho
 		K_beta = -12.0*3; // K_beta < 0
 	}
 	
@@ -217,9 +213,6 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
 	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
 	
-	//pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, -1.0, 1.0);
-	//pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, -1.0, 1.0);
-	
 	if (opp_pos->opp_front)
 	{
 		speed_regulation(cvs, K_alpha*alpha, -K_alpha*alpha);
@@ -230,9 +223,6 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	}
 	
 	// ----- Wheels regulation computation end ----- //
-	
-	// last update time
-	pos_reg->last_t = inputs->t;
 	
 	if (rho < epsilon)
 	{		
