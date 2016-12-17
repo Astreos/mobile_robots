@@ -113,11 +113,11 @@ void controller_loop(CtrlStruct *cvs)
 			speed_regulation(cvs, 0.0, 0.0);
 			
 			// kalman
-			cvs->kalman_pos->x = 0.75;
-			cvs->kalman_pos->y = 1.14*team(team_id);
-			cvs->kalman_pos->theta = -M_PI/2.0*team(team_id);
+			cvs->kalman_pos->x = cvs->rob_pos->x;
+			cvs->kalman_pos->y = cvs->rob_pos->y;
+			cvs->kalman_pos->theta = cvs->rob_pos->theta;
 
-			if (t > 0.0)
+			if (t > -4.0)
 			{
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = THE_TARGET;

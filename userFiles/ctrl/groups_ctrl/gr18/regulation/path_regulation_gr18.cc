@@ -24,7 +24,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     
     if (path->count_actions <= path->nb_goals-5)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.20))
+		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.15))
 		{
 			path->count_actions++;
 		}
@@ -33,9 +33,9 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	else
 	{
-		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
+		if (((goal_x == -0.75) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
 		{
-			if (run(cvs, goal_x, goal_y, M_PI, 0.005))
+			if (run(cvs, goal_x, goal_y, M_PI, 0.003))
 			{
 				speed_regulation(cvs, 0, 0);
 				
@@ -47,7 +47,7 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 		}
 		else
 		{
-			if (run(cvs, goal_x, goal_y, 66, 0.005))
+			if (run(cvs, goal_x, goal_y, 66, 0.003))
 			{
 				speed_regulation(cvs, 0, 0);
 				
@@ -197,9 +197,9 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 20.0*7; // K_rho > 0
-		K_alpha = 25.0*7; // K_alpha > K_rho
-		K_beta = -12.0*7; // K_beta < 0
+		K_rho = 20.0*5; // K_rho > 0
+		K_alpha = 25.0*5; // K_alpha > K_rho
+		K_beta = -12.0*5; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{

@@ -1,4 +1,4 @@
-/*! 
+/*!
  * \author Group 18
  * \file strategy_gr18.h
  * \brief strategy during the game
@@ -16,14 +16,18 @@ typedef struct Strategy
 {
 	int main_state; ///< main state of the strategy
 	int sub_state; ///< sub state of the strategy
+
+	int goal_determination;
+	int goal;
 	
-	double** list_targets_pos;
 	int* list_targets;
 	int nb_targets;
 	int current_action;
-	
+
+	double** goal_tab;
+
 	double last_t;
-	
+
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
@@ -40,6 +44,11 @@ void manage_first_target(CtrlStruct *cvs);
 void manage_second_target(CtrlStruct *cvs);
 void win_points(CtrlStruct *cvs);
 void calibrate(CtrlStruct *cvs);
+
+void new_goal(CtrlStruct *cvs);
+void update_goal(CtrlStruct *cvs);
+
+void go_to_the_target(CtrlStruct *cvs, int goal);
 
 NAMESPACE_CLOSE();
 

@@ -77,7 +77,7 @@ PathPlanning* init_path_planning()
 	
 	// current action
 	path->count_actions = 1;
-
+	
 	// ----- path-planning initialization end ----- //
 	
 	// return structure initialized
@@ -165,12 +165,19 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("OBSTACLE");
 	}
 	
+	printf("LA1");
+	
 	assign_numbers(cvs);
+	
+	printf("LA2");
 	
 	find_path(cvs);
 	
+	printf("LA3");
+	
 	path->flag_trajectory = 1;
 	
+	/*
 	FILE* file = fopen("../../last_map.txt", "w");
 	
 	for (i = 0; i<CELL_X; i++)
@@ -197,7 +204,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	
 	fclose(file);
-	
+	*/
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -221,6 +228,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
+	
 	
 	return;
 }
@@ -375,15 +383,15 @@ void create_map(CtrlStruct *cvs)
 			path->map[i][CELL_Y-1-7*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)
 		}
 		
-		for (i = 9*RESOLUTION-1-3; i <= 12*RESOLUTION+3; i++) // Construction des barrières latérales du milieu augmentées de 3
+		for (i = 9*RESOLUTION-1-4; i <= 12*RESOLUTION+4; i++) // Construction des barrières latérales du milieu augmentées de 3
 		{
-			for (j = 12*RESOLUTION-1-3; j <=  12*RESOLUTION+3; j++)
+			for (j = 12*RESOLUTION-1-4; j <=  12*RESOLUTION+3; j++)
 			{
 				path->map[i][j] = OBSTACLE; // Barrière milieu-gauche
 				path->map[i][CELL_Y-1-j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
-		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+2; i++) // On augmente le pic de chaque barrière latérale du milieu de 2
+		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
 		{
 			path->map[i][12*RESOLUTION-1] = OBSTACLE; // Moitié gauche de la barrière milieu-gauche
 			path->map[i][CELL_Y-1-(12*RESOLUTION-1)] = OBSTACLE; // Moitié gauche de la barrière milieu-droite
@@ -404,12 +412,14 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][j] = OBSTACLE; // Barrière milieu horizontale
 			}
 		}
-		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
-		path->map[9*RESOLUTION-1-4][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
-		path->map[9*RESOLUTION-1-3][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
-		path->map[9*RESOLUTION-1-3][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
-		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-3] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
-		path->map[9*RESOLUTION-1-4][CELL_Y-1-(12*RESOLUTION-1-3)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
+		/*
+		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
+		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
+		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
+		path->map[9*RESOLUTION-1-4][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
+		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
+		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
+		*/
 		
 		for (i = 3*RESOLUTION; i <= 7*RESOLUTION-1; i++) // Construction de la barrière verticale du milieu augmentées de 5
 		{
@@ -525,7 +535,7 @@ void assign_numbers(CtrlStruct *cvs)
 		}
 	}
 	
-	while ((cases_ni > 0) || (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == N_REGISTRED) || (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OBSTACLE)) // tant qu'on n'a pas enregistré toute les cases
+	while ((cases_ni > 0) && (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == N_REGISTRED)) // tant qu'on n'a pas enregistré toute les cases
 	{
 		for (i = 1; i < CELL_X-1; i++)
 		{
@@ -595,8 +605,28 @@ void find_path(CtrlStruct *cvs)
 	
 	k = 0;
 	
-	path->list_goal[0][0] = path->rob_pos_XY->X;
-	path->list_goal[0][1] = path->rob_pos_XY->Y;
+	if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] != OBSTACLE)
+	{
+		path->list_goal[0][0] = path->rob_pos_XY->X;
+		path->list_goal[0][1] = path->rob_pos_XY->Y;
+	}
+	else
+	{
+		for (l = -2; l <= 2; i++)
+		{
+			for (c = -2; c <= 2; j++)
+			{
+				if (path->map[path->rob_pos_XY->X + l][path->rob_pos_XY->Y + c] < 90)
+				{
+					i = l;
+					j = c;
+				}
+			}
+		}
+		
+		path->list_goal[0][0] = path->rob_pos_XY->X + i;
+		path->list_goal[0][1] = path->rob_pos_XY->Y + j;
+	}
 	
 	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 1)
 	{
@@ -776,10 +806,12 @@ void find_path(CtrlStruct *cvs)
 	
 	path->nb_goals = k;
 	
+	
 	for (i = 0; i <= k; i++)
 	{
 		path->map[path->list_goal[i][0]][path->list_goal[i][1]] = GOAL;
 	}
+	
 	
 	return;
 }

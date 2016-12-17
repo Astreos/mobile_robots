@@ -258,8 +258,8 @@ void triangulation(CtrlStruct *cvs)
 	
 	// ----- triangulation computation end ----- //
         
-	set_plot(pos_tri->x, "x_tri_[m]");
-	set_plot(pos_tri->y, "y_tri_[m]");
+	//set_plot(pos_tri->x, "x_tri_[m]");
+	//set_plot(pos_tri->y, "y_tri_[m]");
     //set_plot(pos_tri->theta, "theta_tri_[rad]");
 	
 	return;
