@@ -13,7 +13,7 @@
 #define DIST_MIN 10.0
 #define TPS_MAX 90.0
 
-#define AREA 150
+#define AREA 300
 
 #define FINAL_POS_X -700.0
 #define FINAL_POS_Y -1150.0
@@ -30,6 +30,7 @@
 #define CHECK1 0
 #define CHECK2 1
 #define OPP 2
+#define US 3
 
 #define GOAL0 0
 #define GOAL1 1
@@ -59,50 +60,50 @@ Strategy* init_strategy()
 	
 	// ----- strategy initialization start ----- //
 	
-	// goal_tab initialization (x,y,value,weight)
-	strat->goal_tab = (double**) malloc(8*sizeof(double*));
-	if (strat->goal_tab == NULL) {exit(0);}
+	// goals_tab initialization (x,y,value,weight)
+	strat->goals_tab = (double**) malloc(8*sizeof(double*));
+	if (strat->goals_tab == NULL) {exit(0);}
 	
 	for (i = 0; i < 8; i++)
 	{
-		strat->goal_tab[i] = (double*) malloc(4*sizeof(double));
-		if (strat->goal_tab[i] == NULL) {exit(0);}
+		strat->goals_tab[i] = (double*) malloc(4*sizeof(double));
+		if (strat->goals_tab[i] == NULL) {exit(0);}
 		
-		strat->goal_tab[i][WEIGHT] = 100.0;		
+		strat->goals_tab[i][WEIGHT] = 100.0;		
 	}
 	
 	// GOAL 0 (700,600)
-	strat->goal_tab[GOAL0][COORD_X] = 700;
-	strat->goal_tab[GOAL0][COORD_Y] = 600;
-	strat->goal_tab[GOAL0][VALUE] = 1;
+	strat->goals_tab[GOAL0][COORD_X] = 700;
+	strat->goals_tab[GOAL0][COORD_Y] = 600;
+	strat->goals_tab[GOAL0][VALUE] = 1;
 	// GOAL 1 (250,1250)
-	strat->goal_tab[GOAL1][COORD_X] = 250;
-	strat->goal_tab[GOAL1][COORD_Y] = 1250;
-	strat->goal_tab[GOAL1][VALUE] = 2 + 1.2;
+	strat->goals_tab[GOAL1][COORD_X] = 250;
+	strat->goals_tab[GOAL1][COORD_Y] = 1250;
+	strat->goals_tab[GOAL1][VALUE] = 2 + 1.2;
 	// GOAL 2 (-400,600)
-	strat->goal_tab[GOAL2][COORD_X] = -400;
-	strat->goal_tab[GOAL2][COORD_Y] = 600;
-	strat->goal_tab[GOAL2][VALUE] = 1;
+	strat->goals_tab[GOAL2][COORD_X] = -400;
+	strat->goals_tab[GOAL2][COORD_Y] = 600;
+	strat->goals_tab[GOAL2][VALUE] = 1;
 	// GOAL 3 (-800,0)
-	strat->goal_tab[GOAL3][COORD_X] = -800;
-	strat->goal_tab[GOAL3][COORD_Y] = 0;
-	strat->goal_tab[GOAL3][VALUE] = 3 + 2;
+	strat->goals_tab[GOAL3][COORD_X] = -800;
+	strat->goals_tab[GOAL3][COORD_Y] = 0;
+	strat->goals_tab[GOAL3][VALUE] = 3 + 2;
 	// GOAL 4 (100,0)
-	strat->goal_tab[GOAL4][COORD_X] = 100;
-	strat->goal_tab[GOAL4][COORD_Y] = 0;
-	strat->goal_tab[GOAL4][VALUE] = 2 + 1;
+	strat->goals_tab[GOAL4][COORD_X] = 100;
+	strat->goals_tab[GOAL4][COORD_Y] = 0;
+	strat->goals_tab[GOAL4][VALUE] = 2 + 1;
 	// GOAL 5 (-400,600)
-	strat->goal_tab[GOAL5][COORD_X] = -400;
-	strat->goal_tab[GOAL5][COORD_Y] = -600;
-	strat->goal_tab[GOAL5][VALUE] = 1;
+	strat->goals_tab[GOAL5][COORD_X] = -400;
+	strat->goals_tab[GOAL5][COORD_Y] = -600;
+	strat->goals_tab[GOAL5][VALUE] = 1;
 	// GOAL 6 (700,-600)
-	strat->goal_tab[GOAL6][COORD_X] = 700;
-	strat->goal_tab[GOAL6][COORD_Y] = -600;
-	strat->goal_tab[GOAL6][VALUE] = 1 ;
+	strat->goals_tab[GOAL6][COORD_X] = 700;
+	strat->goals_tab[GOAL6][COORD_Y] = -600;
+	strat->goals_tab[GOAL6][VALUE] = 1 ;
 	// GOAL 7 (250,-1250)
-	strat->goal_tab[GOAL7][COORD_X] = 250;
-	strat->goal_tab[GOAL7][COORD_Y] = -1250;
-	strat->goal_tab[GOAL7][VALUE] = 2;
+	strat->goals_tab[GOAL7][COORD_X] = 250;
+	strat->goals_tab[GOAL7][COORD_Y] = -1250;
+	strat->goals_tab[GOAL7][VALUE] = 2;
 	
 	// targets_status
 	strat->targets_status = (int**) malloc(8*sizeof(int*));
@@ -110,17 +111,17 @@ Strategy* init_strategy()
 	
 	for (i = 0; i < 8; i++)
 	{
-		strat->targets_status[i] = (int*) malloc(3*sizeof(int));
+		strat->targets_status[i] = (int*) malloc(4*sizeof(int));
 		if (strat->targets_status[i] == NULL) {exit(0);}
 		
-		for (j = 0; j < 3; j++)
+		for (j = 0; j < 4; j++)
 		{
 			strat->targets_status[i][j] = false;
 		}
 	}
 	
 	//flags
-	strat->goal = GOAL0;
+	strat->current_goal = GOAL0;
 	strat->goal_determination = false;
 	strat->flag_finish = false;
 	
@@ -144,16 +145,18 @@ void free_strategy(Strategy *strat)
 	
 	for (i = 0; i < 8; i++)
 	{
-		free(strat->goal_tab[i]);
+		free(strat->goals_tab[i]);
 		free(strat->targets_status[i]);
 	}
 	
-	free(strat->goal_tab);
+	free(strat->goals_tab);
 	free(strat->targets_status);
 	
 	free(strat);
 	
 	// ----- strategy memory release end ----- //
+	
+	return;
 }
 
 /*! \brief startegy during the game
@@ -172,12 +175,9 @@ void main_strategy(CtrlStruct *cvs)
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
 	
-	for (i = GOAL0; i <= GOAL7; i++)
-	{
-		strat->targets_status[i][OPP] = false;
-	}
-	update_goal(cvs);
+	manage_us(cvs);
 	manage_opp_2(cvs);
+	update_goal(cvs);
 	
 	switch (strat->main_state)
 	{
@@ -205,6 +205,8 @@ void main_strategy(CtrlStruct *cvs)
 			printf("Error: unknown strategy main state: %d !\n", strat->main_state);
 			exit(EXIT_FAILURE);
 	}
+	
+	return;
 }
 
 void manage_first_target(CtrlStruct *cvs)
@@ -224,8 +226,8 @@ void manage_first_target(CtrlStruct *cvs)
 	outputs = cvs->outputs;
 	path = cvs->path;
 		
-	goal_x = strat->goal_tab[strat->goal][COORD_X]/1000;
-	goal_y = strat->goal_tab[strat->goal][COORD_Y]/1000;
+	goal_x = strat->goals_tab[strat->current_goal][COORD_X]/1000;
+	goal_y = strat->goals_tab[strat->current_goal][COORD_Y]/1000;
 	team_id = cvs->team_id;
 	
 	outputs->flag_release = 0;
@@ -248,15 +250,21 @@ void manage_first_target(CtrlStruct *cvs)
 			break;
 			
 		case CHECK_TARGET:
-			if (inputs->target_detected || (inputs->nb_targets == 1))
+			if (strat->targets_status[strat->current_goal][CHECK1])
 			{
-				strat->targets_status[strat->goal][CHECK1] = true;
-				
+				strat->targets_status[strat->current_goal][CHECK2] = true;
+			}
+			else
+			{
+				strat->targets_status[strat->current_goal][CHECK1] = true;
+			}
+			
+			if (inputs->target_detected || (inputs->nb_targets == 1))
+			{				
 				strat->sub_state = GET_TARGET;
 			}
 			else
 			{
-				strat->targets_status[strat->goal][CHECK1] = true;
 				strat->goal_determination = false;
 				
 				strat->sub_state = TRAJECTORY;
@@ -266,7 +274,7 @@ void manage_first_target(CtrlStruct *cvs)
 		case GET_TARGET:
 			if (inputs->nb_targets == 1)
 			{
-				strat->targets_status[strat->goal][CHECK2] = true;
+				strat->targets_status[strat->current_goal][CHECK2] = true;
 				strat->goal_determination = false;
 				
 				strat->sub_state = TRAJECTORY;
@@ -274,6 +282,8 @@ void manage_first_target(CtrlStruct *cvs)
 			}
 			break;
 	}
+	
+	return;
 }
 
 void manage_second_target(CtrlStruct *cvs)
@@ -293,8 +303,8 @@ void manage_second_target(CtrlStruct *cvs)
 	outputs = cvs->outputs;
 	path = cvs->path;
 	
-	goal_x = strat->goal_tab[strat->goal][COORD_X]/1000;
-	goal_y = strat->goal_tab[strat->goal][COORD_Y]/1000;
+	goal_x = strat->goals_tab[strat->current_goal][COORD_X]/1000;
+	goal_y = strat->goals_tab[strat->current_goal][COORD_Y]/1000;
 	team_id = cvs->team_id;
 	
 	outputs->flag_release = 0;
@@ -317,15 +327,21 @@ void manage_second_target(CtrlStruct *cvs)
 			break;
 			
 		case CHECK_TARGET:
-			if (inputs->target_detected || (inputs->nb_targets == 2))
+			if (strat->targets_status[strat->current_goal][CHECK1])
 			{
-				strat->targets_status[strat->goal][CHECK1] = true;
-				
-				strat->sub_state = GET_TARGET;
+				strat->targets_status[strat->current_goal][CHECK2] = true;
 			}
 			else
 			{
-				strat->targets_status[strat->goal][CHECK1] = true;				
+				strat->targets_status[strat->current_goal][CHECK1] = true;
+			}
+			
+			if (inputs->target_detected || (inputs->nb_targets == 2))
+			{				
+				strat->sub_state = GET_TARGET;
+			}
+			else
+			{		
 				strat->goal_determination = false;
 				
 				strat->sub_state = TRAJECTORY;
@@ -335,7 +351,7 @@ void manage_second_target(CtrlStruct *cvs)
 		case GET_TARGET:
 			if (inputs->nb_targets == 2)
 			{
-				strat->targets_status[strat->goal][CHECK2] = true;
+				strat->targets_status[strat->current_goal][CHECK2] = true;
 				strat->goal_determination = false;
 				
 				strat->sub_state = TRAJECTORY;
@@ -344,6 +360,8 @@ void manage_second_target(CtrlStruct *cvs)
 			}
 			break;
 	}
+	
+	return;
 }
 
 void win_points(CtrlStruct *cvs)
@@ -392,6 +410,8 @@ void win_points(CtrlStruct *cvs)
 			strat->main_state = CALIBRATE;
 			break;
 	}
+	
+	return;
 }
 
 void calibrate(CtrlStruct *cvs)
@@ -416,7 +436,7 @@ void calibrate(CtrlStruct *cvs)
 		rob_pos->y = pos_kalman->y;
 		//rob_pos->theta = pos_kalman->theta;
 		
-		strat->flag_finish = (strat->goal_tab[GOAL0][WEIGHT] == 0.0) && (strat->goal_tab[GOAL1][WEIGHT] == 0.0) && (strat->goal_tab[GOAL2][WEIGHT] == 0.0) && (strat->goal_tab[GOAL3][WEIGHT] == 0.0) && (strat->goal_tab[GOAL4][WEIGHT] == 0.0) && (strat->goal_tab[GOAL5][WEIGHT] == 0.0) && (strat->goal_tab[GOAL6][WEIGHT] == 0.0) && (strat->goal_tab[GOAL7][WEIGHT] == 0.0);
+		strat->flag_finish = (strat->goals_tab[GOAL0][WEIGHT] == 0.0) && (strat->goals_tab[GOAL1][WEIGHT] == 0.0) && (strat->goals_tab[GOAL2][WEIGHT] == 0.0) && (strat->goals_tab[GOAL3][WEIGHT] == 0.0) && (strat->goals_tab[GOAL4][WEIGHT] == 0.0) && (strat->goals_tab[GOAL5][WEIGHT] == 0.0) && (strat->goals_tab[GOAL6][WEIGHT] == 0.0) && (strat->goals_tab[GOAL7][WEIGHT] == 0.0);
 		
 		if (strat->flag_finish)
 		{
@@ -455,32 +475,33 @@ void update_goal(CtrlStruct *cvs)
 		
 		for(i = GOAL0; i <= GOAL7; i++)
 		{
-			dist_pts = sqrt(pow(rob_pos->x*1000 - strat->goal_tab[i][COORD_X], 2) + pow(rob_pos->y*1000 - strat->goal_tab[i][COORD_Y], 2));
-			dist_base = sqrt(pow(FINAL_POS_X - strat->goal_tab[i][COORD_X], 2) + pow(FINAL_POS_Y - strat->goal_tab[i][COORD_Y], 2));
+			dist_pts = sqrt(pow(rob_pos->x*1000 - strat->goals_tab[i][COORD_X], 2) + pow(rob_pos->y*1000 - strat->goals_tab[i][COORD_Y], 2));
+			dist_base = sqrt(pow(FINAL_POS_X - strat->goals_tab[i][COORD_X], 2) + pow(FINAL_POS_Y - strat->goals_tab[i][COORD_Y], 2));
 			
 			if (!strat->targets_status[i][CHECK1] || !strat->targets_status[i][CHECK2])
 			{
-				strat->goal_tab[i][WEIGHT] = COEFF_PTS*strat->goal_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS;
+				strat->goals_tab[i][WEIGHT] = COEFF_PTS*strat->goals_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS;
 			}
 			else
 			{
-				strat->goal_tab[i][WEIGHT] = 0.0;
+				strat->goals_tab[i][WEIGHT] = 0.0;
 			}
 			
-			printf("weight = %f \n", strat->goal_tab[i][WEIGHT]);
+			printf("weight = %f \n", strat->goals_tab[i][WEIGHT]);
+			printf("status_us = %d \n", strat->targets_status[i][US]);
 		}
 		
-		strat->goal = 0;
+		strat->current_goal = 0;
 		
 		for (i = GOAL1; i <= GOAL7; i++)
 		{
-			if ((strat->goal_tab[i][WEIGHT] > strat->goal_tab[strat->goal][WEIGHT]) && !strat->targets_status[i][OPP])
+			if ((strat->goals_tab[i][WEIGHT] > strat->goals_tab[strat->current_goal][WEIGHT]) && !strat->targets_status[i][OPP] && !strat->targets_status[i][US])
 			{
-				strat->goal = i;
+				strat->current_goal = i;
 			}
 		}
 		
-		printf("New goal loc: (%f,%f)\n", strat->goal_tab[strat->goal][COORD_X], strat->goal_tab[strat->goal][COORD_Y]);
+		//printf("New goal loc: (%f,%f)\n", strat->goals_tab[strat->current_goal][COORD_X], strat->goals_tab[strat->current_goal][COORD_Y]);
 		
 		strat->goal_determination = true;
 	}
@@ -495,6 +516,7 @@ void manage_opp_2(CtrlStruct *cvs)
 	OpponentsPosition *opp_pos;
 	
 	int nb_opp;
+	int i;
 	
 	// variables declaration
 	strat = cvs->strat;
@@ -502,50 +524,73 @@ void manage_opp_2(CtrlStruct *cvs)
 	
 	nb_opp = opp_pos->nb_opp;
 	
-	if (!nb_opp)
+	for (i = GOAL0; i <= GOAL7; i++)
 	{
-		return ;
-	}
-	else if (nb_opp == 1)
-	{
-		if ((opp_pos->x[0]*1000 <= strat->goal_tab[strat->goal][COORD_X] + AREA)
-			&& (opp_pos->x[0]*1000 >= strat->goal_tab[strat->goal][COORD_X] - AREA)
-			&& (opp_pos->y[0]*1000 <= strat->goal_tab[strat->goal][COORD_Y] + AREA)
-			&& (opp_pos->y[0]*1000 >= strat->goal_tab[strat->goal][COORD_Y] - AREA))
+		if (!nb_opp)
 		{
-			strat->targets_status[cvs->strat->goal][OPP] = true;
-			
-			update_goal(cvs);
+			return ;
+		}
+		else if (nb_opp == 1)
+		{
+			if ((opp_pos->x[0]*1000 <= strat->goals_tab[i][COORD_X] + AREA)
+				&& (opp_pos->x[0]*1000 >= strat->goals_tab[i][COORD_X] - AREA)
+				&& (opp_pos->y[0]*1000 <= strat->goals_tab[i][COORD_Y] + AREA)
+				&& (opp_pos->y[0]*1000 >= strat->goals_tab[i][COORD_Y] - AREA))
+			{
+				strat->targets_status[i][OPP] = true;
+			}
+			else
+			{
+				strat->targets_status[i][OPP] = false;
+			}
+		}
+		else
+		{
+			if (((opp_pos->x[0]*1000 <= strat->goals_tab[i][COORD_X] + AREA)
+				&& (opp_pos->x[0]*1000 >= strat->goals_tab[i][COORD_X] - AREA)
+				&& (opp_pos->y[0]*1000 <= strat->goals_tab[i][COORD_Y] + AREA)
+				&& (opp_pos->y[0]*1000 >= strat->goals_tab[i][COORD_Y] - AREA))
+				|| ((opp_pos->x[1]*1000 <= strat->goals_tab[i][COORD_X] + AREA)
+				&& (opp_pos->x[1]*1000 >= strat->goals_tab[i][COORD_X] - AREA)
+				&& (opp_pos->y[1]*1000 <= strat->goals_tab[i][COORD_Y] + AREA)
+				&& (opp_pos->y[1]*1000 >= strat->goals_tab[i][COORD_Y] - AREA)))
+			{
+				strat->targets_status[i][OPP] = true;
+			}
+			else
+			{
+				strat->targets_status[i][OPP] = false;
+			}
 		}
 	}
-	else
+	
+	return;
+}
+
+void manage_us(CtrlStruct *cvs)
+{
+	// variables initialization
+	Strategy *strat;
+	RobotPosition *rob_pos;
+	
+	int i;
+	
+	// variables declaration
+	strat = cvs->strat;
+	rob_pos = cvs->rob_pos;
+	
+	for (i = GOAL0; i <= GOAL7; i++)
 	{
-		if (((opp_pos->x[0]*1000 <= strat->goal_tab[strat->goal][COORD_X] + AREA)
-			&& (opp_pos->x[0]*1000 >= strat->goal_tab[strat->goal][COORD_X] - AREA)
-			&& (opp_pos->y[0]*1000 <= strat->goal_tab[strat->goal][COORD_Y] + AREA)
-			&& (opp_pos->y[0]*1000 >= strat->goal_tab[strat->goal][COORD_Y] - AREA))
-			|| ((opp_pos->x[1]*1000 <= strat->goal_tab[strat->goal][COORD_X] + AREA)
-			&& (opp_pos->x[1]*1000 >= strat->goal_tab[strat->goal][COORD_X] - AREA)
-			&& (opp_pos->y[1]*1000 <= strat->goal_tab[strat->goal][COORD_Y] + AREA)
-			&& (opp_pos->y[1]*1000 >= strat->goal_tab[strat->goal][COORD_Y] - AREA)))
+		if ((rob_pos->x*1000 <= strat->goals_tab[i][COORD_X] + AREA)
+			&& (rob_pos->x*1000 >= strat->goals_tab[i][COORD_X] - AREA)
+			&& (rob_pos->y*1000 <= strat->goals_tab[i][COORD_Y] + AREA)
+			&& (rob_pos->y*1000 >= strat->goals_tab[i][COORD_Y] - AREA))
 		{
-			strat->targets_status[strat->goal][OPP] = true;
-			
-			update_goal(cvs);
-			
-			if (((opp_pos->x[0]*1000 <= strat->goal_tab[strat->goal][COORD_X] + AREA)
-				&& (opp_pos->x[0]*1000 >= strat->goal_tab[strat->goal][COORD_X] - AREA)
-				&& (opp_pos->y[0]*1000 <= strat->goal_tab[strat->goal][COORD_Y] + AREA)
-				&& (opp_pos->y[0]*1000 >= strat->goal_tab[strat->goal][COORD_Y] - AREA))
-				|| ((opp_pos->x[1]*1000 <= strat->goal_tab[strat->goal][COORD_X] + AREA)
-				&& (opp_pos->x[1]*1000 >= strat->goal_tab[strat->goal][COORD_X] - AREA)
-				&& (opp_pos->y[1]*1000 <= strat->goal_tab[strat->goal][COORD_Y] + AREA)
-				&& (opp_pos->y[1]*1000 >= strat->goal_tab[strat->goal][COORD_Y] - AREA)))
-			{
-				strat->targets_status[strat->goal][OPP] = true;
-				
-				update_goal(cvs);
-			}
+			strat->targets_status[i][US] = true;
+		}
+		else
+		{
+			strat->targets_status[i][US] = false;
 		}
 	}
 	

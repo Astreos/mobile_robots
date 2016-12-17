@@ -23,9 +23,10 @@ typedef struct PathPlanning
 {
 	int **map;
 	int flag_trajectory;
-	int **list_goal;
-	int nb_goals;
-	int count_actions;
+	
+	int **list_checkpoints;
+	int nb_checkpoints;
+	int current_checkpoint;
 	
 	PositionXY *rob_pos_XY; // coordonnées en cases
 	PositionXY *goal_XY;

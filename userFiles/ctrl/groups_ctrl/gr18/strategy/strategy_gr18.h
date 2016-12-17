@@ -17,20 +17,20 @@ typedef struct Strategy
 	int main_state; ///< main state of the strategy
 	int sub_state; ///< sub state of the strategy
 
-	double** goal_tab;
+	double** goals_tab;
 	int** targets_status;
 	
-	int goal;
+	int current_goal;
 	int goal_determination;
 	int flag_finish;
 
 	double last_t;
 } Strategy;
 
-/// 'main_state' states (adapt with your own states)
+/// 'main_state' states
 enum {FIRST_TARGET, SECOND_TARGET, WIN_POINTS, CALIBRATE, FUNNY_ACTION};
 
-/// 'sub_state' states (adapt with your own states)
+/// 'sub_state' states
 enum {TRAJECTORY, FOLLOW_PATH, CHECK_TARGET, GET_TARGET, RELEASE_TARGET};
 
 Strategy* init_strategy();
@@ -45,6 +45,7 @@ void calibrate(CtrlStruct *cvs);
 
 void update_goal(CtrlStruct *cvs);
 void manage_opp_2(CtrlStruct *cvs);
+void manage_us(CtrlStruct *cvs);
 
 NAMESPACE_CLOSE();
 

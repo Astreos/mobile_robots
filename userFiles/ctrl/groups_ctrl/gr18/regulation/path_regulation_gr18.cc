@@ -22,11 +22,11 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
     path = cvs->path;
 	team_id = cvs->team_id;
     
-    if (path->count_actions <= path->nb_goals-5)
+    if (path->current_checkpoint <= path->nb_checkpoints-7)
 	{
-		if (run(cvs, X_to_x(path->list_goal[path->count_actions][0]), Y_to_y(path->list_goal[path->count_actions][1]), 66, 0.20))
+		if (run(cvs, X_to_x(path->list_checkpoints[path->current_checkpoint][0]), Y_to_y(path->list_checkpoints[path->current_checkpoint][1]), 66, 0.20))
 		{
-			path->count_actions++;
+			path->current_checkpoint++;
 		}
 		
 		return 0;
@@ -35,24 +35,24 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	{
 		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
 		{
-			if (run(cvs, goal_x, goal_y, M_PI, 0.003))
+			if (run(cvs, goal_x, goal_y, M_PI, 0.005))
 			{				
 				speed_regulation(cvs, 0, 0);
 				
 				path->flag_trajectory = 0;
-				path->count_actions = 1;
+				path->current_checkpoint = 1;
 				
 				return 1;
 			}
 		}
 		else
 		{
-			if (run(cvs, goal_x, goal_y, 66, 0.003))
+			if (run(cvs, goal_x, goal_y, 66, 0.005))
 			{
 				speed_regulation(cvs, 0, 0);
 				
 				path->flag_trajectory = 0;
-				path->count_actions = 1;
+				path->current_checkpoint = 1;
 				
 				return 1;
 			}
@@ -193,15 +193,15 @@ int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float eps
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 20.0*7; // K_rho > 0
-		K_alpha = 21.0*7; // K_alpha > K_rho
-		K_beta = -12.0*7; // K_beta < 0
+		K_rho = 20.0*6; // K_rho > 0
+		K_alpha = 23.0*6; // K_alpha > K_rho
+		K_beta = -12.0*6; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
-		K_rho = 20.0*3; // K_rho > 0
-		K_alpha = 21.0*3; // K_alpha > K_rho
-		K_beta = -12.0*3; // K_beta < 0
+		K_rho = 20.0*2; // K_rho > 0
+		K_alpha = 23.0*2; // K_alpha > K_rho
+		K_beta = -12.0*2; // K_beta < 0
 	}
 	
 	if (theta_ref == 66)

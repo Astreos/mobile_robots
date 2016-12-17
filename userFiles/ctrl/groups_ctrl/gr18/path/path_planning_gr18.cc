@@ -49,18 +49,18 @@ PathPlanning* init_path_planning()
 		}
 	}
 	
-	// list_goal
-	path->list_goal = (int**) malloc(10*RESOLUTION*sizeof(int*));
-	if (path->list_goal == NULL) {exit(0);}
+	// list_checkpoints
+	path->list_checkpoints = (int**) malloc(10*RESOLUTION*sizeof(int*));
+	if (path->list_checkpoints == NULL) {exit(0);}
 
 	for(i=0; i<10*RESOLUTION; i++)
 	{
-		path->list_goal[i] = (int*) malloc(2*sizeof(int));
-		if (path->list_goal[i] == NULL) {exit(0);}
+		path->list_checkpoints[i] = (int*) malloc(2*sizeof(int));
+		if (path->list_checkpoints[i] == NULL) {exit(0);}
 
 		for(j=0; j<2; j++)
 		{
-			path->list_goal[i][j] = 0;
+			path->list_checkpoints[i][j] = 0;
 		}
 	}
 	
@@ -75,8 +75,11 @@ PathPlanning* init_path_planning()
 	// flag
 	path->flag_trajectory = 0;
 	
-	// current action
-	path->count_actions = 1;
+	// number of checkpoints
+	path->nb_checkpoints = 10*RESOLUTION;
+	
+	// current checkpoint
+	path->current_checkpoint = 1;
 	
 	// ----- path-planning initialization end ----- //
 	
@@ -102,12 +105,12 @@ void free_path_planning(PathPlanning *path)
 	}
 	free(path->map);
 	
-	// list_goal
-	for(i=0; i<=path->nb_goals; i++)
+	// list_checkpoints
+	for(i=0; i<=path->nb_checkpoints; i++)
 	{
-		free(path->list_goal[i]);
+		free(path->list_checkpoints[i]);
 	}
-	free(path->list_goal);
+	free(path->list_checkpoints);
 
 	// rob_pos_XY
 	free(path->rob_pos_XY);
@@ -141,15 +144,20 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	//manage_opp(cvs, 3);
+	printf("BEFORE MANAGE_OPP \n");
+	
+	manage_opp(cvs, 2);
+	
+	printf("BEFORE ASSIGN_NUMBERS \n");
 	
 	assign_numbers(cvs);
+	
+	printf("BEFORE FIND_PATH \n");
 
 	find_path(cvs);
 	
 	path->flag_trajectory = 1;
 	
-	/*
 	FILE* file = fopen("../../last_map.txt", "w");
 	
 	for (i = 0; i<CELL_X; i++)
@@ -176,7 +184,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	
 	fclose(file);
-	*/
+	
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -200,7 +208,6 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
-	
 	
 	return;
 }
@@ -321,14 +328,6 @@ void create_map(CtrlStruct *cvs)
 			}
 			
 		}
-		/*
-		for (j = 5*RESOLUTION+4; j <= 5*RESOLUTION+5; j++) // On augmente le pic de chaque barrière adjacente aux camps de départ de 2
-		{
-			path->map[15*RESOLUTION][j] = OBSTACLE; // Barrière en bas à gauche (camp jaune départ)
-			path->map[15*RESOLUTION][CELL_Y-1-j] = OBSTACLE; // Barrière en bas à droite (camp bleu départ)
-			
-		}
-		*/
 		path->map[12*RESOLUTION+1][5*RESOLUTION+5] = OBSTACLE;
 		path->map[12*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+5)] = OBSTACLE;
 		path->map[13*RESOLUTION][5*RESOLUTION+5] = OBSTACLE;
@@ -336,7 +335,7 @@ void create_map(CtrlStruct *cvs)
 		path->map[12*RESOLUTION+1][5*RESOLUTION+4] = OBSTACLE;
 		path->map[12*RESOLUTION+1][CELL_Y-1-(5*RESOLUTION+4)] = OBSTACLE;
 		
-		for (i = 2*RESOLUTION; i <= 5*RESOLUTION+3; i++) // Construction des barrières adjacentes aux camps d'arrivée augmentées de 3
+		for (i = 2*RESOLUTION; i <= 5*RESOLUTION+4; i++) // Construction des barrières adjacentes aux camps d'arrivée augmentées de 3 en épaisseur, et 4 en longueur
 		{
 			for (j = -3; j <= 0; j++)
 			{
@@ -349,15 +348,8 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-(7*RESOLUTION+j)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
 			}
 		}
-		for (i = 5*RESOLUTION+4; i <= 5*RESOLUTION+6; i++) // On augmente le pic de chaque barrière adjacente aux camps cibles de 3
-		{
-			path->map[i][6*RESOLUTION+1] = OBSTACLE; // Moitié gauche de la barrière en haut à gauche (camp bleu cible)
-			path->map[i][CELL_Y-1-(6*RESOLUTION+1)] = OBSTACLE; // Moitié gauche de la barrière en haut à droite (camp jaune cible)
-			path->map[i][7*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière en haut à gauche (camp bleu cible)
-			path->map[i][CELL_Y-1-7*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière en haut à droite (camp jaune cible)
-		}
 		
-		for (i = 9*RESOLUTION-1-4; i <= 12*RESOLUTION+4; i++) // Construction des barrières latérales du milieu augmentées de 3
+		for (i = 9*RESOLUTION+1; i <= 12*RESOLUTION+4; i++) // Construction des barrières latérales du milieu augmentées de 4 à l'extérieur, et 3 à l'intérieur
 		{
 			for (j = 12*RESOLUTION-1-4; j <=  12*RESOLUTION+3; j++)
 			{
@@ -365,30 +357,20 @@ void create_map(CtrlStruct *cvs)
 				path->map[i][CELL_Y-1-j] = OBSTACLE; // Barrière milieu-droit
 			}
 		}
-		/*
-		for (i = 14*RESOLUTION; i <= 14*RESOLUTION-1+3; i++) // On augmente le pic de chaque barrière latérale du milieu de 3
-		{
-			path->map[i][12*RESOLUTION-1] = OBSTACLE; // Moitié gauche de la barrière milieu-gauche
-			path->map[i][CELL_Y-1-(12*RESOLUTION-1)] = OBSTACLE; // Moitié gauche de la barrière milieu-droite
-			path->map[i][12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-gauche
-			path->map[i][CELL_Y-1-12*RESOLUTION] = OBSTACLE; // Moitié droite de la barrière milieu-droite
-		}
-		*/
-		path->map[12*RESOLUTION+4][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
-		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
-		path->map[12*RESOLUTION+3][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
-		path->map[12*RESOLUTION+3][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
-		path->map[12*RESOLUTION+4][12*RESOLUTION-1-3] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
-		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-3)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droite de 1
+		path->map[12*RESOLUTION+5][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+5][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droit de 1
+		path->map[12*RESOLUTION+5][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+5][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droit de 1
+		path->map[12*RESOLUTION+4][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière milieu-gauche de 1
+		path->map[12*RESOLUTION+4][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière milieu-droit de 1
 		
-		for (j = 13*RESOLUTION-1; j <= 18*RESOLUTION; j++) // Construction de la barrière horizontale du milieu augmentées de 3
+		for (i = 8*RESOLUTION+1-4; i <= 9*RESOLUTION; i++) // Construction de la barrière horizontale du milieu augmentées de 4
 		{
-			for (i = 9*RESOLUTION-1-3; i <= 9*RESOLUTION; i++)
+			for (j = 12*RESOLUTION-1-4; j <= 19*RESOLUTION+4; j++)
 			{
 				path->map[i][j] = OBSTACLE; // Barrière milieu horizontale
 			}
 		}
-		
 		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-4][12*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
@@ -396,14 +378,19 @@ void create_map(CtrlStruct *cvs)
 		path->map[9*RESOLUTION-1-5][12*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière horizontale de 1
 		path->map[9*RESOLUTION-1-5][CELL_Y-1-(12*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière horizontale de 1
 		
-		for (i = 3*RESOLUTION; i <= 7*RESOLUTION-1; i++) // Construction de la barrière verticale du milieu augmentées de 5
+		for (i = 6*RESOLUTION-1-4; i <= 6*RESOLUTION; i++) // Construction de la barrière verticale du milieu augmentées de 4
 		{
-			for (j = 15*RESOLUTION-1-3; j <= 16*RESOLUTION+3; j++)
+			for (j = 15*RESOLUTION-1-4; j <= 16*RESOLUTION+4; j++)
 			{
 				path->map[i][j] = OBSTACLE; // Barrière milieu-milieu verticale
 			}
 		}
-		
+		path->map[6*RESOLUTION-1-5][15*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
+		path->map[6*RESOLUTION-1-5][CELL_Y-1-(15*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière verticale de 1
+		path->map[6*RESOLUTION-1-5][15*RESOLUTION-1-4] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
+		path->map[6*RESOLUTION-1-5][CELL_Y-1-(15*RESOLUTION-1-4)] = OBSTACLE; // On augmente le coin droit de la barrière verticale de 1
+		path->map[6*RESOLUTION-1-4][15*RESOLUTION-1-5] = OBSTACLE; // On augmente le coin gauche de la barrière verticale de 1
+		path->map[6*RESOLUTION-1-4][CELL_Y-1-(15*RESOLUTION-1-5)] = OBSTACLE; // On augmente le coin droit de la barrière verticale de 1
 	// --- Fin de la création des obstacles avec la prise en compte l'empattement du robot pour une résolution de 2 --- //
 	}
 	else if (RESOLUTION == 4)
@@ -574,10 +561,10 @@ void find_path(CtrlStruct *cvs)
 	
 	k = 0;
 	
-	path->list_goal[0][0] = path->rob_pos_XY->X;
-	path->list_goal[0][1] = path->rob_pos_XY->Y;
+	path->list_checkpoints[0][0] = path->rob_pos_XY->X;
+	path->list_checkpoints[0][1] = path->rob_pos_XY->Y;
 	
-	while (path->map[path->list_goal[k][0]][path->list_goal[k][1]] >= 1)
+	while (path->map[path->list_checkpoints[k][0]][path->list_checkpoints[k][1]] >= 1)
 	{
 		k++;
 		
@@ -587,14 +574,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]] != OBSTACLE))
+		if ((avg_temp < avg_line) && (path->map[path->list_checkpoints[k-1][0]+1][path->list_checkpoints[k-1][1]] != OBSTACLE))
 		{
 			avg_line = avg_temp;
 			i_line = 1;
@@ -605,14 +592,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]] != OBSTACLE))
+		if ((avg_temp < avg_line) && (path->map[path->list_checkpoints[k-1][0]-1][path->list_checkpoints[k-1][1]] != OBSTACLE))
 		{
 			avg_line = avg_temp;
 			i_line = -1;
@@ -623,14 +610,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]+l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]+l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]+1] != OBSTACLE))
+		if ((avg_temp < avg_line) && (path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]+1] != OBSTACLE))
 		{
 			avg_line = avg_temp;
 			i_line = 0;
@@ -641,14 +628,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]-l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]-l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_line) && (path->map[path->list_goal[k-1][0]][path->list_goal[k-1][1]-1] != OBSTACLE))
+		if ((avg_temp < avg_line) && (path->map[path->list_checkpoints[k-1][0]][path->list_checkpoints[k-1][1]-1] != OBSTACLE))
 		{
 			avg_line = avg_temp;
 			i_line = 0;
@@ -661,14 +648,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]-l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]-l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]-l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]-l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]-1] != OBSTACLE))
+		if ((avg_temp < avg_diag) && (path->map[path->list_checkpoints[k-1][0]-1][path->list_checkpoints[k-1][1]-1] != OBSTACLE))
 		{
 			avg_diag = avg_temp;
 			i_diag = -1;
@@ -679,14 +666,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]+l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]+l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]+l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]+l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]+1] != OBSTACLE))
+		if ((avg_temp < avg_diag) && (path->map[path->list_checkpoints[k-1][0]+1][path->list_checkpoints[k-1][1]+1] != OBSTACLE))
 		{
 			avg_diag = avg_temp;
 			i_diag = 1;
@@ -697,14 +684,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]-l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]-l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]+l][path->list_goal[k-1][1]-l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]+l][path->list_checkpoints[k-1][1]-l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]+1][path->list_goal[k-1][1]-1] != OBSTACLE))
+		if ((avg_temp < avg_diag) && (path->map[path->list_checkpoints[k-1][0]+1][path->list_checkpoints[k-1][1]-1] != OBSTACLE))
 		{
 			avg_diag = avg_temp;
 			i_diag = 1;
@@ -715,14 +702,14 @@ void find_path(CtrlStruct *cvs)
 		c = 0;
 		for (l = 0; l <= 3; l++)
 		{
-			if (path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]+l] != OBSTACLE)
+			if (path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]+l] != OBSTACLE)
 			{
-				avg_temp += path->map[path->list_goal[k-1][0]-l][path->list_goal[k-1][1]+l];
+				avg_temp += path->map[path->list_checkpoints[k-1][0]-l][path->list_checkpoints[k-1][1]+l];
 				c += 1;
 			}
 		}
 		avg_temp = avg_temp/c;
-		if ((avg_temp < avg_diag) && (path->map[path->list_goal[k-1][0]-1][path->list_goal[k-1][1]+1] != OBSTACLE))
+		if ((avg_temp < avg_diag) && (path->map[path->list_checkpoints[k-1][0]-1][path->list_checkpoints[k-1][1]+1] != OBSTACLE))
 		{
 			avg_diag = avg_temp;
 			i_diag = -1;
@@ -742,23 +729,23 @@ void find_path(CtrlStruct *cvs)
 		
 		if (k >= 10*RESOLUTION)
 		{						
-			path->list_goal = (int**) realloc(path->list_goal, (k+1)*sizeof(int*));
-			if (path->list_goal == NULL) {exit(0);}
+			path->list_checkpoints = (int**) realloc(path->list_checkpoints, (k+1)*sizeof(int*));
+			if (path->list_checkpoints == NULL) {exit(0);}
 			
-			path->list_goal[k] = (int*) malloc(2*sizeof(int));
-			if (path->list_goal[k] == NULL) {exit(0);}
+			path->list_checkpoints[k] = (int*) malloc(2*sizeof(int));
+			if (path->list_checkpoints[k] == NULL) {exit(0);}
 		}
 		
-		path->list_goal[k][0] = path->list_goal[k-1][0]+i;
-		path->list_goal[k][1] = path->list_goal[k-1][1]+j;
+		path->list_checkpoints[k][0] = path->list_checkpoints[k-1][0]+i;
+		path->list_checkpoints[k][1] = path->list_checkpoints[k-1][1]+j;
 	}
 	
-	path->nb_goals = k;
+	path->nb_checkpoints = k;
 	
 	
 	for (i = 0; i <= k; i++)
 	{
-		path->map[path->list_goal[i][0]][path->list_goal[i][1]] = GOAL;
+		path->map[path->list_checkpoints[i][0]][path->list_checkpoints[i][1]] = GOAL;
 	}
 	
 	
