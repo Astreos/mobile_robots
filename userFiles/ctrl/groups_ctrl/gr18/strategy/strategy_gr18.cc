@@ -47,6 +47,7 @@ NAMESPACE_INIT(ctrlGr18);
 Strategy* init_strategy()
 {
 	Strategy *strat;
+	int i;
 	
 	// memory allocation
 	strat = (Strategy*) malloc(sizeof(Strategy));
@@ -59,7 +60,7 @@ Strategy* init_strategy()
 	strat->goal_tab = (double**) malloc(8*sizeof(double*));
 	if (strat->goal_tab == NULL) {exit(0);}
 	
-	for(int i=0; i<8; i++)
+	for(i = 0; i < 8; i++)
 	{
 		strat->goal_tab[i] = (double*) malloc(4*sizeof(double));
 		if (strat->goal_tab[i] == NULL) {exit(0);}
@@ -98,7 +99,7 @@ Strategy* init_strategy()
 	strat->goal_tab[GOAL7][COORD_Y] = -1250;
 	strat->goal_tab[GOAL7][VALUE] = 2;
 	
-	for(int i=GOAL0; i<=GOAL7; i++)
+	for(i = GOAL0; i <= GOAL7; i++)
 	{
 		strat->goal_tab[i][WEIGHT] = 0;
 		strat->goal_tab[i][TAKE] = false;
@@ -127,10 +128,14 @@ Strategy* init_strategy()
  */
 void free_strategy(Strategy *strat)
 {
+	int i;
+	
 	// ----- strategy memory release start ----- //
 	
-	for(int i=0; i<8; i++)
+	for(i = 0; i < 8; i++)
+	{
 		free(strat->goal_tab[i]);
+	}
 	
 	free(strat->goal_tab);
 	
@@ -157,10 +162,6 @@ void main_strategy(CtrlStruct *cvs)
 	
 	switch (strat->main_state)
 	{
-		case THE_TARGET:
-			manage_THE_target(cvs);
-			break;
-			
 		case FIRST_TARGET:
 			manage_first_target(cvs);
 			break;
@@ -184,79 +185,6 @@ void main_strategy(CtrlStruct *cvs)
 		default:
 			printf("Error: unknown strategy main state: %d !\n", strat->main_state);
 			exit(EXIT_FAILURE);
-	}
-}
-
-void manage_THE_target(CtrlStruct *cvs)
-{
-	// variables declaration
-	Strategy *strat;
-	CtrlIn *inputs;
-	CtrlOut *outputs;
-	PathPlanning *path;
-	int team_id;
-	double goal_x, goal_y;
-	
-	// variables initialization
-	strat  = cvs->strat;
-	inputs = cvs->inputs;
-	outputs = cvs->outputs;
-	path = cvs->path;
-	team_id = cvs->team_id;
-	
-	goal_x = strat->goal_tab[strat->goal][COORD_X]/1000;
-	goal_y = strat->goal_tab[strat->goal][COORD_Y]/1000;
-	
-	outputs->flag_release = 0;
-	
-	switch (strat->sub_state)
-	{
-		case TRAJECTORY: // calcul trajectoire
-			if (!path->flag_trajectory)
-			{
-				trajectory(cvs, goal_x, goal_y*team(team_id));
-			}
-			else
-			{
-				strat->sub_state = FOLLOW_PATH;
-			}
-			break;
-			
-		case FOLLOW_PATH: // suivre la trajectoire
-			if (follow_path(cvs, goal_x, goal_y*team(team_id)))
-			{
-				speed_regulation(cvs, 0, 0);
-				strat->sub_state = CHECK_TARGET;
-			}
-			break;
-			
-		case CHECK_TARGET: // vérifier si on est dessus
-			if (inputs->target_detected || (inputs->nb_targets == 1))
-			{
-				strat->sub_state = GET_TARGET;
-			}
-			else
-			{
-				strat->current_action += 1;
-				strat->sub_state = TRAJECTORY;
-				strat->main_state = FIRST_TARGET;
-				
-				cvs->strat->goal_determination = false;
-				strat->goal_tab[strat->goal][TAKE] = true;
-			}
-			break;
-			
-		case GET_TARGET:
-			if (inputs->nb_targets == 1)
-			{
-				strat->current_action += 1;
-				strat->sub_state = TRAJECTORY;
-				strat->main_state = SECOND_TARGET;
-				
-				cvs->strat->goal_determination = false;
-				strat->goal_tab[strat->goal][TAKE] = true;
-			}
-			break;
 	}
 }
 
@@ -463,21 +391,25 @@ void calibrate(CtrlStruct *cvs)
 	CtrlIn *inputs;
 	RobotPosition *rob_pos;
 	KalmanStruct *pos_kalman;
-	RobotPosition *pos_tri;
 	
 	// variables initialization
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	pos_kalman = cvs->kalman_pos;
-	pos_tri = cvs->triang_pos;
 	
 	speed_regulation(cvs, 0, 0);
 	
-	if (inputs->t - strat->last_t > 2.0)
-	{
+	if (inputs->t - strat->last_t > 0.65)
+	{		
+		rob_pos->x = pos_kalman->x;
+		rob_pos->y = pos_kalman->y;
+		//rob_pos->theta = pos_kalman->theta;
+		
 		if (strat->current_action == strat->nb_targets-1)
+		{
 			strat->main_state = FUNNY_ACTION;
+		}
 		else
 		{
 			strat->current_action += 1;
@@ -485,19 +417,8 @@ void calibrate(CtrlStruct *cvs)
 			strat->main_state = FIRST_TARGET;
 		}
 	}
-	else if (inputs->t - strat->last_t > 1.0)
-	{
-		
-		//rob_pos->x = pos_kalman->x;
-		//rob_pos->y = pos_kalman->y;
-		//rob_pos->theta = pos_kalman->theta;
-		
-		/*
-		 *		rob_pos->x = pos_tri->x;
-		 *		rob_pos->y = pos_tri->y;
-		 *		rob_pos->theta = pos_tri->theta;
-		 */
-	}
+	
+	return;
 }
 
 void update_goal(CtrlStruct *cvs)
@@ -551,6 +472,8 @@ void update_goal(CtrlStruct *cvs)
 		
 		update_goal(cvs); // si opponent, redéfinition du goal
 	}
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

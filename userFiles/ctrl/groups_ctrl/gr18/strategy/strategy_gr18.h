@@ -20,35 +20,32 @@ typedef struct Strategy
 	int goal_determination;
 	int goal;
 	
-	int* list_targets;
 	int nb_targets;
 	int current_action;
 
 	double** goal_tab;
+	int** list_targets;
 
 	double last_t;
 
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
-enum {THE_TARGET, FIRST_TARGET, SECOND_TARGET, WIN_POINTS, CALIBRATE, FUNNY_ACTION};
+enum {FIRST_TARGET, SECOND_TARGET, WIN_POINTS, CALIBRATE, FUNNY_ACTION};
 
 /// 'sub_state' states (adapt with your own states)
 enum {TRAJECTORY, FOLLOW_PATH, CHECK_TARGET, GET_TARGET, RELEASE_TARGET};
 
 Strategy* init_strategy();
 void free_strategy(Strategy *strat);
+
 void main_strategy(CtrlStruct *cvs);
-void manage_THE_target(CtrlStruct *cvs);
 void manage_first_target(CtrlStruct *cvs);
 void manage_second_target(CtrlStruct *cvs);
+
 void win_points(CtrlStruct *cvs);
 void calibrate(CtrlStruct *cvs);
-
-void new_goal(CtrlStruct *cvs);
 void update_goal(CtrlStruct *cvs);
-
-void go_to_the_target(CtrlStruct *cvs, int goal);
 
 NAMESPACE_CLOSE();
 

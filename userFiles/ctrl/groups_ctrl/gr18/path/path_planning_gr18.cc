@@ -127,14 +127,12 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	// variables declaration
 	RobotPosition *rob_pos;
 	PathPlanning *path;
-	Strategy *strat;
 	
 	int i, j;
     
     // variables initialization
     rob_pos = cvs->rob_pos;
     path = cvs->path;
-	strat  = cvs->strat;
     
     path->rob_pos_XY->X = x_to_X(rob_pos->x);
 	path->rob_pos_XY->Y = y_to_Y(rob_pos->y);
@@ -144,26 +142,6 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	create_map(cvs);
 	
 	manage_opp(cvs, 3);
-	
-	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT && strat->list_targets[strat->nb_targets-1] != strat->list_targets[strat->nb_targets-2])
-	{
-		strat->nb_targets += 1;
-		
-		strat->list_targets = (int*) realloc(strat->list_targets, strat->nb_targets*sizeof(int));
-		if (strat->list_targets == NULL) {exit(0);}
-		
-		strat->list_targets[strat->nb_targets-1] = strat->list_targets[strat->current_action];
-		
-		strat->current_action += 1;
-		
-		printf("OPPONENT");
-		
-		return;
-	}
-	else if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] == OBSTACLE)
-	{
-		printf("OBSTACLE");
-	}
 	
 	printf("LA1");
 	
