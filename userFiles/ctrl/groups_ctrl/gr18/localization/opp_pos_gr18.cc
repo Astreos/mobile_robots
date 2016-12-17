@@ -142,7 +142,6 @@ void check_opp_front(CtrlStruct *cvs)
 	// variables declaration
 	int i, nb_opp;
 	int rise_index[2], fall_index[2];
-	
 	double rise[2], fall[2];
 
 	CtrlIn *inputs;

@@ -141,7 +141,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	manage_opp(cvs, 3);
+	//manage_opp(cvs, 3);
 	
 	printf("LA1");
 	

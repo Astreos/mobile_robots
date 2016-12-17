@@ -76,17 +76,15 @@ void controller_init(CtrlStruct *cvs)
 void controller_loop(CtrlStruct *cvs)
 {
 	// variables declaration
-	double t;
 	CtrlIn *inputs;
 	CtrlOut *outputs;
-	int team_id;
+	
+	double t;
 
 	// variables initialization
 	inputs  = cvs->inputs;
 	outputs = cvs->outputs;
-	team_id = cvs->team_id;
 
-	// time
 	t = inputs->t;
 
 	// update the robot odometry

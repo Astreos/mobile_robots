@@ -17,17 +17,14 @@ typedef struct Strategy
 	int main_state; ///< main state of the strategy
 	int sub_state; ///< sub state of the strategy
 
-	int goal_determination;
-	int goal;
-	
-	int nb_targets;
-	int current_action;
-
 	double** goal_tab;
-	int** list_targets;
+	int** targets_status;
+	
+	int goal;
+	int goal_determination;
+	int flag_finish;
 
 	double last_t;
-
 } Strategy;
 
 /// 'main_state' states (adapt with your own states)
@@ -40,12 +37,14 @@ Strategy* init_strategy();
 void free_strategy(Strategy *strat);
 
 void main_strategy(CtrlStruct *cvs);
+
 void manage_first_target(CtrlStruct *cvs);
 void manage_second_target(CtrlStruct *cvs);
-
 void win_points(CtrlStruct *cvs);
 void calibrate(CtrlStruct *cvs);
+
 void update_goal(CtrlStruct *cvs);
+void manage_opp_2(CtrlStruct *cvs);
 
 NAMESPACE_CLOSE();
 

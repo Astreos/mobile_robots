@@ -33,10 +33,10 @@ int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	else
 	{
-		if (((goal_x == -0.75) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
+		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
 		{
 			if (run(cvs, goal_x, goal_y, M_PI, 0.003))
-			{
+			{				
 				speed_regulation(cvs, 0, 0);
 				
 				path->flag_trajectory = 0;
