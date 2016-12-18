@@ -112,7 +112,7 @@ void opponents_tower(CtrlStruct *cvs)
 		printf("\n");
 		*/
 		
-		printf("(nb_rising, nb_falling) = (%d, %d) \n", inputs->nb_rising, inputs->nb_falling);
+		//printf("(nb_rising, nb_falling) = (%d, %d) \n", inputs->nb_rising, inputs->nb_falling);
 		
 		//printf("(rise_index_1, fall_index_1, previous_rise_index, previous_fall_index) = (%d, %d, %d, %d) \n", rise_index_1, fall_index_1, previous_rise_index, previous_fall_index);
 		//printf("(rise_1, fall_1, previous_rise, previous_fall) = (%f, %f, %f, %f) \n", rise_1, fall_1, inputs->last_rising[previous_rise_index], inputs->last_falling[previous_fall_index]);
@@ -147,17 +147,16 @@ void opponents_tower(CtrlStruct *cvs)
 		
 		if (inputs->nb_rising == 1)
 		{
-			
-			
-			opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
-			opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
-			opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
-			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
+			opp_pos->x[0] = old_opp_pos_x[0];
+			opp_pos->y[0] = old_opp_pos_y[0];
+			opp_pos->x[1] = old_opp_pos_x[1];
+			opp_pos->y[1] = old_opp_pos_y[1];
 		}
 		else
 		{
 			if (opp_pos->opp_switch)
-			{/*
+			{
+				/*
 				old_opp_pos_x[0] = opp_pos->x[1];
 				old_opp_pos_y[0] = opp_pos->y[1];
 				old_opp_pos_x[1] = opp_pos->x[0];
@@ -177,11 +176,13 @@ void opponents_tower(CtrlStruct *cvs)
 				single_opp_tower(cvs, rise_2, fall_2, opp_pos->x + 1, opp_pos->y + 1);
 			}
 			
-			opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
-			opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
-			opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
-			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
+			opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.0, delta_t);
+			opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.0, delta_t);
+			opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.0, delta_t);
+			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.0, delta_t);
 		}
+		
+		printf("(opp_0_x, opp_0_y, old_opp_0_x, old_opp_0_y) = (%f, %f, %f, %f) and (opp_1_x, opp_1_y, old_opp_1_x, old_opp_1_y) = (%f, %f, %f, %f)\n", opp_pos->x[0], opp_pos->y[0], old_opp_pos_x[0], old_opp_pos_y[0], opp_pos->x[1], opp_pos->y[1], old_opp_pos_x[1], old_opp_pos_y[1]);
 	}
 	
 	check_opp_front(cvs);
@@ -230,7 +231,6 @@ int single_opp_tower(CtrlStruct *cvs, double last_rise, double last_fall, double
 	{
 		d = R/sin(fabs(last_fall + 2.0*M_PI - last_rise)/2.0);
 		phi = M_PI/2.0 - (last_fall + 2.0*M_PI + last_rise)/2.0 - rob_pos->theta;
-		
 	}
 	else
 	{

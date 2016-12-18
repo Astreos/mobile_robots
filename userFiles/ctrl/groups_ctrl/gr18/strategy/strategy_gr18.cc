@@ -190,11 +190,11 @@ void main_strategy(CtrlStruct *cvs)
 	
 	switch (strat->main_state)
 	{
-		/*
+		
 		case FIRST_TARGET:
 			manage_first_target(cvs);
-			break;*/
-			
+			break;
+			/*
 		case FIRST_TARGET:
 			switch (strat->sub_state)
 			{
@@ -208,12 +208,17 @@ void main_strategy(CtrlStruct *cvs)
 				case FOLLOW_PATH:
 					if (follow_path(cvs, 0.10, 0.00))
 					{
-						speed_regulation(cvs, 0, 0);
+						strat->main_state = SECOND_TARGET;
 					}
 					break;
 			}
-			break;
-		
+			break;*/
+		/*
+				case SECOND_TARGET:
+					speed_regulation(cvs, 0, 0);
+					break;*/
+			
+			
 		case SECOND_TARGET:
 			manage_second_target(cvs);
 			break;
