@@ -38,6 +38,7 @@ PathPlanning* init_path_planning()
 	path->map = (int**) malloc(CELL_X*sizeof(int*));
 	if (path->map == NULL) {exit(0);}
 	
+	//initialise the map
 	for(i=0; i<CELL_X; i++)
 	{
 		path->map[i] = (int*) malloc(CELL_Y*sizeof(int));
@@ -146,7 +147,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	//printf("BEFORE MANAGE_OPP \n");
 	
-	manage_opp(cvs, 0);
+	manage_opp(cvs, 0); // put high values in the cases next to the opponant
 	
 	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT)
 	{
@@ -155,7 +156,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	//printf("BEFORE ASSIGN_NUMBERS \n");
 	
-	assign_numbers(cvs);
+	assign_numbers(cvs); // Expension algorithm for the case, used for path planning
 	
 	if (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] > 90)
 	{
@@ -167,6 +168,8 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	/*
 	FILE* file = fopen("../../last_map.txt", "w");
 	
+
+	// Printf to see the path on terminal
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -418,6 +421,8 @@ void create_map(CtrlStruct *cvs)
 	return;
 }
 
+
+// Mets une valeur haute aux cases occupés par le robot adverse
 void manage_opp(CtrlStruct *cvs, int delta)
 {
 	// variable declaration
@@ -482,6 +487,8 @@ void manage_opp(CtrlStruct *cvs, int delta)
 	return;
 }
 
+
+//Algorythme d'expansion
 void assign_numbers(CtrlStruct *cvs)
 {
 	// variables declaration
@@ -495,6 +502,8 @@ void assign_numbers(CtrlStruct *cvs)
 	
 	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;
 	
+
+	//Compte le nombre de cases a assigner
 	for (i = 0; i < CELL_X; i++)
 	{
 		for (j = 0; j < CELL_Y; j++)
@@ -506,6 +515,8 @@ void assign_numbers(CtrlStruct *cvs)
 		}
 	}
 	
+
+	//Assigne les cases avec l'algorythme d'exmpension jusqu'a ateindre le robot
 	while ((cases_ni > 0) && (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] > 90)) // tant qu'on n'a pas enregistré toute les cases
 	{
 		for (i = 1; i < CELL_X-1; i++)
@@ -564,6 +575,8 @@ void assign_numbers(CtrlStruct *cvs)
 	return;
 }
 
+
+// Trouve le chemin en faisant les sommes des cases autour du robot et en choisissant la direction avec la somme la plus basse
 void find_path(CtrlStruct *cvs)
 {
 	// variable declaration
@@ -767,21 +780,24 @@ void find_path(CtrlStruct *cvs)
 	return;
 }
 
+// Calcule les coordonés mm en coordonées de cases
 int x_to_X(double x)
 {
 	return RESOLUTION*floor(10.0*x + 1/RESOLUTION) + (CELL_X - 2)/RESOLUTION;
 }
 
+// Calcule les coordonés mm en coordonées de cases
 int y_to_Y(double y)
 {
 	return RESOLUTION*floor(10.0*y + 1/RESOLUTION) + (CELL_Y - 2)/RESOLUTION;
 }
 
+// Calcule les coordonés de cases en coordonés mm
 double X_to_x(int X)
 {
 	return (X - (CELL_X-2-1)/RESOLUTION) / (10.0 * RESOLUTION);
 }
-
+// Calcule les coordonés de cases en coordonés mm
 double Y_to_y(int Y)
 {
 	return (Y - (CELL_Y-2-1)/RESOLUTION) / (10.0 * RESOLUTION);
