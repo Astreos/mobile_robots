@@ -115,8 +115,8 @@ void kalman(CtrlStruct *cvs)
 	
 	pos_kalman->last_t = inputs->t;
 	
-	set_plot(pos_kalman->x, "x_kalm");
-    set_plot(pos_kalman->y, "y_kalm");
+	//set_plot(pos_kalman->x, "x_kalm");
+    //set_plot(pos_kalman->y, "y_kalm");
     //set_plot(pos_kalman->theta, "theta_kalm");
 	
 	return;

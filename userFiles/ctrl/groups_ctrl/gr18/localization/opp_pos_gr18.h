@@ -23,13 +23,18 @@ typedef struct OpponentsPosition
 	int nb_opp; ///< number of opponents
 	
 	int opp_front;
+	
+	int previous_nb_rising;
+	int previous_nb_falling;
+	int opp_switch;
+	int switch_check;
 
 } OpponentsPosition;
 
 // function prototype
 void check_opp_front(CtrlStruct *cvs);
 void opponents_tower(CtrlStruct *cvs);
-int single_opp_tower(double last_rise, double last_fall, double rob_x, double rob_y, double rob_theta, double *new_x_opp, double *new_y_opp);
+int single_opp_tower(CtrlStruct *cvs, double last_rise, double last_fall, double *new_x_opp, double *new_y_opp);
 
 NAMESPACE_CLOSE();
 

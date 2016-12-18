@@ -168,12 +168,14 @@ void main_strategy(CtrlStruct *cvs)
 	// variables declaration
 	Strategy *strat;
 	CtrlIn *inputs;
+	PathPlanning *path;
 	
 	int i;
 	
 	// variables initialization
 	strat  = cvs->strat;
 	inputs = cvs->inputs;
+	path = cvs->path;
 	
 	manage_us(cvs);
 	manage_opp_2(cvs);
@@ -188,10 +190,30 @@ void main_strategy(CtrlStruct *cvs)
 	
 	switch (strat->main_state)
 	{
+		/*
 		case FIRST_TARGET:
 			manage_first_target(cvs);
-			break;
+			break;*/
 			
+		case FIRST_TARGET:
+			switch (strat->sub_state)
+			{
+				case TRAJECTORY:
+					if (!path->flag_trajectory)
+						trajectory(cvs, 0.10, 0.00);
+					else
+						strat->sub_state = FOLLOW_PATH;
+					break;
+					
+				case FOLLOW_PATH:
+					if (follow_path(cvs, 0.10, 0.00))
+					{
+						speed_regulation(cvs, 0, 0);
+					}
+					break;
+			}
+			break;
+		
 		case SECOND_TARGET:
 			manage_second_target(cvs);
 			break;

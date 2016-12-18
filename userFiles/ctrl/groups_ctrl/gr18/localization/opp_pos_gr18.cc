@@ -12,17 +12,19 @@ NAMESPACE_INIT(ctrlGr18);
 void opponents_tower(CtrlStruct *cvs)
 {
 	// variables declaration
-	int nb_opp;
-	int rise_index_1, rise_index_2, fall_index_1, fall_index_2;
-
-	double delta_t;
-	double rise_1, rise_2, fall_1, fall_2;
-	
-	int team_id;
-
 	CtrlIn *inputs;
 	RobotPosition *rob_pos;
 	OpponentsPosition *opp_pos;
+	
+	int nb_opp;
+	int rise_index_1, rise_index_2, fall_index_1, fall_index_2;
+	double rise_1, rise_2, fall_1, fall_2;
+	
+	double delta_t;
+	int team_id;
+	
+	double old_opp_pos_x[2];
+	double old_opp_pos_y[2];
 
 	// variables initialization
 	inputs  = cvs->inputs;
@@ -30,7 +32,6 @@ void opponents_tower(CtrlStruct *cvs)
 	opp_pos = cvs->opp_pos;
 
 	nb_opp = opp_pos->nb_opp;
-	
 	team_id = cvs->team_id;
 
 	// no opponent
@@ -48,7 +49,6 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// low pass filter time increment ('delta_t' is the last argument of the 'first_order_filter' function)
 	delta_t = inputs->t - opp_pos->last_t;
-	opp_pos->last_t = inputs->t;
 
 	// indexes
 	rise_index_1 = inputs->rising_index;
@@ -70,45 +70,133 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// ----- opponents position computation start ----- //
 	
-	if (inputs->t <= -9.0) {
+	//printf("(rise_1, fall_1, rise_2, fall_2) = (%f, %f, %f, %f) \n", rise_1, fall_1, rise_2, fall_2);
+	
+	if (inputs->t <= -5.0) {
 		opp_pos->x[0] = 0.65;
 		opp_pos->y[0] = -1.25*team(team_id);
 		opp_pos->x[1] = 0.65;
 		opp_pos->y[1] = -1.25*team(team_id);
 	}
-        
-	double old_opp_pos_x[2];
-	double old_opp_pos_y[2];
-        
-	old_opp_pos_x[0] = opp_pos->x[0];
-	old_opp_pos_y[0] = opp_pos->y[0];
-	old_opp_pos_x[1] = opp_pos->x[1];
-	old_opp_pos_y[1] = opp_pos->y[1];
-
-	single_opp_tower(rise_1, fall_1, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x, opp_pos->y);
-        
-	opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
-	opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
-        
-	if (nb_opp == 2)
+	
+	if (nb_opp == 1)
 	{
-		single_opp_tower(rise_2, fall_2, rob_pos->x, rob_pos->y, rob_pos->theta, opp_pos->x + 1, opp_pos->y + 1);
-            
-		opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
-		opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
+		old_opp_pos_x[0] = opp_pos->x[0];
+		old_opp_pos_y[0] = opp_pos->y[0];
+		
+		single_opp_tower(cvs, rise_1, fall_1, opp_pos->x, opp_pos->y);
+		
+		opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.0, delta_t);
+		opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.0, delta_t);
+	}
+	else
+	{/*
+		previous_rise_index = rise_index_1 - 2;
+		
+		if (previous_rise_index < 0)
+		{
+			previous_rise_index = NB_STORE_EDGE-1 - 1*rise_index_1;
+		}
+		
+		previous_fall_index = fall_index_1 - 2;
+		
+		if (previous_fall_index < 0)
+		{
+			previous_fall_index = NB_STORE_EDGE-1 - 1*fall_index_1;
+		}*/
+		/*
+		for (int i = 0; i < NB_STORE_EDGE; i++)
+		{
+			printf("(last_rise, last_fall) = (%f, %f) \n", inputs->last_rising[i], inputs->last_falling[i]);
+		}
+		printf("\n");
+		*/
+		
+		printf("(nb_rising, nb_falling) = (%d, %d) \n", inputs->nb_rising, inputs->nb_falling);
+		
+		//printf("(rise_index_1, fall_index_1, previous_rise_index, previous_fall_index) = (%d, %d, %d, %d) \n", rise_index_1, fall_index_1, previous_rise_index, previous_fall_index);
+		//printf("(rise_1, fall_1, previous_rise, previous_fall) = (%f, %f, %f, %f) \n", rise_1, fall_1, inputs->last_rising[previous_rise_index], inputs->last_falling[previous_fall_index]);
+		
+		/*
+		if ((fabs(rise_1 - inputs->last_rising[previous_rise_index]) > 0.1) || (fabs(fall_1 - inputs->last_falling[previous_fall_index]) > 0.1))
+		{
+			opp_pos->opp_switch = !opp_pos->opp_switch;
+		}*/
+		
+		if ((inputs->nb_rising == 2) && (opp_pos->previous_nb_rising == 1) && !opp_pos->switch_check)
+		{
+			opp_pos->previous_nb_rising = inputs->nb_rising;
+			opp_pos->switch_check = true;
+		}
+		
+		if ((inputs->nb_rising == 1) && (opp_pos->previous_nb_rising == 2) && opp_pos->switch_check)
+		{
+			opp_pos->previous_nb_rising = inputs->nb_rising;
+			opp_pos->previous_nb_falling = inputs->nb_falling;
+			opp_pos->opp_switch = !opp_pos->opp_switch;
+			
+			opp_pos->switch_check = false;
+		}
+		
+		printf("switch = %d \n", opp_pos->opp_switch);
+		
+		old_opp_pos_x[0] = opp_pos->x[0];
+		old_opp_pos_y[0] = opp_pos->y[0];
+		old_opp_pos_x[1] = opp_pos->x[1];
+		old_opp_pos_y[1] = opp_pos->y[1];
+		
+		if (inputs->nb_rising == 1)
+		{
+			
+			
+			opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
+			opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
+			opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
+			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
+		}
+		else
+		{
+			if (opp_pos->opp_switch)
+			{/*
+				old_opp_pos_x[0] = opp_pos->x[1];
+				old_opp_pos_y[0] = opp_pos->y[1];
+				old_opp_pos_x[1] = opp_pos->x[0];
+				old_opp_pos_y[1] = opp_pos->y[0];
+				*/
+				single_opp_tower(cvs, rise_2, fall_2, opp_pos->x, opp_pos->y);
+				single_opp_tower(cvs, rise_1, fall_1, opp_pos->x + 1, opp_pos->y + 1);
+			}
+			else
+			{/*
+				old_opp_pos_x[0] = opp_pos->x[0];
+				old_opp_pos_y[0] = opp_pos->y[0];
+				old_opp_pos_x[1] = opp_pos->x[1];
+				old_opp_pos_y[1] = opp_pos->y[1];
+				*/
+				single_opp_tower(cvs, rise_1, fall_1, opp_pos->x, opp_pos->y);
+				single_opp_tower(cvs, rise_2, fall_2, opp_pos->x + 1, opp_pos->y + 1);
+			}
+			
+			opp_pos->x[0] = first_order_filter(old_opp_pos_x[0], opp_pos->x[0], 1.5, delta_t);
+			opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.5, delta_t);
+			opp_pos->x[1] = first_order_filter(old_opp_pos_x[1], opp_pos->x[1], 1.5, delta_t);
+			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.5, delta_t);
+		}
 	}
 	
 	check_opp_front(cvs);
 
 	// ----- opponents position computation end ----- //
         
-	//set_plot(opp_pos->x[0], "opp1_x_[m]");
-	//set_plot(opp_pos->y[0], "opp1_y_[m]");
+	set_plot(opp_pos->x[0], "opp1_x_[m]");
+	set_plot(opp_pos->y[0], "opp1_y_[m]");
         
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
 	//set_plot(opp_pos->opp_front, "detection");
+	
+	opp_pos->last_t = inputs->t;
 	
 	return;
 }
@@ -124,10 +212,34 @@ void opponents_tower(CtrlStruct *cvs)
  * \param[out] new_y_opp new known y opponent position
  * \return 1 if computation successful, 0 otherwise
  */
-int single_opp_tower(double last_rise, double last_fall, double rob_x, double rob_y, double rob_theta, double *new_x_opp, double *new_y_opp)
-{                       
-	*new_x_opp = rob_x + 0.083*cos(rob_theta) + (0.040/sin((last_fall - last_rise)/2.0))*sin(M_PI/2.0 - (last_fall+last_rise)/2.0 - rob_theta);
-	*new_y_opp = rob_y + 0.083*sin(rob_theta) + (0.040/sin((last_fall - last_rise)/2.0))*cos(M_PI/2.0 - (last_fall+last_rise)/2.0 - rob_theta);
+int single_opp_tower(CtrlStruct *cvs, double last_rise, double last_fall, double *new_x_opp, double *new_y_opp)
+{
+	// variables declaration
+	RobotPosition *rob_pos;
+	
+	double R, delta;
+	double d, phi;
+	
+	// variables initialization
+	rob_pos = cvs->rob_pos;
+	
+	R = 0.040;
+	delta = 0.083;
+	
+	if ((last_fall < -M_PI/2.0) && (last_fall > -M_PI) && (last_rise < M_PI) && (last_rise > M_PI/2.0))
+	{
+		d = R/sin(fabs(last_fall + 2.0*M_PI - last_rise)/2.0);
+		phi = M_PI/2.0 - (last_fall + 2.0*M_PI + last_rise)/2.0 - rob_pos->theta;
+		
+	}
+	else
+	{
+		d = R/sin(fabs(last_fall - last_rise)/2.0);
+		phi = M_PI/2.0 - (last_fall+last_rise)/2.0 - rob_pos->theta;
+	}
+	
+	*new_x_opp = rob_pos->x + delta*cos(rob_pos->theta) + d*sin(phi);
+	*new_y_opp = rob_pos->y + delta*sin(rob_pos->theta) + d*cos(phi);
 
 	return 1;
 }
@@ -139,14 +251,14 @@ int single_opp_tower(double last_rise, double last_fall, double rob_x, double ro
  */
 void check_opp_front(CtrlStruct *cvs)
 {
-	// variables declaration
-	int i, nb_opp;
-	int rise_index[2], fall_index[2];
-	double rise[2], fall[2];
-
+	// variables declaratio
 	CtrlIn *inputs;
 	OpponentsPosition *opp_pos;
 	RobotPosition *rob_pos;
+	
+	int i, nb_opp;
+	int rise_index[2], fall_index[2];
+	double rise[2], fall[2];
 
 	// variables initialization
 	inputs  = cvs->inputs;
