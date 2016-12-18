@@ -19,11 +19,17 @@ typedef struct PosRegulation
 
 	double last_t; ///< last time the speed regulation was updated
 
+	int path_state;
+	
+	int flag_run_done;
+	int flag_asserv_done;
 } PosRegulation;
 
-int follow_path(CtrlStruct *cvs, double goal_x, double goal_y);
+enum {FOLLOW_CHECKPOINTS, RUN_TO_GOAL, WAIT};
+
+void follow_path(CtrlStruct *cvs, double goal_x, double goal_y);
+void run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon);
 int turn(CtrlStruct *cvs, double theta_ref, int sens);
-int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon);
 
 // No longer used
 /*

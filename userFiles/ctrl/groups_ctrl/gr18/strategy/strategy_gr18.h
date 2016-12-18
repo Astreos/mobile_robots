@@ -23,8 +23,12 @@ typedef struct Strategy
 	int current_goal;
 	int goal_determination;
 	int flag_finish;
+	
+	int opponent_point;
+	OpponentsPosition *opp_pos;
 
 	double last_t;
+	double last_t2;
 } Strategy;
 
 /// 'main_state' states

@@ -109,6 +109,9 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->pos_reg->int_error_l = 0.0;
 
 	cvs->pos_reg->last_t = 0.0;
+	
+	cvs->pos_reg->flag_run_done = false;
+	cvs->pos_reg->flag_asserv_done = false;
 
 	// calibration
 	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));

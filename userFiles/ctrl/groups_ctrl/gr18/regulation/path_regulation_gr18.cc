@@ -4,6 +4,7 @@
 #include "init_pos_gr18.h"
 #include "path_planning_gr18.h"
 #include "opp_pos_gr18.h"
+#include "strategy_gr18.h"
 #include <math.h>
 
 NAMESPACE_INIT(ctrlGr18);
@@ -12,52 +13,175 @@ NAMESPACE_INIT(ctrlGr18);
  *
  * \param[in,out] cvs controller main structure
  */
-int follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
+void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 {
 	//variable declaration
+	PosRegulation *pos_reg;
+	Strategy *strat;
+	OpponentsPosition *opp_pos;
 	PathPlanning *path;
+	CtrlIn *inputs;
 	int team_id;
 	
 	// variables initialization
+	pos_reg = cvs->pos_reg;
+	strat = cvs->strat;
+	opp_pos = cvs->opp_pos;
     path = cvs->path;
+	inputs = cvs->inputs;
 	team_id = cvs->team_id;
     
-    if (path->current_checkpoint <= path->nb_checkpoints-5)
+	switch (pos_reg->path_state)
 	{
-		if (run(cvs, X_to_x(path->list_checkpoints[path->current_checkpoint][0]), Y_to_y(path->list_checkpoints[path->current_checkpoint][1]), 66, 0.20))
-		{
-			path->current_checkpoint++;
-		}
-		
-		return 0;
+		case FOLLOW_CHECKPOINTS:
+			if (path->current_checkpoint > path->nb_checkpoints-5)
+			{
+				pos_reg->path_state = RUN_TO_GOAL;
+			}
+			else
+			{
+				if (pos_reg->flag_run_done)
+				{
+					path->current_checkpoint++;
+					pos_reg->flag_run_done = false;
+				}
+				else
+				{					
+					if (opp_pos->opp_front)
+					{
+						pos_reg->last_t = inputs->t;
+						pos_reg->path_state = WAIT;
+					}
+					else
+					{
+						run(cvs, X_to_x(path->list_checkpoints[path->current_checkpoint][0]), Y_to_y(path->list_checkpoints[path->current_checkpoint][1]), 66, 0.20);
+					}
+				}
+			}
+			break;
+			
+		case RUN_TO_GOAL:
+			if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
+			{
+				if (pos_reg->flag_run_done)
+				{
+					path->flag_trajectory = false;
+					path->current_checkpoint = 1;
+					pos_reg->flag_run_done = false;
+					pos_reg->flag_asserv_done = true;
+					pos_reg->path_state = FOLLOW_CHECKPOINTS;
+				}
+				else
+				{
+					if (opp_pos->opp_front)
+					{
+						pos_reg->last_t = inputs->t;
+						pos_reg->path_state = WAIT;
+					}
+					else
+					{
+						run(cvs, goal_x, goal_y, M_PI, 0.005);
+					}
+				}
+			}
+			else
+			{
+				if (pos_reg->flag_run_done)
+				{					
+					path->flag_trajectory = false;
+					path->current_checkpoint = 1;
+					pos_reg->flag_run_done = false;
+					pos_reg->flag_asserv_done = true;
+					pos_reg->path_state = FOLLOW_CHECKPOINTS;
+				}
+				else
+				{
+					if (opp_pos->opp_front)
+					{
+						pos_reg->last_t = inputs->t;
+						pos_reg->path_state = WAIT;
+					}
+					else
+					{
+						run(cvs, goal_x, goal_y, 66, 0.005);
+					}
+				}
+			}
+			break;
+			
+		case WAIT:
+			if (!opp_pos->opp_front)
+			{
+				pos_reg->path_state = FOLLOW_CHECKPOINTS;
+			}
+			else if (inputs->t - pos_reg->last_t > 2.0)
+			{
+				path->flag_trajectory = false;
+				path->current_checkpoint = 1;
+				pos_reg->flag_run_done = false;
+				pos_reg->path_state = FOLLOW_CHECKPOINTS;
+				strat->sub_state = TRAJECTORY;
+			}
+			else
+			{
+				speed_regulation(cvs, 0, 0);
+			}
+			break;
+			
+		default:
+			printf("Error: unknown path state: %d !\n", pos_reg->path_state);
+			exit(EXIT_FAILURE);
+	}
+}
+
+void run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon)
+{
+	// variables declaration
+	RobotPosition *rob_pos;
+	PosRegulation *pos_reg;
+	
+	double rho, alpha, beta;
+	double dt;
+	float K_rho, K_alpha, K_beta;
+	
+	// variables initialization
+	rob_pos = cvs->rob_pos;
+	pos_reg  = cvs->pos_reg;
+	
+	// ----- Wheels regulation computation start ----- //
+	
+	if (epsilon >= 0.1)
+	{
+		K_rho = 20.0*6; // K_rho > 0
+		K_alpha = 21.0*6; // K_alpha > K_rho
+		K_beta = -12.0*6; // K_beta < 0
+	}
+	else if (epsilon < 0.1)
+	{
+		K_rho = 20.0*2; // K_rho > 0
+		K_alpha = 23.0*2; // K_alpha > K_rho
+		K_beta = -12.0*2; // K_beta < 0
+	}
+	
+	if (theta_ref == 66)
+	{
+		K_beta = 0;
+	}
+	
+	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
+	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
+	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
+	
+	if (rho < epsilon)
+	{
+		pos_reg->flag_run_done = true;
 	}
 	else
 	{
-		if (((goal_x == -0.70) && (goal_y == -1.15*team(team_id))) || ((goal_x == 0.10) && (goal_y == 0*team(team_id))))
-		{
-			if (run(cvs, goal_x, goal_y, M_PI, 0.005))
-			{				
-				speed_regulation(cvs, 0, 0);
-				
-				path->flag_trajectory = 0;
-				path->current_checkpoint = 1;
-				
-				return 1;
-			}
-		}
-		else
-		{
-			if (run(cvs, goal_x, goal_y, 66, 0.005))
-			{
-				speed_regulation(cvs, 0, 0);
-				
-				path->flag_trajectory = 0;
-				path->current_checkpoint = 1;
-				
-				return 1;
-			}
-		}
+		speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
 	}
+	
+	// ----- Wheels regulation computation end ----- //
 }
 
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
@@ -150,88 +274,22 @@ int turn(CtrlStruct *cvs, double theta_ref, int sens)
 	pos_reg->int_error_r = error*dt + limit_range(pos_reg->int_error_r, 0, M_PI/2.0);
 	pos_reg->int_error_l = error*dt + limit_range(pos_reg->int_error_l, 0, M_PI/2.0);
 	
-	speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt);
-
-    // ----- Wheels regulation computation end ----- //
-    
-    //set_plot(error, "error");
-    //set_plot(pos_reg->int_error_r, "int_error");
-    
-    // last update time
-    pos_reg->last_t = inputs->t;
-    
-    if (error <= 0.00011)
-    {
+	if (error <= 0.00011)
+	{
 		pos_reg->int_error_r = 0;
 		pos_reg->int_error_l = 0;
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float epsilon)
-{
-	// variables declaration
-	RobotPosition *rob_pos;
-	
-	PosRegulation *pos_reg;
-	OpponentsPosition *opp_pos;
-	
-	double rho, alpha, beta;
-	double dt;
-	float K_rho, K_alpha, K_beta;
-	
-	// variables initialization
-	rob_pos = cvs->rob_pos;
-	pos_reg  = cvs->pos_reg;
-	opp_pos = cvs->opp_pos;
-	
-	// ----- Wheels regulation computation start ----- //
-	
-	if (epsilon >= 0.1)
-	{
-		K_rho = 20.0*6; // K_rho > 0
-		K_alpha = 21.0*6; // K_alpha > K_rho
-		K_beta = -12.0*6; // K_beta < 0
-	}
-	else if (epsilon < 0.1)
-	{
-		K_rho = 20.0*3; // K_rho > 0
-		K_alpha = 23.0*3; // K_alpha > K_rho
-		K_beta = -12.0*3; // K_beta < 0
-	}
-	
-	if (theta_ref == 66)
-	{
-		K_beta = 0;
-	}
-	
-	rho = sqrt(pow((x_ref - rob_pos->x), 2) + pow(y_ref - rob_pos->y, 2));
-	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
-	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
-	
-	if (opp_pos->opp_front)
-	{
-		speed_regulation(cvs, K_alpha*alpha, -K_alpha*alpha);
-	}
-	else
-	{
-		speed_regulation(cvs, K_rho*rho + (K_alpha*alpha + K_beta*beta), K_rho*rho - (K_alpha*alpha + K_beta*beta));
-	}
-	
-	// ----- Wheels regulation computation end ----- //
-	
-	if (rho < epsilon)
-	{		
 		return 1;
 	}
 	else
 	{
+		speed_regulation(cvs, (Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt, -(Kp*error + (Kp/Ti)*pos_reg->int_error_r)*sens_opt);
 		return 0;
 	}
+
+    // ----- Wheels regulation computation end ----- //
+    
+    // last update time
+    pos_reg->last_t = inputs->t;
 }
 
 /*

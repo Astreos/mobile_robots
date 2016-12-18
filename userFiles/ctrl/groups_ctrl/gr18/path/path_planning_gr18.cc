@@ -73,7 +73,7 @@ PathPlanning* init_path_planning()
 	if (path->rob_pos_XY == NULL) {exit(0);}
 	
 	// flag
-	path->flag_trajectory = 0;
+	path->flag_trajectory = false;
 	
 	// number of checkpoints
 	path->nb_checkpoints = 10*RESOLUTION;
@@ -144,7 +144,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	create_map(cvs);
 	
-	printf("BEFORE MANAGE_OPP \n");
+	//printf("BEFORE MANAGE_OPP \n");
 	
 	manage_opp(cvs, 1);
 	
@@ -153,7 +153,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		create_map(cvs);
 	}
 	
-	printf("BEFORE ASSIGN_NUMBERS \n");
+	//printf("BEFORE ASSIGN_NUMBERS \n");
 	
 	assign_numbers(cvs);
 	
@@ -191,11 +191,11 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	fclose(file);
 	
-	printf("BEFORE FIND_PATH \n");
+	//printf("BEFORE FIND_PATH \n");
 
 	find_path(cvs);
 	
-	path->flag_trajectory = 1;
+	path->flag_trajectory = true;
 	
 	for (i = 0; i<CELL_X; i++)
 	{

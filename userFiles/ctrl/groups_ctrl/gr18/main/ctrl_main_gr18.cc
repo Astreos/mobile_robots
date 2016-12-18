@@ -120,6 +120,7 @@ void controller_loop(CtrlStruct *cvs)
 				cvs->main_state = RUN_STATE;
 				cvs->strat->main_state = FIRST_TARGET;
 				cvs->strat->sub_state = TRAJECTORY;
+				cvs->pos_reg->path_state = FOLLOW_CHECKPOINTS;
 			}
 			break;
 

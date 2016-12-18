@@ -138,7 +138,7 @@ void opponents_tower(CtrlStruct *cvs)
 			opp_pos->switch_check = false;
 		}
 		
-		printf("switch = %d \n", opp_pos->opp_switch);
+		//printf("switch = %d \n", opp_pos->opp_switch);
 		
 		old_opp_pos_x[0] = opp_pos->x[0];
 		old_opp_pos_y[0] = opp_pos->y[0];
@@ -182,7 +182,7 @@ void opponents_tower(CtrlStruct *cvs)
 			opp_pos->y[1] = first_order_filter(old_opp_pos_y[1], opp_pos->y[1], 1.0, delta_t);
 		}
 		
-		printf("(opp_0_x, opp_0_y, old_opp_0_x, old_opp_0_y) = (%f, %f, %f, %f) and (opp_1_x, opp_1_y, old_opp_1_x, old_opp_1_y) = (%f, %f, %f, %f)\n", opp_pos->x[0], opp_pos->y[0], old_opp_pos_x[0], old_opp_pos_y[0], opp_pos->x[1], opp_pos->y[1], old_opp_pos_x[1], old_opp_pos_y[1]);
+		//printf("(opp_0_x, opp_0_y, old_opp_0_x, old_opp_0_y) = (%f, %f, %f, %f) and (opp_1_x, opp_1_y, old_opp_1_x, old_opp_1_y) = (%f, %f, %f, %f)\n", opp_pos->x[0], opp_pos->y[0], old_opp_pos_x[0], old_opp_pos_y[0], opp_pos->x[1], opp_pos->y[1], old_opp_pos_x[1], old_opp_pos_y[1]);
 	}
 	
 	check_opp_front(cvs);
@@ -195,7 +195,7 @@ void opponents_tower(CtrlStruct *cvs)
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
-	//set_plot(opp_pos->opp_front, "detection");
+	set_plot(opp_pos->opp_front, "detection");
 	
 	opp_pos->last_t = inputs->t;
 	
