@@ -146,7 +146,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	
 	//printf("BEFORE MANAGE_OPP \n");
 	
-	manage_opp(cvs, 1);
+	manage_opp(cvs, 0);
 	
 	if (path->map[path->goal_XY->X][path->goal_XY->Y] == OPPONENT)
 	{
@@ -164,6 +164,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		assign_numbers(cvs);
 	}
 	
+	/*
 	FILE* file = fopen("../../last_map.txt", "w");
 	
 	for (i = 0; i<CELL_X; i++)
@@ -190,13 +191,14 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	
 	fclose(file);
-	
+	*/
 	//printf("BEFORE FIND_PATH \n");
 
 	find_path(cvs);
 	
 	path->flag_trajectory = true;
 	
+	/*
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -220,6 +222,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
+	*/
 	
 	return;
 }
@@ -754,12 +757,12 @@ void find_path(CtrlStruct *cvs)
 	
 	path->nb_checkpoints = k;
 	
-	
+	/*
 	for (i = 0; i <= k; i++)
 	{
 		path->map[path->list_checkpoints[i][0]][path->list_checkpoints[i][1]] = GOAL;
 	}
-	
+	*/
 	
 	return;
 }

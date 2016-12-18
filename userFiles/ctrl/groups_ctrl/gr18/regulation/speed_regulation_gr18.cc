@@ -33,7 +33,7 @@ void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 
     // ----- Wheels regulation computation start ----- //
 
-    float Kp = 37.0; //Kc = 90 => Kopt = 40.5 //29
+    float Kp = 30.0; //Kc = 90 => Kopt = 40.5 //29
     float Ti = 0.05; //Tosc = 0.0057143 s //0.07
 
     sp_reg->int_error_r = (r_sp_ref - r_sp)*dt + limit_range(sp_reg->int_error_r, -fabs(r_sp_ref), fabs(r_sp_ref));

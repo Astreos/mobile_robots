@@ -19,6 +19,7 @@ typedef struct Strategy
 
 	double** goals_tab;
 	int** targets_status;
+	int target_not_detected;
 	
 	int current_goal;
 	int goal_determination;
@@ -48,7 +49,7 @@ void win_points(CtrlStruct *cvs);
 void calibrate(CtrlStruct *cvs);
 
 void update_goal(CtrlStruct *cvs);
-void manage_opp_2(CtrlStruct *cvs);
+void manage_opp_target(CtrlStruct *cvs);
 void manage_us(CtrlStruct *cvs);
 
 NAMESPACE_CLOSE();

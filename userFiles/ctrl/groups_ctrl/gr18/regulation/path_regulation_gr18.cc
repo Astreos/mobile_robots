@@ -34,11 +34,7 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	switch (pos_reg->path_state)
 	{
 		case FOLLOW_CHECKPOINTS:
-			if (path->current_checkpoint > path->nb_checkpoints-5)
-			{
-				pos_reg->path_state = RUN_TO_GOAL;
-			}
-			else
+			if (path->current_checkpoint < path->nb_checkpoints-5)
 			{
 				if (pos_reg->flag_run_done)
 				{
@@ -57,6 +53,11 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 						run(cvs, X_to_x(path->list_checkpoints[path->current_checkpoint][0]), Y_to_y(path->list_checkpoints[path->current_checkpoint][1]), 66, 0.20);
 					}
 				}
+			}
+			else
+			{
+				pos_reg->flag_run_done = false;
+				pos_reg->path_state = RUN_TO_GOAL;
 			}
 			break;
 			
@@ -116,11 +117,15 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			}
 			else if (inputs->t - pos_reg->last_t > 2.0)
 			{
+				speed_regulation(cvs, 0, 0);
+				
+				/*
 				path->flag_trajectory = false;
 				path->current_checkpoint = 1;
 				pos_reg->flag_run_done = false;
 				pos_reg->path_state = FOLLOW_CHECKPOINTS;
 				strat->sub_state = TRAJECTORY;
+				*/
 			}
 			else
 			{
@@ -152,14 +157,14 @@ void run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float ep
 	
 	if (epsilon >= 0.1)
 	{
-		K_rho = 20.0*6; // K_rho > 0
-		K_alpha = 21.0*6; // K_alpha > K_rho
-		K_beta = -12.0*6; // K_beta < 0
+		K_rho = 20.0*5; // K_rho > 0
+		K_alpha = 21.0*5; // K_alpha > K_rho
+		K_beta = -12.0*5; // K_beta < 0
 	}
 	else if (epsilon < 0.1)
 	{
 		K_rho = 20.0*2; // K_rho > 0
-		K_alpha = 23.0*2; // K_alpha > K_rho
+		K_alpha = 21.0*2; // K_alpha > K_rho
 		K_beta = -12.0*2; // K_beta < 0
 	}
 	

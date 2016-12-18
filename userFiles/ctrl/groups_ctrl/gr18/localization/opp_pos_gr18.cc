@@ -189,13 +189,13 @@ void opponents_tower(CtrlStruct *cvs)
 
 	// ----- opponents position computation end ----- //
         
-	set_plot(opp_pos->x[0], "opp1_x_[m]");
-	set_plot(opp_pos->y[0], "opp1_y_[m]");
+	//set_plot(opp_pos->x[0], "opp1_x_[m]");
+	//set_plot(opp_pos->y[0], "opp1_y_[m]");
         
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
         
-	set_plot(opp_pos->opp_front, "detection");
+	//set_plot(opp_pos->opp_front, "detection");
 	
 	opp_pos->last_t = inputs->t;
 	
@@ -301,12 +301,12 @@ void check_opp_front(CtrlStruct *cvs)
 	
 	if (nb_opp == 1)
 	{
-		opp_pos->opp_front = ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))));
+		opp_pos->opp_front = ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.65) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))));
 	}
 	else
 	{
-		opp_pos->opp_front = ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.50) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))))
-		|| ((norm_dist(rob_pos->x - opp_pos->x[1], rob_pos->y - opp_pos->y[1]) < 0.50) && (((rise[1] <= M_PI/5.0) && (rise[1] >= -M_PI/5.0)) || ((fall[1] <= M_PI/5.0) && (fall[1] >= -M_PI/5.0))));
+		opp_pos->opp_front = ((norm_dist(rob_pos->x - opp_pos->x[0], rob_pos->y - opp_pos->y[0]) < 0.65) && (((rise[0] <= M_PI/5.0) && (rise[0] >= -M_PI/5.0)) || ((fall[0] <= M_PI/5.0) && (fall[0] >= -M_PI/5.0))))
+		|| ((norm_dist(rob_pos->x - opp_pos->x[1], rob_pos->y - opp_pos->y[1]) < 0.65) && (((rise[1] <= M_PI/5.0) && (rise[1] >= -M_PI/5.0)) || ((fall[1] <= M_PI/5.0) && (fall[1] >= -M_PI/5.0))));
 	}
             
 	// ----- opponents check computation end ----- //
