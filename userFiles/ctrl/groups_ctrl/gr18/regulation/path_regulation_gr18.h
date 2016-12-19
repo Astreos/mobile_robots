@@ -20,7 +20,6 @@ typedef struct PosRegulation
 	double last_t; ///< last time the speed regulation was updated
 
 	int path_state;
-	
 	int flag_run_done;
 	int flag_asserv_done;
 } PosRegulation;

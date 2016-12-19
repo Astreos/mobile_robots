@@ -33,7 +33,7 @@ void kalman(CtrlStruct *cvs)
 	
 	double old_kalman_x , old_kalman_y, old_kalman_theta, delta_t;
 	
-	for(i=0; i < 9; i++) 
+	for(i = 0; i < 9; i++) 
 	{
 		tab1[i] = 0.0;
 		tab2[i]=  0.0;

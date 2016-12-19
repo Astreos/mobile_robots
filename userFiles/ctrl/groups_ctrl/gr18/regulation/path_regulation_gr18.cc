@@ -34,7 +34,7 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	switch (pos_reg->path_state)
 	{
 		case FOLLOW_CHECKPOINTS:
-			if (path->current_checkpoint < path->nb_checkpoints-10)
+			if (path->current_checkpoint < path->nb_checkpoints-3)
 			{
 				if (pos_reg->flag_run_done)
 				{
@@ -67,8 +67,12 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 				{
 					pos_reg->flag_run_done = false;
 					pos_reg->flag_asserv_done = true;
+					/*
 					path->flag_trajectory = false;
 					path->current_checkpoint = 0;
+					*/
+					free_path_planning(path);
+					path = init_path_planning();
 				}
 				else
 				{
@@ -89,8 +93,12 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 				{
 					pos_reg->flag_run_done = false;
 					pos_reg->flag_asserv_done = true;
+					/*
 					path->flag_trajectory = false;
 					path->current_checkpoint = 0;
+					*/
+					free_path_planning(path);
+					path = init_path_planning();
 				}
 				else
 				{
@@ -114,10 +122,12 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			}
 			else if (inputs->t - pos_reg->last_t > 2.0)
 			{
-				path->flag_trajectory = false;
-				path->current_checkpoint = 0;
+				speed_regulation(cvs, 0, 0);
+				/*
 				pos_reg->flag_run_done = false;
-				strat->sub_state = TRAJECTORY;
+				free_path_planning(path);
+				path = init_path_planning();
+				*/
 			}
 			else
 			{

@@ -20,11 +20,15 @@ NAMESPACE_INIT(ctrlGr18);
  */
 CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 {
+	// variables initialization
 	int i;
 	CtrlStruct *cvs;
 
+	// memory allocation
 	cvs = (CtrlStruct*) malloc(sizeof(CtrlStruct));
 	if (cvs == NULL) {exit(0);}
+	
+	// ----- cvs initialization start ----- //
 
 	// io
 	cvs->inputs  = inputs;
@@ -36,6 +40,13 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	// IDs (will be erased in the initialization)
 	cvs->robot_id = ROBOT_B;
 	cvs->team_id  = TEAM_A;
+	
+	// calibration
+	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
+	if (cvs->calib == NULL) {exit(0);}
+	
+	cvs->calib->flag = 0;
+	cvs->calib->t_flag = 0.0;
 
 	// robot position
 	cvs->rob_pos = (RobotPosition*) malloc(sizeof(RobotPosition));
@@ -66,10 +77,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->kalman_pos->theta  = 0.0;
 	
 	cvs->kalman_pos->last_t = 0.0;
-	
-	cvs->kalman_pos->P = (double*) malloc(9*sizeof(double));
-	if (cvs->kalman_pos->P == NULL) {exit(0);}
-	
+
 	for(i=0; i<9; i++)
 	{
 		cvs->kalman_pos->P[i] = 0.0;
@@ -86,8 +94,10 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	}
 
 	cvs->opp_pos->last_t = 0.0;
-	cvs->opp_pos->opp_front = false;
+	
 	cvs->opp_pos->nb_opp = inputs->nb_opponents;
+	cvs->opp_pos->opp_front = false;
+	
 	cvs->opp_pos->previous_nb_rising = 2;
 	cvs->opp_pos->previous_nb_falling = 2;
 	cvs->opp_pos->opp_switch = false;
@@ -111,21 +121,15 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	cvs->pos_reg->last_t = 0.0;
 	
+	cvs->pos_reg->path_state = FOLLOW_CHECKPOINTS;
 	cvs->pos_reg->flag_run_done = false;
 	cvs->pos_reg->flag_asserv_done = false;
-
-	// calibration
-	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
-	if (cvs->calib == NULL) {exit(0);}
-
-	cvs->calib->flag = 0;
-	cvs->calib->t_flag = 0.0;
+	
+	// path-planning
+	cvs->path = init_path_planning();
 
 	// strategy
 	cvs->strat = init_strategy();
-
-	// path-planning
-	cvs->path = init_path_planning();
 
 	return cvs;
 }
@@ -135,16 +139,18 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
  * \param[in] cvs controller main structure
  */
 void free_CtrlStruct(CtrlStruct *cvs)
-{
+{	
 	free_path_planning(cvs->path);
 	free_strategy(cvs->strat);
+	
 	free(cvs->calib);
-	free(cvs->sp_reg);
-    free(cvs->pos_reg);
-	free(cvs->opp_pos);
 	free(cvs->rob_pos);
 	free(cvs->triang_pos);
 	free(cvs->kalman_pos);
+	free(cvs->opp_pos);
+	free(cvs->sp_reg);
+    free(cvs->pos_reg);
+	
 	free(cvs);
 	
 	return;

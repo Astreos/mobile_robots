@@ -24,12 +24,13 @@ typedef struct PathPlanning
 	int **map;
 	int flag_trajectory;
 	
-	int **list_checkpoints;
-	int nb_checkpoints;
-	int current_checkpoint;
-	
 	PositionXY *rob_pos_XY; // coordonnées en cases
 	PositionXY *goal_XY;
+	
+	int **list_checkpoints;
+	int size_list_checkpoints;
+	int nb_checkpoints;
+	int current_checkpoint;
 } PathPlanning;
 
 PathPlanning* init_path_planning();

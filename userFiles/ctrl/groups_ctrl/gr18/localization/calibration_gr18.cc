@@ -10,9 +10,6 @@ NAMESPACE_INIT(ctrlGr18);
 
 #define DEG_TO_RAD (M_PI/180.0) ///< convertion from degrees to radians
 
-// calibration states
-enum {CALIB_START, CALIB_STATE_A, CALIB_STATE_B, CALIB_STATE_C, CALIB_STATE_D, CALIB_STATE_E, CALIB_FINISH};
-
 /*! \brief calibration of the robot to calibrate its position
  *
  * \param[in,out] cvs controller main structure

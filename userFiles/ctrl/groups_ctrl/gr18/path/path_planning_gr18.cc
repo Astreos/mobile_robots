@@ -50,11 +50,24 @@ PathPlanning* init_path_planning()
 		}
 	}
 	
+	// flag
+	path->flag_trajectory = false;
+	
+	// rob_pos_XY
+	path->rob_pos_XY = (PositionXY*) malloc(sizeof(PositionXY*));
+	if (path->rob_pos_XY == NULL) {exit(0);}
+	
+	// goal_XY
+	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
+	if (path->rob_pos_XY == NULL) {exit(0);}
+	
 	// list_checkpoints
-	path->list_checkpoints = (int**) malloc(10*RESOLUTION*sizeof(int*));
+	path->size_list_checkpoints = 10*RESOLUTION;
+	
+	path->list_checkpoints = (int**) malloc(path->size_list_checkpoints*sizeof(int*));
 	if (path->list_checkpoints == NULL) {exit(0);}
 
-	for(i=0; i<10*RESOLUTION; i++)
+	for(i=0; i<path->size_list_checkpoints; i++)
 	{
 		path->list_checkpoints[i] = (int*) malloc(2*sizeof(int));
 		if (path->list_checkpoints[i] == NULL) {exit(0);}
@@ -65,19 +78,8 @@ PathPlanning* init_path_planning()
 		}
 	}
 	
-	// rob_pos_XY
-	path->rob_pos_XY = (PositionXY*) malloc(sizeof(PositionXY*));
-	if (path->rob_pos_XY == NULL) {exit(0);}
-	
-	// goal_XY
-	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
-	if (path->rob_pos_XY == NULL) {exit(0);}
-	
-	// flag
-	path->flag_trajectory = false;
-	
 	// number of checkpoints
-	path->nb_checkpoints = 10*RESOLUTION;
+	path->nb_checkpoints = 0;
 	
 	// current checkpoint
 	path->current_checkpoint = 0;
@@ -100,24 +102,24 @@ void free_path_planning(PathPlanning *path)
 	// ----- path-planning memory release start ----- //
 	
 	// map
-	for(i=0; i<CELL_X; i++)
+	for(i = 0; i < CELL_X; i++)
 	{
 		free(path->map[i]);
 	}
 	free(path->map);
 	
-	// list_checkpoints
-	for(i=0; i<=path->nb_checkpoints; i++)
-	{
-		free(path->list_checkpoints[i]);
-	}
-	free(path->list_checkpoints);
-
 	// rob_pos_XY
 	free(path->rob_pos_XY);
 	
 	// goal_XY
 	free(path->goal_XY);
+	
+	// list_checkpoints
+	for(i = 0; i < path->size_list_checkpoints; i++)
+	{
+		free(path->list_checkpoints[i]);
+	}
+	free(path->list_checkpoints);
 	
 	free(path);
 	
@@ -165,10 +167,9 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		assign_numbers(cvs);
 	}
 	
-	
+	/*
 	FILE* file = fopen("../../last_map.txt", "w");
 	
-
 	// Printf to see the path on terminal
 	for (i = 0; i<CELL_X; i++)
 	{
@@ -196,12 +197,13 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	fclose(file);
 	
 	//printf("BEFORE FIND_PATH \n");
-
+	*/
+	
 	find_path(cvs);
 	
 	path->flag_trajectory = true;
 	
-	
+	/*
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -225,7 +227,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
-	
+	*/
 	
 	return;
 }
@@ -592,7 +594,7 @@ void find_path(CtrlStruct *cvs)
 	path->list_checkpoints[0][0] = path->rob_pos_XY->X;
 	path->list_checkpoints[0][1] = path->rob_pos_XY->Y;
 	
-	while (path->map[path->list_checkpoints[k][0]][path->list_checkpoints[k][1]] >= 1 || k<70)
+	while (path->map[path->list_checkpoints[k][0]][path->list_checkpoints[k][1]] >= 1)
 	{
 		k++;
 		
@@ -755,13 +757,15 @@ void find_path(CtrlStruct *cvs)
 			j = j_line;
 		}
 		
-		if (k >= 10*RESOLUTION)
+		if (k > path->size_list_checkpoints-1)
 		{						
-			path->list_checkpoints = (int**) realloc(path->list_checkpoints, (k+1)*sizeof(int*));
+			path->list_checkpoints = (int**) realloc(path->list_checkpoints, (path->size_list_checkpoints+1)*sizeof(int*));
 			if (path->list_checkpoints == NULL) {exit(0);}
 			
 			path->list_checkpoints[k] = (int*) malloc(2*sizeof(int));
 			if (path->list_checkpoints[k] == NULL) {exit(0);}
+			
+			path->size_list_checkpoints++;
 		}
 		
 		path->list_checkpoints[k][0] = path->list_checkpoints[k-1][0]+i;
@@ -771,7 +775,7 @@ void find_path(CtrlStruct *cvs)
 	path->nb_checkpoints = k;
 	
 	/*
-	for (i = 0; i <= k; i++)
+	for (i = 0; i <= path->nb_checkpoints; i++)
 	{
 		path->map[path->list_checkpoints[i][0]][path->list_checkpoints[i][1]] = GOAL;
 	}

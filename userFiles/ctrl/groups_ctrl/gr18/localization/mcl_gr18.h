@@ -12,6 +12,7 @@
 
 NAMESPACE_INIT(ctrlGr18);
 
+/*
 /// Markov main structure
 struct MCLStruct
 {
@@ -19,6 +20,7 @@ struct MCLStruct
 };
 
 void mcl_update(CtrlStruct *cvs);
+*/
 
 NAMESPACE_CLOSE();
 

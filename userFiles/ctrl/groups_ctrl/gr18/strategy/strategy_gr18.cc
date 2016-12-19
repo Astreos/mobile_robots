@@ -60,6 +60,12 @@ Strategy* init_strategy()
 	
 	// ----- strategy initialization start ----- //
 	
+	// main state
+	strat->main_state = FIRST_TARGET;
+	
+	// sub state
+	strat->sub_state = TRAJECTORY;
+	
 	// goals_tab initialization (x,y,value,weight)
 	strat->goals_tab = (double**) malloc(8*sizeof(double*));
 	if (strat->goals_tab == NULL) {exit(0);}
@@ -103,7 +109,7 @@ Strategy* init_strategy()
 	// GOAL 7 (250,-1250)
 	strat->goals_tab[GOAL7][COORD_X] = 250.0;
 	strat->goals_tab[GOAL7][COORD_Y] = -1250.0;
-	strat->goals_tab[GOAL7][VALUE] = 2.0;
+	strat->goals_tab[GOAL7][VALUE] = 1.5;
 	
 	// targets_status
 	strat->targets_status = (int**) malloc(8*sizeof(int*));
@@ -120,22 +126,23 @@ Strategy* init_strategy()
 		}
 	}
 	
-	// opp_pos
-	strat->opp_pos = (OpponentsPosition*) malloc(sizeof(OpponentsPosition*));
-	if (strat->opp_pos == NULL) {exit(0);}
+	// target not detected counter
+	strat->target_not_detected = 0;
 	
 	//flags
 	strat->current_goal = GOAL0;
 	strat->goal_determination = false;
 	strat->flag_finish = false;
+	
+	// opppnent management
+	strat->opp_pos = (OpponentsPosition*) malloc(sizeof(OpponentsPosition*));
+	if (strat->opp_pos == NULL) {exit(0);}
+	
 	strat->opponent_point = false;
 	
 	// last_t
 	strat->last_t = 0;
 	strat->last_t2 = 0;
-	
-	// target not detected counter
-	strat->target_not_detected = 0;
 	
 	// ----- strategy initialization end ----- //
 	
@@ -155,11 +162,15 @@ void free_strategy(Strategy *strat)
 	for (i = 0; i < 8; i++)
 	{
 		free(strat->goals_tab[i]);
+	}
+	free(strat->goals_tab);
+	
+	for (i = 0; i < 8; i++)
+	{
 		free(strat->targets_status[i]);
 	}
-	
-	free(strat->goals_tab);
 	free(strat->targets_status);
+	
 	free(strat->opp_pos);
 	
 	free(strat);
@@ -197,13 +208,13 @@ void main_strategy(CtrlStruct *cvs)
 		manage_opp_target(cvs); // Check on which target the opponents are
 		update_goal(cvs); // Update our new target goal
 	}
-	
+	/*
 	for (i = GOAL0; i <= GOAL7; i++)
 	{
 		printf("(value, weight, CHECK1, CHECK2, OPP, US) [%d] = (%f, %f, %d, %d, %d, %d)\n", i, strat->goals_tab[i][VALUE], strat->goals_tab[i][WEIGHT], strat->targets_status[i][CHECK1], strat->targets_status[i][CHECK2], strat->targets_status[i][OPP], strat->targets_status[i][US]);
 	}
 	printf("\n");
-	
+	*/
 	switch (strat->main_state)
 	{
 		// Enter this state if we hold not any target
@@ -494,7 +505,7 @@ void win_points(CtrlStruct *cvs)
 			speed_regulation(cvs, 0, 0);
 			if (!path->flag_trajectory)
 			{
-				trajectory(cvs, -0.40, -1.20*team(team_id)); // We don't compute a trajectory to the base, but just before
+				trajectory(cvs, -0.30, -1.30*team(team_id)); // We don't compute a trajectory to the base, but just before
 			}
 			else
 			{

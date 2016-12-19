@@ -21,7 +21,7 @@ typedef struct KalmanStruct
 	
 	double last_t; ///< last time position was updated
 	
-	double* P;
+	double P[9];
 } KalmanStruct;
 
 void kalman(CtrlStruct *cvs);

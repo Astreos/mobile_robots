@@ -9,6 +9,7 @@ NAMESPACE_INIT(ctrlGr18);
  * 
  * \param[in,out] cvs controller main structure
  */
+/*
 void mcl_update(CtrlStruct *cvs)
 {
 	// variable declaration
@@ -17,5 +18,6 @@ void mcl_update(CtrlStruct *cvs)
 	// variables initialization
 	rob_pos = cvs->rob_pos;
 }
+*/
 
 NAMESPACE_CLOSE();

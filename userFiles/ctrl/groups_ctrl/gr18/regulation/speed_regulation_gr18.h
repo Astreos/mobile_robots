@@ -19,7 +19,6 @@ typedef struct SpeedRegulation
 	double int_error_l; ///< integral term of the error for the left wheel
 
 	double last_t; ///< last time the speed regulation was updated
-
 } SpeedRegulation;
 
 void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref);

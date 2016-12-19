@@ -21,14 +21,12 @@ typedef struct OpponentsPosition
 	double last_t; ///< last time the filters were updated [s]
 
 	int nb_opp; ///< number of opponents
-	
 	int opp_front;
 	
 	int previous_nb_rising;
 	int previous_nb_falling;
 	int opp_switch;
 	int switch_check;
-
 } OpponentsPosition;
 
 // function prototype

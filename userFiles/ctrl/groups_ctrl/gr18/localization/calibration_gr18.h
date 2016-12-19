@@ -15,11 +15,14 @@ NAMESPACE_INIT(ctrlGr18);
 /// robot calibration
 typedef struct RobotCalibration
 {
+	int flag; ///< flag for calibration
+	
 	double t_flag; ///< time for flag
 
-	int flag; ///< flag for calibration
-
 } RobotCalibration;
+
+// calibration states
+enum {CALIB_START, CALIB_STATE_A, CALIB_STATE_B, CALIB_STATE_C, CALIB_STATE_D, CALIB_STATE_E, CALIB_FINISH};
 
 void calibration(CtrlStruct *cvs);
 
