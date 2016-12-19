@@ -117,19 +117,14 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			}
 			else if (inputs->t - pos_reg->last_t > 2.0)
 			{
-				speed_regulation(cvs, 0, 0);
-				
-				/*
 				path->flag_trajectory = false;
 				path->current_checkpoint = 1;
 				pos_reg->flag_run_done = false;
-				pos_reg->path_state = FOLLOW_CHECKPOINTS;
-				strat->sub_state = TRAJECTORY;
-				*/
+				pos_reg->flag_asserv_done = true;
 			}
 			else
 			{
-				speed_regulation(cvs, 0, 0);
+				speed_regulation(cvs, -1, -1);
 			}
 			break;
 			
