@@ -90,39 +90,7 @@ void opponents_tower(CtrlStruct *cvs)
 		opp_pos->y[0] = first_order_filter(old_opp_pos_y[0], opp_pos->y[0], 1.0, delta_t);
 	}
 	else
-	{/*
-		previous_rise_index = rise_index_1 - 2;
-		
-		if (previous_rise_index < 0)
-		{
-			previous_rise_index = NB_STORE_EDGE-1 - 1*rise_index_1;
-		}
-		
-		previous_fall_index = fall_index_1 - 2;
-		
-		if (previous_fall_index < 0)
-		{
-			previous_fall_index = NB_STORE_EDGE-1 - 1*fall_index_1;
-		}*/
-		/*
-		for (int i = 0; i < NB_STORE_EDGE; i++)
-		{
-			printf("(last_rise, last_fall) = (%f, %f) \n", inputs->last_rising[i], inputs->last_falling[i]);
-		}
-		printf("\n");
-		*/
-		
-		//printf("(nb_rising, nb_falling) = (%d, %d) \n", inputs->nb_rising, inputs->nb_falling);
-		
-		//printf("(rise_index_1, fall_index_1, previous_rise_index, previous_fall_index) = (%d, %d, %d, %d) \n", rise_index_1, fall_index_1, previous_rise_index, previous_fall_index);
-		//printf("(rise_1, fall_1, previous_rise, previous_fall) = (%f, %f, %f, %f) \n", rise_1, fall_1, inputs->last_rising[previous_rise_index], inputs->last_falling[previous_fall_index]);
-		
-		/*
-		if ((fabs(rise_1 - inputs->last_rising[previous_rise_index]) > 0.1) || (fabs(fall_1 - inputs->last_falling[previous_fall_index]) > 0.1))
-		{
-			opp_pos->opp_switch = !opp_pos->opp_switch;
-		}*/
-		
+	{		
 		if ((inputs->nb_rising == 2) && (opp_pos->previous_nb_rising == 1) && !opp_pos->switch_check)
 		{
 			opp_pos->previous_nb_rising = inputs->nb_rising;
@@ -185,8 +153,6 @@ void opponents_tower(CtrlStruct *cvs)
 		//printf("(opp_0_x, opp_0_y, old_opp_0_x, old_opp_0_y) = (%f, %f, %f, %f) and (opp_1_x, opp_1_y, old_opp_1_x, old_opp_1_y) = (%f, %f, %f, %f)\n", opp_pos->x[0], opp_pos->y[0], old_opp_pos_x[0], old_opp_pos_y[0], opp_pos->x[1], opp_pos->y[1], old_opp_pos_x[1], old_opp_pos_y[1]);
 	}
 	
-	check_opp_front(cvs);
-
 	// ----- opponents position computation end ----- //
         
 	//set_plot(opp_pos->x[0], "opp1_x_[m]");
@@ -194,8 +160,6 @@ void opponents_tower(CtrlStruct *cvs)
         
 	//set_plot(opp_pos->x[1], "opp2_x_[m]");
 	//set_plot(opp_pos->y[1], "opp2_y_[m]");
-        
-	//set_plot(opp_pos->opp_front, "detection");
 	
 	opp_pos->last_t = inputs->t;
 	
@@ -269,7 +233,8 @@ void check_opp_front(CtrlStruct *cvs)
 	// no opponent
 	if (!nb_opp)
 	{
-		opp_pos->opp_front = 0;
+		opp_pos->opp_front = false;
+		return;
 	}
 
 	// safety
@@ -310,6 +275,8 @@ void check_opp_front(CtrlStruct *cvs)
 	}
             
 	// ----- opponents check computation end ----- //
+	
+	//set_plot(opp_pos->opp_front, "detection");
 	
 	return;
 }

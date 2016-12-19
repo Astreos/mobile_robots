@@ -86,6 +86,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	}
 
 	cvs->opp_pos->last_t = 0.0;
+	cvs->opp_pos->opp_front = false;
 	cvs->opp_pos->nb_opp = inputs->nb_opponents;
 	cvs->opp_pos->previous_nb_rising = 2;
 	cvs->opp_pos->previous_nb_falling = 2;

@@ -80,7 +80,7 @@ PathPlanning* init_path_planning()
 	path->nb_checkpoints = 10*RESOLUTION;
 	
 	// current checkpoint
-	path->current_checkpoint = 1;
+	path->current_checkpoint = 0;
 	
 	// ----- path-planning initialization end ----- //
 	
@@ -165,7 +165,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		assign_numbers(cvs);
 	}
 	
-	/*
+	
 	FILE* file = fopen("../../last_map.txt", "w");
 	
 
@@ -194,14 +194,14 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 	}
 	
 	fclose(file);
-	*/
+	
 	//printf("BEFORE FIND_PATH \n");
 
 	find_path(cvs);
 	
 	path->flag_trajectory = true;
 	
-	/*
+	
 	for (i = 0; i<CELL_X; i++)
 	{
 		for (j = 0; j<CELL_Y; j++)
@@ -225,7 +225,7 @@ void trajectory(CtrlStruct *cvs, double goal_x, double goal_y)
 		printf("\n");
 	}
 	printf("\n");
-	*/
+	
 	
 	return;
 }

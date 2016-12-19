@@ -34,7 +34,7 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 	switch (pos_reg->path_state)
 	{
 		case FOLLOW_CHECKPOINTS:
-			if (path->current_checkpoint < path->nb_checkpoints-5)
+			if (path->current_checkpoint < path->nb_checkpoints-10)
 			{
 				if (pos_reg->flag_run_done)
 				{
@@ -56,7 +56,6 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			}
 			else
 			{
-				pos_reg->flag_run_done = false;
 				pos_reg->path_state = RUN_TO_GOAL;
 			}
 			break;
@@ -66,11 +65,10 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			{
 				if (pos_reg->flag_run_done)
 				{
-					path->flag_trajectory = false;
-					path->current_checkpoint = 1;
 					pos_reg->flag_run_done = false;
 					pos_reg->flag_asserv_done = true;
-					pos_reg->path_state = FOLLOW_CHECKPOINTS;
+					path->flag_trajectory = false;
+					path->current_checkpoint = 0;
 				}
 				else
 				{
@@ -88,12 +86,11 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			else
 			{
 				if (pos_reg->flag_run_done)
-				{					
-					path->flag_trajectory = false;
-					path->current_checkpoint = 1;
+				{
 					pos_reg->flag_run_done = false;
 					pos_reg->flag_asserv_done = true;
-					pos_reg->path_state = FOLLOW_CHECKPOINTS;
+					path->flag_trajectory = false;
+					path->current_checkpoint = 0;
 				}
 				else
 				{
@@ -118,13 +115,13 @@ void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 			else if (inputs->t - pos_reg->last_t > 2.0)
 			{
 				path->flag_trajectory = false;
-				path->current_checkpoint = 1;
+				path->current_checkpoint = 0;
 				pos_reg->flag_run_done = false;
-				pos_reg->flag_asserv_done = true;
+				strat->sub_state = TRAJECTORY;
 			}
 			else
 			{
-				speed_regulation(cvs, -1, -1);
+				speed_regulation(cvs, 0, 0);
 			}
 			break;
 			
@@ -172,7 +169,7 @@ void run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float ep
 	alpha = limit_angle(-rob_pos->theta + atan2(y_ref - rob_pos->y, x_ref - rob_pos->x));
 	beta = limit_angle(theta_ref - rob_pos->theta - alpha);
 	
-	if (rho < epsilon)
+	if (rho <= epsilon)
 	{
 		pos_reg->flag_run_done = true;
 	}

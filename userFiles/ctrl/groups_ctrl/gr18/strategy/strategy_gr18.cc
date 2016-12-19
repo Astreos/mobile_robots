@@ -198,6 +198,12 @@ void main_strategy(CtrlStruct *cvs)
 		update_goal(cvs); // Update our new target goal
 	}
 	
+	for (i = GOAL0; i <= GOAL7; i++)
+	{
+		printf("(value, weight, CHECK1, CHECK2, OPP, US) [%d] = (%f, %f, %d, %d, %d, %d)\n", i, strat->goals_tab[i][VALUE], strat->goals_tab[i][WEIGHT], strat->targets_status[i][CHECK1], strat->targets_status[i][CHECK2], strat->targets_status[i][OPP], strat->targets_status[i][US]);
+	}
+	printf("\n");
+	
 	switch (strat->main_state)
 	{
 		// Enter this state if we hold not any target
@@ -256,18 +262,20 @@ void manage_first_target(CtrlStruct *cvs)
 	goal_y = strat->goals_tab[strat->current_goal][COORD_Y]/1000;
 	team_id = cvs->team_id;
 	
-	outputs->flag_release = 0; // To be sure we can hold targets
-	
 	switch (strat->sub_state)
 	{
 		// Let's compute a trajectory
 		case TRAJECTORY:
 			speed_regulation(cvs, 0, 0);
 			if (!path->flag_trajectory) // If no trajectory is computed, compute one
+			{
 				trajectory(cvs, goal_x, goal_y*team(team_id));
+			}
 			else // Else, let's move
+			{
 				pos_reg->path_state = FOLLOW_CHECKPOINTS;
 				strat->sub_state = FOLLOW_PATH;
+			}
 			break;
 		
 		// Let's move
@@ -287,6 +295,7 @@ void manage_first_target(CtrlStruct *cvs)
 		// Let's check if one target can be hold
 		case CHECK_TARGET:
 			speed_regulation(cvs, 0, 0);
+			outputs->flag_release = 0; // To be sure we can hold targets
 			if (strat->targets_status[strat->current_goal][CHECK1]) // If we have already checked this one, or if we think the opponent has taken it
 			{
 				strat->targets_status[strat->current_goal][CHECK2] = true; // Then we won't check this target anymore
@@ -307,15 +316,14 @@ void manage_first_target(CtrlStruct *cvs)
 			}
 			else // Else if no target is detected
 			{
-				strat->goals_tab[strat->current_goal][VALUE] = 0.0; // We will check it again after all the others have been checked
 				strat->target_not_detected++; // We ensure we are not missing all the targets by incrementing this value
 				strat->goal_determination = false; // Tell the update_goal it can determinate a new goal
 				
-				if (strat->target_not_detected >= 2) // If we have missed a target more than 2 times
+				if (strat->target_not_detected >= 2 && strat->targets_status[strat->current_goal][CHECK1]) // If we have missed a target more than 2 times
 				{
 					strat->target_not_detected = 0; // Reset the counter
 					strat->last_t = inputs->t; // Begin the calibration
-					strat->sub_state = CALIBRATE; // Let's calibrate
+					strat->main_state = CALIBRATE; // Let's calibrate
 				}
 				else // Else, let's try to find another target
 				{
@@ -372,18 +380,20 @@ void manage_second_target(CtrlStruct *cvs)
 	goal_y = strat->goals_tab[strat->current_goal][COORD_Y]/1000;
 	team_id = cvs->team_id;
 	
-	outputs->flag_release = 0;
-	
 	switch (strat->sub_state)
 	{
 		// Let's compute a trajectory
 		case TRAJECTORY:
 			speed_regulation(cvs, 0, 0);
 			if (!path->flag_trajectory)
+			{
 				trajectory(cvs, goal_x, goal_y*team(team_id));
+			}
 			else
+			{
 				pos_reg->path_state = FOLLOW_CHECKPOINTS;
 				strat->sub_state = FOLLOW_PATH;
+			}
 			break;
 		
 		// Let's move
@@ -403,6 +413,7 @@ void manage_second_target(CtrlStruct *cvs)
 		// Let's check if one target can be hold
 		case CHECK_TARGET:
 			speed_regulation(cvs, 0, 0);
+			outputs->flag_release = 0; // To be sure we can hold targets
 			if (strat->targets_status[strat->current_goal][CHECK1])
 			{
 				strat->targets_status[strat->current_goal][CHECK2] = true;
@@ -423,15 +434,14 @@ void manage_second_target(CtrlStruct *cvs)
 			}
 			else
 			{
-				strat->goals_tab[strat->current_goal][VALUE] = 0.0;
 				strat->target_not_detected++;
 				strat->goal_determination = false;
 				
-				if (strat->target_not_detected >= 2)
+				if (strat->target_not_detected >= 2 && strat->targets_status[strat->current_goal][CHECK1])
 				{
 					strat->target_not_detected = 0;
 					strat->last_t = inputs->t;
-					strat->sub_state = CALIBRATE;
+					strat->main_state = CALIBRATE;
 				}
 				else
 				{
@@ -483,10 +493,14 @@ void win_points(CtrlStruct *cvs)
 		case TRAJECTORY:
 			speed_regulation(cvs, 0, 0);
 			if (!path->flag_trajectory)
+			{
 				trajectory(cvs, -0.40, -1.20*team(team_id)); // We don't compute a trajectory to the base, but just before
+			}
 			else
+			{
 				pos_reg->path_state = FOLLOW_CHECKPOINTS;
 				strat->sub_state = FOLLOW_PATH;
+			}
 			break;
 			
 		// Let's move
@@ -574,10 +588,14 @@ void update_goal(CtrlStruct *cvs)
 		
 		for(i = GOAL0; i <= GOAL7; i++) // For each goal, compute its weight
 		{
-			dist_pts = sqrt(pow(rob_pos->x*1000 - strat->goals_tab[i][COORD_X], 2) + pow(rob_pos->y*1000 - strat->goals_tab[i][COORD_Y], 2)); // Distance between the robot and the target
+			dist_pts = sqrt(pow(rob_pos->x*1000.0 - strat->goals_tab[i][COORD_X], 2) + pow(rob_pos->y*1000.0 - strat->goals_tab[i][COORD_Y], 2)); // Distance between the robot and the target
 			dist_base = sqrt(pow(FINAL_POS_X - strat->goals_tab[i][COORD_X], 2) + pow(FINAL_POS_Y - strat->goals_tab[i][COORD_Y], 2)); // Distance between the target and the base
 			
-			if (!strat->targets_status[i][CHECK1] || !strat->targets_status[i][CHECK2]) // If we want to check this target
+			if (!strat->targets_status[i][CHECK1]) // If we want to check this target
+			{
+				strat->goals_tab[i][WEIGHT] = 5.0*(COEFF_PTS*strat->goals_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS);
+			}
+			else if (strat->targets_status[i][CHECK1] && !strat->targets_status[i][CHECK2]) // If we want to check this target
 			{
 				strat->goals_tab[i][WEIGHT] = COEFF_PTS*strat->goals_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS;
 			}
@@ -585,9 +603,6 @@ void update_goal(CtrlStruct *cvs)
 			{
 				strat->goals_tab[i][WEIGHT] = 0.0;
 			}
-			
-			//printf("weight = %f \n", strat->goals_tab[i][WEIGHT]);
-			//printf("status_us = %d \n", strat->targets_status[i][US]);
 		}
 		
 		strat->current_goal = 0; // By default, the current goal is 0
@@ -634,7 +649,7 @@ void manage_opp_target(CtrlStruct *cvs)
 	}
 	else
 	{
-		if (inputs->t - strat->last_t2 > 5.0) // After 5 secondes, we look if one opponent has staid in the same area
+		if (inputs->t - strat->last_t2 > 2.0) // After 2.0 secondes, we look if one opponent has staid in the same area
 		{
 			if (!nb_opp) // If there are no opponents
 			{
@@ -655,7 +670,6 @@ void manage_opp_target(CtrlStruct *cvs)
 							&& (opp_pos->y[0]*1000 >= strat->goals_tab[i][COORD_Y] - AREA))
 						{
 							strat->targets_status[i][CHECK1] = true; // If yes, we will check this target only after we have checked all the others
-							strat->goals_tab[i][VALUE] = 0.0; // So we decrease its value
 						}
 					}
 				}
@@ -684,7 +698,6 @@ void manage_opp_target(CtrlStruct *cvs)
 							&& (opp_pos->y[1]*1000 >= strat->goals_tab[i][COORD_Y] - AREA)))
 						{
 							strat->targets_status[i][CHECK1] = true;
-							strat->goals_tab[i][VALUE] = 0.0;
 						}
 					}
 				}

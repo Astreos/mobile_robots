@@ -95,6 +95,7 @@ void controller_loop(CtrlStruct *cvs)
 
 	// opponents position
 	opponents_tower(cvs);
+	check_opp_front(cvs);
 
 	// tower control
 	outputs->tower_command = 15;
