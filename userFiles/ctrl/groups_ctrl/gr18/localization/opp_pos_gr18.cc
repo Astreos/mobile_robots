@@ -215,10 +215,10 @@ int single_opp_tower(CtrlStruct *cvs, double last_rise, double last_fall, double
  */
 void check_opp_front(CtrlStruct *cvs)
 {
-	// variables declaratio
+	// variables declaration
 	CtrlIn *inputs;
-	OpponentsPosition *opp_pos;
 	RobotPosition *rob_pos;
+	OpponentsPosition *opp_pos;
 	
 	int i, nb_opp;
 	int rise_index[2], fall_index[2];
@@ -228,6 +228,7 @@ void check_opp_front(CtrlStruct *cvs)
 	inputs  = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	opp_pos = cvs->opp_pos;
+	
 	nb_opp = opp_pos->nb_opp;
 
 	// no opponent

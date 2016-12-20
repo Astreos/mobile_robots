@@ -155,22 +155,26 @@ Strategy* init_strategy()
  */
 void free_strategy(Strategy *strat)
 {
+	// variables initialization
 	int i;
 	
 	// ----- strategy memory release start ----- //
 	
+	// goals_tab initialization
 	for (i = 0; i < 8; i++)
 	{
 		free(strat->goals_tab[i]);
 	}
 	free(strat->goals_tab);
 	
+	// target_status
 	for (i = 0; i < 8; i++)
 	{
 		free(strat->targets_status[i]);
 	}
 	free(strat->targets_status);
 	
+	// opppnent
 	free(strat->opp_pos);
 	
 	free(strat);
@@ -188,15 +192,11 @@ void main_strategy(CtrlStruct *cvs)
 {
 	// variables declaration
 	Strategy *strat;
-	PathPlanning *path;
-	PosRegulation *pos_reg;
 	
 	int i;
 	
 	// variables initialization
 	strat  = cvs->strat;
-	path = cvs->path;
-	pos_reg = cvs->pos_reg;	
 	
 	// If all weights are 0, the game is over
 	strat->flag_finish = (strat->goals_tab[GOAL0][WEIGHT] == 0.0) && (strat->goals_tab[GOAL1][WEIGHT] == 0.0) && (strat->goals_tab[GOAL2][WEIGHT] == 0.0) && (strat->goals_tab[GOAL3][WEIGHT] == 0.0) && (strat->goals_tab[GOAL4][WEIGHT] == 0.0) && (strat->goals_tab[GOAL5][WEIGHT] == 0.0) && (strat->goals_tab[GOAL6][WEIGHT] == 0.0) && (strat->goals_tab[GOAL7][WEIGHT] == 0.0);
@@ -253,20 +253,20 @@ void main_strategy(CtrlStruct *cvs)
 void manage_first_target(CtrlStruct *cvs)
 {
 	// variables declaration
-	Strategy *strat;
-	PosRegulation *pos_reg;
 	CtrlIn *inputs;
 	CtrlOut *outputs;
+	Strategy *strat;
+	PosRegulation *pos_reg;
 	PathPlanning *path;
 	
 	double goal_x, goal_y;
 	int team_id;
 	
 	// variables initialization
-	strat  = cvs->strat;
-	pos_reg = cvs->pos_reg;
 	inputs = cvs->inputs;
 	outputs = cvs->outputs;
+	strat  = cvs->strat;
+	pos_reg = cvs->pos_reg;
 	path = cvs->path;
 		
 	goal_x = strat->goals_tab[strat->current_goal][COORD_X]/1000;
@@ -371,20 +371,20 @@ void manage_first_target(CtrlStruct *cvs)
 void manage_second_target(CtrlStruct *cvs)
 {
 	// variables declaration
-	Strategy *strat;
-	PosRegulation *pos_reg;
 	CtrlIn *inputs;
 	CtrlOut *outputs;
+	Strategy *strat;
+	PosRegulation *pos_reg;
 	PathPlanning *path;
 	
 	double goal_x, goal_y;
 	int team_id;
 	
 	// variables initialization
-	strat  = cvs->strat;
-	pos_reg = cvs->pos_reg;
 	inputs = cvs->inputs;
 	outputs = cvs->outputs;
+	strat  = cvs->strat;
+	pos_reg = cvs->pos_reg;
 	path = cvs->path;
 	
 	goal_x = strat->goals_tab[strat->current_goal][COORD_X]/1000;
@@ -481,19 +481,19 @@ void manage_second_target(CtrlStruct *cvs)
 void win_points(CtrlStruct *cvs)
 {
 	// variables declaration
-	Strategy *strat;
-	PosRegulation *pos_reg;
 	CtrlIn *inputs;
 	CtrlOut *outputs;
+	Strategy *strat;
+	PosRegulation *pos_reg;
 	PathPlanning *path;
 	
 	int team_id;
 	
 	// variables initialization
-	strat  = cvs->strat;
-	pos_reg = cvs->pos_reg;
 	inputs = cvs->inputs;
 	outputs = cvs->outputs;
+	strat  = cvs->strat;
+	pos_reg = cvs->pos_reg;
 	path = cvs->path;
 	
 	team_id = cvs->team_id;
@@ -544,14 +544,14 @@ void win_points(CtrlStruct *cvs)
 void calibrate(CtrlStruct *cvs)
 {
 	// variables declaration
-	Strategy *strat;
 	CtrlIn *inputs;
+	Strategy *strat;
 	RobotPosition *rob_pos;
 	KalmanStruct *pos_kalman;
 	
 	// variables initialization
-	strat  = cvs->strat;
 	inputs = cvs->inputs;
+	strat  = cvs->strat;
 	rob_pos = cvs->rob_pos;
 	pos_kalman = cvs->kalman_pos;
 	
@@ -561,6 +561,7 @@ void calibrate(CtrlStruct *cvs)
 	{
 		rob_pos->x = pos_kalman->x;
 		rob_pos->y = pos_kalman->y;
+		// rob_pos->theta = pos_kalman->theta;
 		
 		if (strat->flag_finish) // If the game is over
 		{
@@ -580,9 +581,9 @@ void calibrate(CtrlStruct *cvs)
 void update_goal(CtrlStruct *cvs)
 {
 	// variables initialization
+	CtrlIn *inputs;
 	Strategy *strat;
 	RobotPosition *rob_pos;
-	CtrlIn *inputs;
 	
 	double dist_pts, dist_base;
 	double t;
@@ -637,17 +638,17 @@ void update_goal(CtrlStruct *cvs)
 void manage_opp_target(CtrlStruct *cvs)
 {
 	// variables initialization
+	CtrlIn *inputs;
 	Strategy *strat;
 	OpponentsPosition *opp_pos;
-	CtrlIn *inputs;
 	
 	int nb_opp;
 	int i;
 	
 	// variables declaration
+	inputs = cvs->inputs;
 	strat = cvs->strat;
 	opp_pos = cvs->opp_pos;
-	inputs = cvs->inputs;
 	
 	nb_opp = opp_pos->nb_opp;
 	

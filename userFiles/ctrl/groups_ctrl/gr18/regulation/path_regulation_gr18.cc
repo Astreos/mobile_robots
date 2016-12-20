@@ -15,20 +15,20 @@ NAMESPACE_INIT(ctrlGr18);
  */
 void follow_path(CtrlStruct *cvs, double goal_x, double goal_y)
 {
-	//variable declaration
+	//variables declaration
 	PosRegulation *pos_reg;
-	Strategy *strat;
 	OpponentsPosition *opp_pos;
 	PathPlanning *path;
 	CtrlIn *inputs;
+	
 	int team_id;
 	
 	// variables initialization
 	pos_reg = cvs->pos_reg;
-	strat = cvs->strat;
 	opp_pos = cvs->opp_pos;
     path = cvs->path;
 	inputs = cvs->inputs;
+	
 	team_id = cvs->team_id;
     
 	switch (pos_reg->path_state)
@@ -194,8 +194,8 @@ void run(CtrlStruct *cvs, double x_ref, double y_ref, double theta_ref, float ep
 int turn(CtrlStruct *cvs, double theta_ref, int sens)
 {
     // variables declaration
+	CtrlIn *inputs;
     RobotPosition *rob_pos;
-    CtrlIn *inputs;
     PosRegulation *pos_reg;
     
     double dt;

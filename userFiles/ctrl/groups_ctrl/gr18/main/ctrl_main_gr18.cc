@@ -27,10 +27,13 @@ NAMESPACE_INIT(ctrlGr18);
 void controller_init(CtrlStruct *cvs)
 {
 	// variables declaration
-	double t;
 	CtrlIn *inputs;
-
+	
+	double t;
+	
+	// variables initialization
 	inputs = cvs->inputs;
+	
 	t = inputs->t;
 
 	// robot ID
@@ -80,7 +83,7 @@ void controller_loop(CtrlStruct *cvs)
 	CtrlOut *outputs;
 	
 	double t;
-
+	
 	// variables initialization
 	inputs  = cvs->inputs;
 	outputs = cvs->outputs;

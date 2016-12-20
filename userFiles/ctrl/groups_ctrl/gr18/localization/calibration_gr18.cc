@@ -19,17 +19,16 @@ NAMESPACE_INIT(ctrlGr18);
 void calibration(CtrlStruct *cvs)
 {
     // variables declaration
-    int team_id;
-    double t;
-
-    CtrlIn *inputs;
+	CtrlIn *inputs;
     RobotCalibration *calib;
     RobotPosition *rob_pos;
+	
+	double t;
+	int team_id;
 
     // variables initialization
     inputs = cvs->inputs;
     calib  = cvs->calib;
-
     rob_pos = cvs->rob_pos;
 
     t = inputs->t;

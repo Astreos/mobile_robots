@@ -21,8 +21,9 @@ NAMESPACE_INIT(ctrlGr18);
 CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 {
 	// variables initialization
-	int i;
 	CtrlStruct *cvs;
+	
+	int i;
 
 	// memory allocation
 	cvs = (CtrlStruct*) malloc(sizeof(CtrlStruct));
@@ -139,7 +140,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
  * \param[in] cvs controller main structure
  */
 void free_CtrlStruct(CtrlStruct *cvs)
-{	
+{
 	free_path_planning(cvs->path);
 	free_strategy(cvs->strat);
 	

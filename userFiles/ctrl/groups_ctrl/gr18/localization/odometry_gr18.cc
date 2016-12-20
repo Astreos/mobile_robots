@@ -12,11 +12,11 @@ NAMESPACE_INIT(ctrlGr18);
 void update_odometry(CtrlStruct *cvs)
 {
 	// variables declaration
-	double r_sp, l_sp;
-	double dt;
-
 	RobotPosition *rob_pos;
 	CtrlIn *inputs;
+	
+	double r_sp, l_sp;
+	double dt;
 
 	// variables initialization
 	inputs  = cvs->inputs;

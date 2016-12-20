@@ -11,13 +11,13 @@ NAMESPACE_INIT(ctrlGr18);
  */
 void speed_regulation(CtrlStruct *cvs, double r_sp_ref, double l_sp_ref)
 {
-    double r_sp, l_sp;
-    double dt;
-
     // variables declaration
     CtrlIn *inputs;
     CtrlOut *outputs;
     SpeedRegulation *sp_reg;
+	
+	double r_sp, l_sp;
+	double dt;
 
     // variables initialization
     inputs  = cvs->inputs;

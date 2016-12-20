@@ -18,10 +18,10 @@ void kalman(CtrlStruct *cvs)
 	KalmanStruct *pos_kalman;
 	
 	// variables initialization
+	inputs = cvs->inputs;
 	rob_pos = cvs->rob_pos;
 	pos_tri = cvs->triang_pos;
 	pos_kalman = cvs->kalman_pos;
-	inputs = cvs->inputs;
 
 	// variables temporaires 
 	int i;

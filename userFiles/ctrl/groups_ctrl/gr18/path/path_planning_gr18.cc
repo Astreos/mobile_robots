@@ -24,8 +24,9 @@ NAMESPACE_INIT(ctrlGr18);
 */
 PathPlanning* init_path_planning()
 {
-	//variable declaration
+	//variables declaration
 	PathPlanning *path;
+	
 	int i, j;
 	
 	// memory allocation
@@ -96,7 +97,7 @@ PathPlanning* init_path_planning()
 */
 void free_path_planning(PathPlanning *path)
 {
-	// variable declaration
+	// variables declaration
 	int i;
 	
 	// ----- path-planning memory release start ----- //
@@ -236,6 +237,7 @@ void create_map(CtrlStruct *cvs)
 {
 	// variables declaration
 	PathPlanning *path;
+	
 	int i, j;
 	
 	// variables initialization
@@ -423,7 +425,6 @@ void create_map(CtrlStruct *cvs)
 	return;
 }
 
-
 // Mets une valeur haute aux cases occupés par le robot adverse
 void manage_opp(CtrlStruct *cvs, int delta)
 {
@@ -431,6 +432,7 @@ void manage_opp(CtrlStruct *cvs, int delta)
 	PathPlanning *path;
 	OpponentsPosition *opp_pos;
 	RobotPosition *rob_pos;
+	
 	int i, j, k;
 	int i_start, i_end, j_start, j_end;
 	
@@ -495,15 +497,16 @@ void assign_numbers(CtrlStruct *cvs)
 {
 	// variables declaration
 	PathPlanning *path;
+	
 	int i, j, value, cases_ni;
 	
 	// variables initialization
 	path = cvs->path;
+	
 	value = 0;
 	cases_ni = 0;
 	
 	path->map[path->goal_XY->X][path->goal_XY->Y] = 0;
-	
 
 	//Compte le nombre de cases a assigner
 	for (i = 0; i < CELL_X; i++)
@@ -516,7 +519,6 @@ void assign_numbers(CtrlStruct *cvs)
 			}
 		}
 	}
-	
 
 	//Assigne les cases avec l'algorythme d'exmpension jusqu'a ateindre le robot
 	while ((cases_ni > 0) && (path->map[path->rob_pos_XY->X][path->rob_pos_XY->Y] > 90)) // tant qu'on n'a pas enregistré toute les cases
@@ -583,6 +585,7 @@ void find_path(CtrlStruct *cvs)
 {
 	// variable declaration
 	PathPlanning *path;
+	
 	int i, j, i_line, j_line, i_diag, j_diag, k, l, c;
 	float avg_temp, avg_line, avg_diag;
 	
