@@ -60,10 +60,10 @@ PathPlanning* init_path_planning()
 	
 	// goal_XY
 	path->goal_XY = (PositionXY*) malloc(sizeof(PositionXY*));
-	if (path->rob_pos_XY == NULL) {exit(0);}
+	if (path->goal_XY == NULL) {exit(0);}
 	
 	// list_checkpoints
-	path->size_list_checkpoints = 10*RESOLUTION;
+	path->size_list_checkpoints = 25*RESOLUTION;
 	
 	path->list_checkpoints = (int**) malloc(path->size_list_checkpoints*sizeof(int*));
 	if (path->list_checkpoints == NULL) {exit(0);}
@@ -761,7 +761,7 @@ void find_path(CtrlStruct *cvs)
 		}
 		
 		if (k > path->size_list_checkpoints-1)
-		{						
+		{
 			path->list_checkpoints = (int**) realloc(path->list_checkpoints, (path->size_list_checkpoints+1)*sizeof(int*));
 			if (path->list_checkpoints == NULL) {exit(0);}
 			

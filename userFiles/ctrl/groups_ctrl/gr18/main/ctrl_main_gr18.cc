@@ -167,8 +167,6 @@ void controller_loop(CtrlStruct *cvs)
  */
 void controller_finish(CtrlStruct *cvs)
 {
-	free_CtrlStruct(cvs);
-	
 	return;
 }
 
