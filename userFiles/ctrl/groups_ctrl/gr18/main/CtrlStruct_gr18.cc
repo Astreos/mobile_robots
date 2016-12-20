@@ -8,7 +8,8 @@
 #include "calibration_gr18.h"
 #include "path_planning_gr18.h"
 #include "strategy_gr18.h"
-
+#include "kalman_gr18.h"
+//
 NAMESPACE_INIT(ctrlGr18);
 
 /*! \brief initialize the controller structure
@@ -19,11 +20,16 @@ NAMESPACE_INIT(ctrlGr18);
  */
 CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 {
-	int i;
+	// variables initialization
 	CtrlStruct *cvs;
+	
+	int i;
 
+	// memory allocation
 	cvs = (CtrlStruct*) malloc(sizeof(CtrlStruct));
 	if (cvs == NULL) {exit(0);}
+	
+	// ----- cvs initialization start ----- //
 
 	// io
 	cvs->inputs  = inputs;
@@ -35,6 +41,13 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	// IDs (will be erased in the initialization)
 	cvs->robot_id = ROBOT_B;
 	cvs->team_id  = TEAM_A;
+	
+	// calibration
+	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
+	if (cvs->calib == NULL) {exit(0);}
+	
+	cvs->calib->flag = 0;
+	cvs->calib->t_flag = 0.0;
 
 	// robot position
 	cvs->rob_pos = (RobotPosition*) malloc(sizeof(RobotPosition));
@@ -42,8 +55,8 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	cvs->rob_pos->x = 0.0;
 	cvs->rob_pos->y = 0.0;
-
 	cvs->rob_pos->theta  = 0.0;
+	
 	cvs->rob_pos->last_t = 0.0;
 
 	// triangulation position
@@ -52,10 +65,25 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	cvs->triang_pos->x = 0.0;
 	cvs->triang_pos->y = 0.0;
-
 	cvs->triang_pos->theta  = 0.0;
+	
 	cvs->triang_pos->last_t = 0.0;
 
+	// Kalman position
+	cvs->kalman_pos = (KalmanStruct*) malloc(sizeof(KalmanStruct));
+	if (cvs->kalman_pos == NULL) {exit(0);}
+	
+	cvs->kalman_pos->x = 0.0;
+	cvs->kalman_pos->y = 0.0;
+	cvs->kalman_pos->theta  = 0.0;
+	
+	cvs->kalman_pos->last_t = 0.0;
+
+	for(i=0; i<9; i++)
+	{
+		cvs->kalman_pos->P[i] = 0.0;
+	}
+	
 	// opponents position
 	cvs->opp_pos = (OpponentsPosition*) malloc(sizeof(OpponentsPosition));
 	if (cvs->opp_pos == NULL) {exit(0);}
@@ -67,7 +95,15 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	}
 
 	cvs->opp_pos->last_t = 0.0;
+	
 	cvs->opp_pos->nb_opp = inputs->nb_opponents;
+	/*
+	cvs->opp_pos->opp_front = false;
+	
+	cvs->opp_pos->previous_nb_rising = 2;
+	cvs->opp_pos->previous_nb_falling = 2;
+	cvs->opp_pos->opp_switch = false;
+	cvs->opp_pos->switch_check = true;*/
 
 	// speed regulation
 	cvs->sp_reg = (SpeedRegulation*) malloc(sizeof(SpeedRegulation));
@@ -78,7 +114,7 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	cvs->sp_reg->last_t = 0.0;
         
-        // position regulation
+	// position regulation
 	cvs->pos_reg = (PosRegulation*) malloc(sizeof(PosRegulation));
 	if (cvs->pos_reg == NULL) {exit(0);}
 
@@ -86,19 +122,17 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 	cvs->pos_reg->int_error_l = 0.0;
 
 	cvs->pos_reg->last_t = 0.0;
-
-	// calibration
-	cvs->calib = (RobotCalibration*) malloc(sizeof(RobotCalibration));
-	if (cvs->calib == NULL) {exit(0);}
-
-	cvs->calib->flag = 0;
-	cvs->calib->t_flag = 0.0;
+	
+	/*
+	cvs->pos_reg->path_state = FOLLOW_CHECKPOINTS;
+	cvs->pos_reg->flag_run_done = false;
+	cvs->pos_reg->flag_asserv_done = false;*/
+	
+	// path-planning
+	cvs->path = init_path_planning();
 
 	// strategy
 	cvs->strat = init_strategy();
-
-	// path-planning
-	cvs->path = init_path_planning();
 
 	return cvs;
 }
@@ -111,14 +145,18 @@ void free_CtrlStruct(CtrlStruct *cvs)
 {
 	free_path_planning(cvs->path);
 	free_strategy(cvs->strat);
+	
 	free(cvs->calib);
-	free(cvs->sp_reg);
-    free(cvs->pos_reg);
-	free(cvs->opp_pos);
 	free(cvs->rob_pos);
 	free(cvs->triang_pos);
-
+	free(cvs->kalman_pos);
+	free(cvs->opp_pos);
+	free(cvs->sp_reg);
+    free(cvs->pos_reg);
+	
 	free(cvs);
+	
+	return;
 }
 
 NAMESPACE_CLOSE();

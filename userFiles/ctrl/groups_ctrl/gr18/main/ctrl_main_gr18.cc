@@ -15,6 +15,7 @@
 #include "strategy_gr18.h"
 #include "path_regulation_gr18.h"
 #include "path_planning_gr18.h"
+#include "kalman_gr18.h"
 
 NAMESPACE_INIT(ctrlGr18);
 
@@ -115,6 +116,7 @@ void controller_loop(CtrlStruct *cvs)
 
 		// during game
 		case RUN_STATE:
+			kalman(cvs);
 			main_strategy(cvs);
 
 			if (t > 89.0) // 1 second safety

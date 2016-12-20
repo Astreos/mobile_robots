@@ -13,7 +13,7 @@
 #include "set_output.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+//
 NAMESPACE_INIT(ctrlGr18);
 
 /// main states
@@ -26,11 +26,12 @@ enum {ROBOT_B, ROBOT_R, ROBOT_Y, ROBOT_W, NB_ROBOTS};
 enum {TEAM_A, TEAM_B, NB_TEAMS};
 
 // forward declaration
+typedef struct RobotCalibration RobotCalibration;
 typedef struct RobotPosition RobotPosition;
+typedef struct KalmanStruct KalmanStruct;
+typedef struct OpponentsPosition OpponentsPosition;
 typedef struct SpeedRegulation SpeedRegulation;
 typedef struct PosRegulation PosRegulation;
-typedef struct RobotCalibration RobotCalibration;
-typedef struct OpponentsPosition OpponentsPosition;
 typedef struct PathPlanning PathPlanning;
 typedef struct Strategy Strategy;
 
@@ -40,12 +41,13 @@ typedef struct CtrlStruct
 	CtrlIn *inputs;   ///< controller inputs
 	CtrlOut *outputs; ///< controller outputs
 
+	RobotCalibration *calib;    ///< calibration
 	RobotPosition *rob_pos;     ///< robot position coming from the robot odometry
 	RobotPosition *triang_pos;  ///< robot position coming from the triangulation
+	KalmanStruct *kalman_pos;  	///< robot position coming from the kalman filter
 	OpponentsPosition *opp_pos; ///< opponents position
 	SpeedRegulation *sp_reg;    ///< speed regulation
 	PosRegulation *pos_reg;    ///< speed regulation
-	RobotCalibration *calib;    ///< calibration
 	PathPlanning *path;         ///< path-planning
 	Strategy *strat;            ///< strategy
 

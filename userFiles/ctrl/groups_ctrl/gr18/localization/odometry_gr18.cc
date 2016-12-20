@@ -42,7 +42,9 @@ void update_odometry(CtrlStruct *cvs)
 
 	// ----- odometry computation end ----- //
         
-        //set_plot(rob_pos->x, "x_odo_[m]");
+		set_output(rob_pos->x, "x_odo_[m]");
+		
+        set_plot(rob_pos->x, "x_odo_[m]");
         //set_plot(rob_pos->y, "y_odo_[m]");
         //set_plot(rob_pos->theta, "theta_odo_[rad]");
 
