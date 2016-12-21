@@ -106,6 +106,9 @@ void controller_loop(CtrlStruct *cvs)
 		// wait before match beginning
 		case WAIT_INIT_STATE:
 			speed_regulation(cvs, 0.0, 0.0);
+			
+			cvs->kalman_pos->x = cvs->rob_pos->x;
+			cvs->kalman_pos->y = cvs->rob_pos->y;
 
 			if (t > 0.0)
 			{
