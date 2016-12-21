@@ -605,7 +605,7 @@ void update_goal(CtrlStruct *cvs)
 			
 			if (!strat->targets_status[i][CHECK1]) // If we want to check this target
 			{
-				strat->goals_tab[i][WEIGHT] = 5.0*(COEFF_PTS*strat->goals_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS);
+				strat->goals_tab[i][WEIGHT] = 20.0*(COEFF_PTS*strat->goals_tab[i][VALUE] + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_pts)*COEFF_DIST_TPS + (TPS_MAX + t)/TPS_MAX*(DIST_MAX/dist_base)*COEFF_BASE_TPS);
 			}
 			else if (strat->targets_status[i][CHECK1] && !strat->targets_status[i][CHECK2]) // If we want to check this target
 			{
@@ -617,11 +617,11 @@ void update_goal(CtrlStruct *cvs)
 			}
 		}
 		
-		strat->current_goal = 0; // By default, the current goal is 0
+		strat->current_goal = GOAL0;
 		
 		for (i = GOAL1; i <= GOAL7; i++)
 		{
-			if ((strat->goals_tab[i][WEIGHT] > strat->goals_tab[strat->current_goal][WEIGHT]) && !strat->targets_status[i][OPP] && !strat->targets_status[i][US])
+			if (strat->goals_tab[i][WEIGHT] > strat->goals_tab[strat->current_goal][WEIGHT] && !strat->targets_status[i][OPP] && !strat->targets_status[i][US])
 			{
 				strat->current_goal = i; // But if we find a goal with a better weight, save it as the new goal
 			}
@@ -661,7 +661,7 @@ void manage_opp_target(CtrlStruct *cvs)
 	}
 	else
 	{
-		if (inputs->t - strat->last_t2 > 2.0) // After 2.0 secondes, we look if one opponent has staid in the same area
+		if (inputs->t - strat->last_t2 > 4.0) // After 2.0 secondes, we look if one opponent has staid in the same area
 		{
 			if (!nb_opp) // If there are no opponents
 			{
@@ -785,6 +785,7 @@ void manage_us(CtrlStruct *cvs)
 			&& (rob_pos->y*1000 >= strat->goals_tab[i][COORD_Y] - AREA))
 		{
 			strat->targets_status[i][US] = true;
+			strat->goals_tab[i][WEIGHT] = 0.0;
 		}
 		else
 		{
