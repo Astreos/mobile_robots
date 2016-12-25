@@ -1,0 +1,6 @@
+
+SET(MBS_C_COMPILER_ID ${CMAKE_C_COMPILER_ID})
+
+SET(MBS_EXTERNAL_LINK_LIBRARIES ${project_libraries})
+
+SET(EXT_MBS_F90_MODULE ${ROBOTRAN_SOURCE_DIR}/mbs_common/mbs_add_on/mbs_lmgc/mod_external_robotran.f90)

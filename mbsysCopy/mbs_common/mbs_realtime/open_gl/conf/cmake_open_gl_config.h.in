@@ -1,0 +1,10 @@
+/*
+ * author: Nicolas Van der Noot
+ * date: October 13 2016
+ * 
+ * Get absolute paths for OpenGL.
+ *
+ * A header file called 'cmake_open_gl_config.h' is then automatically generated in the build directory
+ */
+
+#define OPEN_GL_FILES_PATH "@OPEN_GL_FILES_PATH@"

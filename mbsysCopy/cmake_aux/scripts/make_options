@@ -1,0 +1,24 @@
+#
+# Author: Nicolas Van der Noot
+#
+# Separate build: options listing
+#
+
+message("")
+message("Use the following commands to generate the dynamic libraries:")
+message("")
+message("  * make mbsysc_basic    -> mbs_common: basic compilation options")
+message("  * make mbsysc_plot     -> mbs_common: real-time graphs available")
+message("  * make mbsysc_visu     -> mbs_common: real-time visualization availbale")
+message("  * make mbsysc_realtime -> mbs_common: all real-time features available")
+message("  * make mbsysc_clean    -> mbs_common: clean dynamic libraries")
+message("")
+message("  * make userfct_basic    -> userfctR: basic compilation options")
+message("  * make userfct_plot     -> userfctR: real-time graphs available")
+message("  * make userfct_visu     -> userfctR: real-time visualization availbale")
+message("  * make userfct_realtime -> userfctR: all real-time features available")
+message("  * make userfct_clean    -> userfctR: clean dynamic library")
+message("")
+message("  * make symb_lib   -> symbolicR: create dynamic library")
+message("  * make symb_clean -> symbolicR: clean dynamic library")
+message("")
