@@ -1,0 +1,10 @@
+/*
+ * author: Timothee Habra
+ * date: May 18 2015
+ * 
+ * Get absolute paths to the SDL image.
+ *
+ * A header file called 'cmake_sdl_config.h' is then automatically generated in the build directory
+ */
+
+#define SDL_FILES_PATH "@SDL_FILES@"
