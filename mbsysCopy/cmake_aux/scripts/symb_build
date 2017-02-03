@@ -1,0 +1,56 @@
+#
+# Author: Nicolas Van der Noot
+#
+# Separate symbolicR build: configuration and compilation
+#
+
+# symbolicR folder
+SYMB_FOLDER=$2/../symbolicR
+
+# find all CMakeLists.txt files
+cmake_files=$(eval find $SYMB_FOLDER -name "CMakeLists.txt")
+
+echo ""
+
+# loop on each CMakeLists.txt file
+for elem in $cmake_files
+do
+	# current directory
+	cur_dir=$(dirname $elem)
+
+	# current build directory
+	cur_build=$cur_dir/build
+
+	# remove old directory
+	if [ -d $cur_build ]
+	then
+		rm -r $cur_build
+	fi
+
+	# check if clean or build
+	if [ $# = 2 ]
+	then
+		echo "symbolicR: dynamic library creation"
+	else
+		echo "symbolicR: dynamic library cleaning in $cur_dir"
+		continue
+	fi
+
+	# create directory
+	mkdir $cur_build
+
+	# generate CMake project
+	cd $cur_build
+	cmake -DFLAG_SEPARATE_SYMBOLIC=ON -DROBOTRAN_SOURCE_DIR=$1 ..
+
+	echo "symbolicR dynamic library configured in: "
+	echo "     $cur_build"
+
+	# compilation
+	make -j8
+
+	echo "symbolicR dynamic library created in: "
+	echo "     $cur_build"
+done
+
+echo ""
