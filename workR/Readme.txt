@@ -1,0 +1,4 @@
+--> Create a directory "build" and do "cd build"
+--> Do "cmake .."
+--> Do "make -j4"
+--> Do "./exe"~tab  and enjoy !
